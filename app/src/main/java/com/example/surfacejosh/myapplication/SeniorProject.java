@@ -1,5 +1,6 @@
 package com.example.surfacejosh.myapplication;
 
+import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,11 +9,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
+
 
 public class SeniorProject extends AppCompatActivity {
 
+    //Create UI elements and lib variables
+    Button SYNC, MAF_WORKOUT, BT_SEARCH;
+    TextView tvRead;
+    BluetoothAdapter mBluetoothadapter;
+    ///////////////////////////////////
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_senior_project);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -26,6 +38,16 @@ public class SeniorProject extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
+        // in onCreate Method Initialize The variables
+        SYNC = (Button) findViewById(R.id.SYNC);
+        MAF_WORKOUT  = (Button) findViewById(R.id.MAF_WORKOUT);
+        tvRead = (TextView) findViewById(R.id.TextV);
+        BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
+        mBluetoothadapter = BluetoothAdapter.getDefaultAdapter();
+        ///////////////////////////
+        
     }
 
     @Override

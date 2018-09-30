@@ -1,5 +1,8 @@
 package com.example.surfacejosh.myapplication;
 
+import com.physicaloid.lib.usb.driver.uart.ReadLisener;
+import com.physicaloid.lib.Physicaloid;
+
 import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.os.Handler;
 
 public class SeniorProject extends AppCompatActivity {
 
@@ -19,6 +22,7 @@ public class SeniorProject extends AppCompatActivity {
     Button SYNC, MAF_WORKOUT, BT_SEARCH;
     TextView tvRead;
     BluetoothAdapter mBluetoothadapter;
+    Physicaloid mPhysicaloid;
     ///////////////////////////////////
 
 
@@ -30,24 +34,41 @@ public class SeniorProject extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
+        BT_SEARCH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                onClickBTSEARCH(view);
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                     //   .setAction("Action", null).show();
             }
         });
 
 
         // in onCreate Method Initialize The variables
+       // BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
         SYNC = (Button) findViewById(R.id.SYNC);
         MAF_WORKOUT  = (Button) findViewById(R.id.MAF_WORKOUT);
         tvRead = (TextView) findViewById(R.id.TextV);
-        BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
+
         mBluetoothadapter = BluetoothAdapter.getDefaultAdapter();
+        mPhysicaloid = new Physicaloid(this);
         ///////////////////////////
-        
+
+    }
+
+    public void onClickBTSEARCH(View v) {
+        mPhysicaloid.setBaudrate(9600);
+        mPhysicaloid.addReadListener(new ReadLisener()
+        {
+            int size ;
+                public void onRead(int size) {
+                    byte[] buf = new byte[size];
+                    mPhysicaloid.read(buf, size);
+                    tvAttatch(tvRead,("<font color=blue>" + new String(buf) + "</font>"));
+                }
+
+        });
     }
 
     @Override
@@ -71,4 +92,19 @@ public class SeniorProject extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    //// Handles Text from Arduino
+    Handler mHandle = new Handler();
+    private void tvAttatch(TextView tv, CharSequence text)
+    {
+        final TextView ftv = tv;
+        final CharSequence ftext = text;
+        mHandle.post(new Runnable() {
+            @Override
+            public void run() {
+                ftv.append(ftext);
+            }
+        });
+    }
+    /////////////////
 }

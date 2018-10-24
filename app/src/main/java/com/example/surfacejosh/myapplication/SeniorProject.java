@@ -33,6 +33,9 @@ public class SeniorProject extends AppCompatActivity {
     byte[] readBuffer;
     Thread workerThread;
     InputStream mmInputStream;
+    private Button MafWorkout;
+    private Button BT_SEARCH;
+
 
     ///////////////////////////////////
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
@@ -72,10 +75,11 @@ public class SeniorProject extends AppCompatActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Button MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_senior_project);
-        Button BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
+        MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
+        BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
         mBluetoothadapter = BluetoothAdapter.getDefaultAdapter();
 
         BT_SEARCH.setOnClickListener(new View.OnClickListener() {
@@ -87,15 +91,18 @@ public class SeniorProject extends AppCompatActivity {
 
             }
         });
-        MafWorkout.setOnClickListener(new View.OnClickListener() {
+       MafWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-             ///   startActivity(new Intent(SeniorProject.this, MyOtherActivity.class));
+            public void onClick(View v) {
+             OpenMafActivity();
             }
         });
 
     }
-
+    public void OpenMafActivity(){
+        Intent intent = new Intent(this, MafActivity.class);
+        startActivity(intent);
+    }
     public void enableDisableBT() {
         if (mBluetoothadapter == null) {
             Log.d(TAG, "Device cannot recieve BT");

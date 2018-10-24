@@ -1,20 +1,23 @@
 package com.example.surfacejosh.myapplication;
 
 import android.bluetooth.BluetoothAdapter;
-//import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-//import android.os.Handler;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-//import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.InputStream;
+import android.widget.TextView;
 
 
 
@@ -22,8 +25,14 @@ public class SeniorProject extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     //Create UI elements and lib variables
     //Button SYNC, MAF_WORKOUT, BT_SEARCH;
-    //TextView tvRead;
+    TextView myLabel;
     BluetoothAdapter mBluetoothadapter;
+    volatile boolean stopWorker;
+    int counter;
+    int readBufferPosition;
+    byte[] readBuffer;
+    Thread workerThread;
+    InputStream mmInputStream;
 
     ///////////////////////////////////
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
@@ -63,7 +72,7 @@ public class SeniorProject extends AppCompatActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        Button MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_senior_project);
         Button BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
@@ -75,6 +84,13 @@ public class SeniorProject extends AppCompatActivity {
                 Log.d(TAG, "onClick: Enabling Bluetooth. ");
                 enableDisableBT();
 
+
+            }
+        });
+        MafWorkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+             //   startActivity(new Intent(SeniorProject.this, MyOtherActivity.class));
             }
         });
 
@@ -91,6 +107,7 @@ public class SeniorProject extends AppCompatActivity {
 
             IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
             registerReceiver(mBroadcastReceiver1,BTIntent);
+            beginListenForData();
         }
         if(mBluetoothadapter.isEnabled()){
             Log.d(TAG, "enableDisable: Disable BT.");
@@ -124,6 +141,62 @@ public class SeniorProject extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    void beginListenForData()
+    {
+        final Handler handler = new Handler();
+        final byte delimiter = 10; //This is the ASCII code for a newline character
+
+        stopWorker = false;
+        readBufferPosition = 0;
+        readBuffer = new byte[1024];
+        workerThread = new Thread(new Runnable()
+        {
+            public void run()
+            {
+                while(!Thread.currentThread().isInterrupted() && !stopWorker)
+                {
+                    try
+                    {
+                        int bytesAvailable = mmInputStream.available();
+                        if(bytesAvailable > 0)
+                        {
+                            byte[] packetBytes = new byte[bytesAvailable];
+                            mmInputStream.read(packetBytes);
+                            for(int i=0;i<bytesAvailable;i++)
+                            {
+                                byte b = packetBytes[i];
+                                if(b == delimiter)
+                                {
+                                    byte[] encodedBytes = new byte[readBufferPosition];
+                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+                                    final String data = new String(encodedBytes, "US-ASCII");
+                                    readBufferPosition = 0;
+
+                                    handler.post(new Runnable()
+                                    {
+                                        public void run()
+                                        {
+                                            myLabel.setText(data);
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    readBuffer[readBufferPosition++] = b;
+                                }
+                            }
+                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        stopWorker = true;
+                    }
+                }
+            }
+        });
+
+        workerThread.start();
+    }
     //// Handles Text from Arduino
     //Handler mHandle = new Handler();
 /*

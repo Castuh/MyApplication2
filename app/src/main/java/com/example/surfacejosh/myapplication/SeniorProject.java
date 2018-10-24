@@ -90,7 +90,7 @@ public class SeniorProject extends AppCompatActivity {
         MafWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             //   startActivity(new Intent(SeniorProject.this, MyOtherActivity.class));
+             ///   startActivity(new Intent(SeniorProject.this, MyOtherActivity.class));
             }
         });
 

@@ -35,6 +35,7 @@ public class SeniorProject extends AppCompatActivity {
     InputStream mmInputStream;
     private Button MafWorkout;
     private Button BT_SEARCH;
+    //BluetoothSocket mmSocket;
 
 
     ///////////////////////////////////
@@ -203,6 +204,18 @@ public class SeniorProject extends AppCompatActivity {
         });
 
         workerThread.start();
+    }
+    void openBT() throws IOException
+    {
+       // UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID
+       // mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+      //  mmSocket.connect();
+       // mmOutputStream = mmSocket.getOutputStream();
+      //  mmInputStream = mmSocket.getInputStream();
+
+        beginListenForData();
+
+        myLabel.setText("Bluetooth Opened");
     }
     //// Handles Text from Arduino
     //Handler mHandle = new Handler();

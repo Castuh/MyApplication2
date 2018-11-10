@@ -15,18 +15,21 @@ public class MafActivity extends AppCompatActivity {
     TextInputEditText TIE;
     static int Maf_HR;
     int age = 0;
-    public static int getMafHR(){
-        return Maf_HR;
-    }
-    public void OpenMaf_Final(){
-        Intent intent = new Intent(this, Maf_Final.class);
+   // public static int getMAFHR(){
+     //   return Maf_HR;
+    //}
+    public void OpenMaf_Final(int hr){
+
+        Intent intent = new Intent(MafActivity.this, Maf_Final.class);
+        intent.putExtra("MafHeartRate",hr);
+        intent.putExtra("mah",hr);
         startActivity(intent);
     }
-    public void CalcMafHr() {
+    public int CalcMafHr() {
         TIE = (TextInputEditText) findViewById(R.id.EnterAge);
         String AgeString = TIE.getText().toString();
         age = Integer.parseInt(AgeString);
-        Maf_HR = 180 - age;
+        return 180 - age;
     }
 
     @Override
@@ -37,8 +40,8 @@ public class MafActivity extends AppCompatActivity {
         Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CalcMafHr();
-                OpenMaf_Final();
+               Maf_HR = CalcMafHr();
+                OpenMaf_Final(Maf_HR);
 
             }
         });

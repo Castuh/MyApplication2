@@ -2,6 +2,7 @@ package com.example.surfacejosh.myapplication;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,68 +17,46 @@ import org.w3c.dom.Text;
 public class Maf_Final extends AppCompatActivity {
     private TextView MAF_HR;
     private ImageView CIRCLE;
-    private Drawable CIRCLE_DRAWABLE;
-    int MAFHR = 0;
+    int REALTIMEHR = 1;
+    int MAFHR;
+    int mafhr2;
+    Bundle extras;
     String MAFLOG = "Your Maf HR = ";
     String MAF_HR_AND_LOG;
     String MAF_HR_STRING;
-    int CIRCLE_HEIGHT = 500;
-    //int CIRCLE_WIDTH;
-    int COUNT;
-    int DUR_FROM_HR;
+    double DUR_FROM_HR;
+    int hrdur;
 
-    public void CHANGE_CIRCLE_SIZE(){
-        //setContentView(R.id.HR_CIRCLE);
+    public void CHANGE_CIRCLE_SIZE(double DUR){
+
+        double dur = DUR;
         CIRCLE = (ImageView) findViewById(R.id.HR_CIRCLE);
-        //CIRCLE_HEIGHT = CIRCLE.getLayoutParams().height;
+
         CIRCLE.getLayoutParams().height = 500;
 
         ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
                 CIRCLE,
                 PropertyValuesHolder.ofFloat("scaleX", 2f),
                 PropertyValuesHolder.ofFloat("scaleY", 2f));
-        scaleDown.setDuration(233);
+        scaleDown.setDuration((long)dur);
 
         scaleDown.setRepeatCount(ObjectAnimator.INFINITE);
         scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
 
         scaleDown.start();
-        //CIRCLE_WIDTH = CIRCLE.getLayoutParams().width;
-        //CIRCLE_DRAWABLE = (Drawable) findViewById(R.id.HR_CIRCLE);
-//        for (int i = 0; i <= 999999990; i++) {
-//            if (COUNT <= 20000) {
-//                CIRCLE_HEIGHT++;
-//                //CIRCLE_WIDTH++;
-//                if (CIRCLE_HEIGHT <= 1000) {
-//                    COUNT = 40000;
-//                }
-//
-//            }
-//            if (COUNT >= 20000) {
-//                CIRCLE_HEIGHT--;
-//                // CIRCLE_WIDTH--;
-//                if (CIRCLE_HEIGHT >= 1000) {
-//                    COUNT = 0;
-//                }
-//            }
-            //LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(CIRCLE_WIDTH,CIRCLE_HEIGHT);
-            //CIRCLE.setLayoutParams(params);
-            //CIRCLE.getLayoutParams().height = 500;
 
             CIRCLE.requestLayout();
-            COUNT++;
-        //}
+
     }
-    public int CONVERT_HR_BPM_DURATION(){
+    //public void HR_BPM_DURATION(int mafhr){
+       // MAFHR= mafhr;
 
-
-        return DUR_FROM_HR;
-    }
-    public void DISPLAY_MAF_HR(){
-
-        MafActivity MAF = ((MafActivity)getApplicationContext());
-        MAFHR = MAF.getMafHR();
-        MAF_HR_STRING = Integer.toString(MAFHR);
+       // DUR_FROM_HR = (1/((double)MAFHR/60)*1000);
+        //return DUR_FROM_HR;
+   // }
+    public void DISPLAY_MAF_HR(int hr){
+        DUR_FROM_HR = (1/((double)MAFHR/60)*1000);
+        MAF_HR_STRING = Integer.toString(hr);
         MAF_HR_AND_LOG = MAFLOG + MAF_HR_STRING;
         MAF_HR = (TextView) findViewById(R.id.MAF_HR_TV);
         MAF_HR.setText(MAF_HR_AND_LOG);
@@ -87,13 +66,13 @@ public class Maf_Final extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maf__final);
-
-       // while(true) {
-            DISPLAY_MAF_HR();
-            CHANGE_CIRCLE_SIZE();
-      //  }
-
-
+        extras = getIntent().getExtras();
+        if(extras != null){
+            MAFHR = extras.getInt("MafHeartRate");
+            mafhr2 = MAFHR;
+        }
+        DISPLAY_MAF_HR(MAFHR);
+        CHANGE_CIRCLE_SIZE(DUR_FROM_HR);
     }
 
 }

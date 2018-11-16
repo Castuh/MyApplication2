@@ -1,7 +1,9 @@
 package com.example.surfacejosh.myapplication;
-
+//package Android.Arduino.Bluetooth;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,17 +17,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.OutputStream;
+import java.util.Set;
+import java.util.UUID;
 import java.io.IOException;
 import java.io.InputStream;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.w3c.dom.Text;
 
 
 public class SeniorProject extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+
+    private static final String TAG = "SeniorProject";
     //Create UI elements and lib variables
     //Button SYNC, MAF_WORKOUT, BT_SEARCH;
     TextView myLabel;
+    TextView hrLabel;
+    Handler mHandle;
     BluetoothAdapter mBluetoothadapter;
     volatile boolean stopWorker;
     int counter;
@@ -35,8 +45,13 @@ public class SeniorProject extends AppCompatActivity {
     InputStream mmInputStream;
     private Button MafWorkout;
     private Button BT_SEARCH;
+    UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID
     //BluetoothSocket mmSocket;
-
+    private static String address = "E9:44:48:4F:C6:D1";
+    private BluetoothSocket mmSocket;
+    BluetoothDevice mmDevice;
+    OutputStream mmOutputStream;
+    InputStream inputStream;
 
     ///////////////////////////////////
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
@@ -81,13 +96,19 @@ public class SeniorProject extends AppCompatActivity {
         setContentView(R.layout.activity_senior_project);
         MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
         BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
+        myLabel = (TextView) findViewById(R.id.TextV);
+        hrLabel = (TextView) findViewById(R.id.hr_view);
         mBluetoothadapter = BluetoothAdapter.getDefaultAdapter();
 
         BT_SEARCH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: Enabling Bluetooth. ");
-                enableDisableBT();
+                try {
+                    findBT();
+                    openBT();
+                } catch (IOException ex) {
+
+                }
 
 
             }
@@ -100,6 +121,39 @@ public class SeniorProject extends AppCompatActivity {
         });
 
     }
+    void findBT() {
+        mBluetoothadapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothadapter == null) {
+            myLabel.setText("No bluetooth adapter available");
+        }
+
+        if (!mBluetoothadapter.isEnabled()) {
+            Intent enableBluetooth = new Intent(
+                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBluetooth, 0);
+        }
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothadapter
+                .getBondedDevices();
+        if (pairedDevices.size() > 0) {
+            for (BluetoothDevice device : pairedDevices) {
+                if (device.getName().equals("linor")) // this name have to be
+                    //TODO Get device name from teammates and place it above
+                // replaced with your
+                // bluetooth device name
+                {
+                    mmDevice = device;
+                    Log.v("ArduinoBT",
+                            "findBT found device named " + mmDevice.getName());
+                    Log.v("ArduinoBT",
+                            "device address is " + mmDevice.getAddress());
+                    break;
+                }
+            }
+        }
+        myLabel.setText("Bluetooth Device Found!!");
+    }
+
     public void OpenMafActivity(){
         Intent intent = new Intent(this, MafActivity.class);
         startActivity(intent);
@@ -184,7 +238,7 @@ public class SeniorProject extends AppCompatActivity {
                                     {
                                         public void run()
                                         {
-                                            myLabel.setText(data);
+                                            hrLabel.setText(data);
                                         }
                                     });
                                 }
@@ -200,36 +254,53 @@ public class SeniorProject extends AppCompatActivity {
                         stopWorker = true;
                     }
                 }
+
             }
         });
 
         workerThread.start();
     }
-    void openBT() throws IOException
-    {
-       // UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID
-       // mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
-      //  mmSocket.connect();
-       // mmOutputStream = mmSocket.getOutputStream();
-      //  mmInputStream = mmSocket.getInputStream();
 
-        beginListenForData();
 
-        myLabel.setText("Bluetooth Opened");
-    }
-    //// Handles Text from Arduino
-    //Handler mHandle = new Handler();
-/*
-    private void tvAttatch(TextView tv, CharSequence text) {
-        final TextView ftv = tv;
-        final CharSequence ftext = text;
-        mHandle.post(new Runnable() {
-            @Override
-            public void run() {
-                ftv.append(ftext);
+
+        void openBT() throws IOException {
+
+        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); // Standard
+            mBluetoothadapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothadapter == null) {
+                Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+                finish();
+                return;
             }
-        });
+            else {
+                if(mmDevice == null){
+                    myLabel.setText("Bluetoothdevice is null");
+                }
+                BluetoothDevice device = mBluetoothadapter.getRemoteDevice(address);
+                mmSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("0000111F-0000-1000-8000-00805F9B34FB"));
+                mmSocket.connect();
+
+
+            }
+            // SerialPortService
+        // ID
+            //mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+        //BluetoothSocket socket = this.mmSocket.accept();
+        //mmSocket.connect();
+       // mmOutputStream = mmSocket.getOutputStream();
+       // mmInputStream = mmSocket.getInputStream();
+        //myLabel.setText("Bluetooth Opened");
+        //beginListenForData();
+
     }
-    /////////////////
-    */
-}
+    void closeBT() throws IOException {
+        stopWorker = true;
+        mmOutputStream.close();
+        mmInputStream.close();
+        mmSocket.close();
+        myLabel.setText("Bluetooth Closed");
+    }
+
+    }
+
+

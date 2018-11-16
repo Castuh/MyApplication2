@@ -274,7 +274,7 @@ public class SeniorProject extends AppCompatActivity {
             }
             else {
                 if(mmDevice == null){
-                    myLabel.setText("Bluetoothdevice is null");
+                    myLabel.setText("Bluetooth device is null");
                 }
                 BluetoothDevice device = mBluetoothadapter.getRemoteDevice(address);
                 mmSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("0000111F-0000-1000-8000-00805F9B34FB"));

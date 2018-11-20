@@ -27,12 +27,12 @@ public class Maf_Final extends AppCompatActivity {
     double DUR_FROM_HR;
     int hrdur;
 
-    public void CHANGE_CIRCLE_SIZE(double DUR){
+    public void CHANGE_HEART_SIZE(double DUR){
 
         double dur = DUR;
         CIRCLE = (ImageView) findViewById(R.id.HR_CIRCLE);
 
-        CIRCLE.getLayoutParams().height = 500;
+        CIRCLE.getLayoutParams().height = 400;
 
         ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
                 CIRCLE,
@@ -72,7 +72,7 @@ public class Maf_Final extends AppCompatActivity {
             mafhr2 = MAFHR;
         }
         DISPLAY_MAF_HR(MAFHR);
-        CHANGE_CIRCLE_SIZE(DUR_FROM_HR);
+        CHANGE_HEART_SIZE(DUR_FROM_HR);
     }
 
 }

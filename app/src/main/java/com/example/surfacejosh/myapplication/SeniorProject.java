@@ -94,6 +94,7 @@ public class SeniorProject extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_senior_project);
+        //MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
         MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
         BT_SEARCH = (Button) findViewById(R.id.BT_SEARCH);
         myLabel = (TextView) findViewById(R.id.TextV);
@@ -275,10 +276,11 @@ public class SeniorProject extends AppCompatActivity {
             else {
                 if(mmDevice == null){
                     myLabel.setText("Bluetooth device is null");
+                }else {
+                    BluetoothDevice device = mBluetoothadapter.getRemoteDevice(address);
+                    mmSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("0000111F-0000-1000-8000-00805F9B34FB"));
+                    mmSocket.connect();
                 }
-                BluetoothDevice device = mBluetoothadapter.getRemoteDevice(address);
-                mmSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("0000111F-0000-1000-8000-00805F9B34FB"));
-                mmSocket.connect();
 
 
             }

@@ -3,6 +3,10 @@
     package="com.example.surfacejosh.myapplication">
 
     <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature android:name="android.hardware.bluetooth" />
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -28,7 +32,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".MafActivity" />
-        <activity android:name=".Maf_Final"></activity>
+        <activity android:name=".Maf_Final" />
+
+        <service
+            android:name=".BluetoothTestService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
 
 </manifest>

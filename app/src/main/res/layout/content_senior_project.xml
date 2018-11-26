@@ -8,6 +8,157 @@
     tools:context="com.example.surfacejosh.myapplication.SeniorProject"
     tools:showIn="@layout/activity_senior_project">
 
+<!--
+
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="8dp"
+        android:enabled="true"
+        android:onClick="startBluetooth"
+        android:text="@string/Start"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/led_switch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_button" />
+
+    <Button
+        android:id="@+id/search_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:enabled="false"
+        android:onClick="searchBluetooth"
+        android:text="@string/Search"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/start_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connect_button" />
+
+    <Button
+        android:id="@+id/connect_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:enabled="false"
+        android:onClick="connectBluetooth"
+        android:text="@string/Connect"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/search_button"
+        app:layout_constraintTop_toBottomOf="@+id/discoverSvc_button"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
+        android:id="@+id/discoverSvc_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:enabled="false"
+        android:onClick="discoverServices"
+        android:text="@string/DiscoverServices"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/connect_button"
+        app:layout_constraintTop_toBottomOf="@+id/disconnect_button"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
+        android:id="@+id/disconnect_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:enabled="false"
+        android:onClick="Disconnect"
+        android:text="@string/Disconnect"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/discoverSvc_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+
+    <Switch
+        android:id="@+id/led_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="128dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="116dp"
+        android:enabled="false"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:switchPadding="12dp"
+        android:text="@string/RedLED"
+        app:layout_constraintBottom_toTopOf="@+id/capsense_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/capsense_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="12dp"
+        android:text="@string/Capsense"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/capsense_value"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/capsense_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="88dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toEndOf="@id/capsense_header"
+        android:paddingTop="6dp"
+        android:text="@string/NotifyOff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Switch
+        android:id="@+id/capsense_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:enabled="false"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:switchPadding="12dp"
+        android:text="@string/Notify"
+        app:layout_constraintBottom_toTopOf="@+id/capsense_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintStart_toEndOf="@+id/led_switch" />
+-->
+
+
     <Button
         android:id="@+id/MAF_WORKOUT"
         android:layout_width="151dp"
@@ -22,67 +173,77 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.194" />
+
+    <ListView
+        android:id="@+id/lvNewDevices"
+        android:layout_width="125dp"
+        android:layout_height="139dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextV" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="156dp"
         android:layout_height="119dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="64dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/MAF_WORKOUT"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.19999999" />
 
     <Button
         android:id="@+id/SYNC"
         android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="discoverServices"
+        android:text="SYNC"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.971"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/BT_CONNECT" />
+
+    <Button
+        android:id="@+id/BT_CONNECT"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="8dp"
-        android:text="SYNC"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="connectBluetooth"
+        android:text="BT CONNECT"
+        app:layout_constraintBottom_toTopOf="@+id/SYNC"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/SEARCH_BT"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/BT_SEARCH"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="156dp"
-        android:layout_marginBottom="8dp"
-        android:text="BT Search"
-        app:layout_constraintBottom_toTopOf="@+id/MAF_WORKOUT"
-        app:layout_constraintEnd_toStartOf="@+id/SYNC"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/TextV"
         android:layout_width="108dp"
         android:layout_height="37dp"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="251dp"
-        android:layout_marginBottom="263dp"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/BT_SEARCH"
-        app:layout_constraintVertical_bias="0.984" />
+        app:layout_constraintTop_toBottomOf="@+id/MAF_WORKOUT" />
 
     <TextView
         android:id="@+id/hr_view"
@@ -96,9 +257,74 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toEndOf="@+id/lvNewDevices"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.764" />
+
+    <Button
+        android:id="@+id/BT_ONOFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="startBluetooth"
+        android:text="BT ON/OFF"
+        app:layout_constraintBottom_toTopOf="@+id/MAF_WORKOUT"
+        app:layout_constraintEnd_toStartOf="@+id/SEARCH_BT"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.762" />
+        app:layout_constraintVertical_bias="0.032" />
+
+    <Button
+        android:id="@+id/SEARCH_BT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="searchBluetooth"
+        android:text="Search BT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/BT_CONNECT"
+        app:layout_constraintStart_toEndOf="@+id/BT_ONOFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Switch
+        android:id="@+id/HR_SWITCH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="HR show"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.475"
+        app:layout_constraintStart_toEndOf="@+id/lvNewDevices"
+        app:layout_constraintTop_toBottomOf="@+id/hr_view"
+        app:layout_constraintVertical_bias="0.125" />
+
+    <Button
+        android:id="@+id/BTDISCONNECT"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="Disconnect"
+        android:text="Disconnect"
+        app:layout_constraintBottom_toTopOf="@+id/MAF_WORKOUT"
+        app:layout_constraintEnd_toStartOf="@+id/SYNC"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/BT_ONOFF" />
+
 
 </android.support.constraint.ConstraintLayout>

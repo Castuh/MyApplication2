@@ -37,10 +37,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_max="600dp"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MAF_HR_TV"
+        app:layout_constraintVertical_bias="0.226"
         app:layout_constraintWidth_max="600dp"
         app:srcCompat="@drawable/sheart" />
+
+    <TextView
+        android:id="@+id/HR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="164dp"
+        android:layout_marginBottom="43dp"
+        android:text="Heart rate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/HR_CIRCLE" />
 
 
 </android.support.constraint.ConstraintLayout>

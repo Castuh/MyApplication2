@@ -1,5 +1,7 @@
 package com.example.surfacejosh.myapplication;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -47,4 +49,5 @@ public class MafActivity extends AppCompatActivity {
         });
 
     }
+
 }

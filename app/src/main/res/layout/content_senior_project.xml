@@ -161,19 +161,21 @@
 
     <Button
         android:id="@+id/MAF_WORKOUT"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="151dp"
         android:layout_height="119dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="10dp"
+        android:background="@android:color/holo_orange_light"
         android:text="MAF WORKOUT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.194" />
+        app:layout_constraintVertical_bias="0.204" />
 
     <ListView
         android:id="@+id/lvNewDevices"
@@ -188,26 +190,30 @@
 
     <Button
         android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="156dp"
         android:layout_height="119dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:text="TODO"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/MAF_WORKOUT"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19999999" />
+        app:layout_constraintVertical_bias="0.203" />
 
     <Button
         android:id="@+id/SYNC"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="44dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@color/colorAccent"
         android:onClick="discoverServices"
         android:text="SYNC"
         app:layout_constraintBottom_toTopOf="@+id/button2"
@@ -218,19 +224,19 @@
 
     <Button
         android:id="@+id/BT_CONNECT"
-        android:layout_width="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="94dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/holo_blue_bright"
         android:onClick="connectBluetooth"
         android:text="BT CONNECT"
         app:layout_constraintBottom_toTopOf="@+id/SYNC"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/SEARCH_BT"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/TextV"
@@ -263,29 +269,35 @@
 
     <Button
         android:id="@+id/BT_ONOFF"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@color/colorAccent"
         android:onClick="startBluetooth"
         android:text="BT ON/OFF"
+        android:textColor="@color/ic_launcher_background"
         app:layout_constraintBottom_toTopOf="@+id/MAF_WORKOUT"
         app:layout_constraintEnd_toStartOf="@+id/SEARCH_BT"
-        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.032" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/SEARCH_BT"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginBottom="8dp"
+        android:background="@color/colorAccent"
         android:onClick="searchBluetooth"
         android:text="Search BT"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -312,12 +324,14 @@
 
     <Button
         android:id="@+id/BTDISCONNECT"
-        android:layout_width="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="94dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@android:color/holo_red_dark"
         android:onClick="Disconnect"
         android:text="Disconnect"
         app:layout_constraintBottom_toTopOf="@+id/MAF_WORKOUT"

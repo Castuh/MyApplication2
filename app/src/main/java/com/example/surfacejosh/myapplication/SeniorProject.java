@@ -139,11 +139,11 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         //registerReceiver(mBroadcastReceiver4, filter);
-        //lvNewDevices.setOnItemClickListener(SeniorProject.this);
+
         // Initialize service and connection state variable
         mServiceConnected = false;
         mConnectState = false;
-
+        Sync.setEnabled(false);
 
         //This section required for Android 6.0 (Marshmallow)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -269,21 +269,25 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     /* This if statement is needed because we sometimes get a GATT_CONNECTED */
 
-
+                    Sync.setEnabled(true);
                     /* action when sending Capsense notifications */
 
                     if (!mConnectState) {
                         // Dsable the connect button, enable the discover services and disconnect buttons
                         BT_CONNECT.setEnabled(false);
+                        Sync.setEnabled(true);
                         mConnectState = true;
+                        DISCONNECT.setEnabled(true);
                         Log.d(TAG, "Connected to Device");
                         Log.d(TAG, "Connected to Device");
                     }
                     break;
                 case BluetoothTestService.ACTION_DISCONNECTED:
                     DISCONNECT.setEnabled(false);
-                    SEARCH_BT.setEnabled(false);
+                    SEARCH_BT.setEnabled(true);
                     BT_ONOFF.setEnabled(true);
+                    BT_CONNECT.setEnabled(true);
+                    Sync.setEnabled(false);
 
                 case BluetoothTestService.ACTION_DATA_RECEIVED:
                     // This is called after a notify or a read completes
@@ -298,7 +302,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                     // Get CapSense Slider Value
                     String hrvalue = mBluetoothTestService.getCapSenseValue();
 
-                    hrLabel.setText(hrvalue);
+                    hrLabel.setText(hrvalue +" BPM");
 
                 default:
                     break;
@@ -415,8 +419,8 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         /* This will discover both services and characteristics */
 
         mBluetoothTestService.discoverServices();
-
-
+        myLabel.setText("Connected to Device");
+        //lvNewDevices.setAdapter(mBluetoothAdapter.getName());
 
         /* After this we wait for the gatt callback to report the services and characteristics */
 

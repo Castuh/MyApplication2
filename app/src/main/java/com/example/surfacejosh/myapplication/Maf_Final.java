@@ -2,6 +2,8 @@ package com.example.surfacejosh.myapplication;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,16 +18,20 @@ import org.w3c.dom.Text;
 
 public class Maf_Final extends AppCompatActivity {
     private TextView MAF_HR;
+    private TextView Actual_hr;
+
     private ImageView CIRCLE;
     int REALTIMEHR = 1;
     int MAFHR;
     int mafhr2;
+    String A_Hr = "0";
     Bundle extras;
     String MAFLOG = "Your Maf HR = ";
     String MAF_HR_AND_LOG;
     String MAF_HR_STRING;
     double DUR_FROM_HR;
     int hrdur;
+    BluetoothTestService bts;
 
     public void CHANGE_HEART_SIZE(double DUR){
 
@@ -55,7 +61,7 @@ public class Maf_Final extends AppCompatActivity {
         //return DUR_FROM_HR;
    // }
     public void DISPLAY_MAF_HR(int hr){
-        DUR_FROM_HR = (1/((double)MAFHR/60)*1000);
+        DUR_FROM_HR = (1/((double)Integer.parseInt(A_Hr)/60)*1000);
         MAF_HR_STRING = Integer.toString(hr);
         MAF_HR_AND_LOG = MAFLOG + MAF_HR_STRING;
         MAF_HR = (TextView) findViewById(R.id.MAF_HR_TV);
@@ -67,12 +73,42 @@ public class Maf_Final extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maf__final);
         extras = getIntent().getExtras();
+        Actual_hr = (TextView) findViewById(R.id.HR);
         if(extras != null){
             MAFHR = extras.getInt("MafHeartRate");
             mafhr2 = MAFHR;
         }
+        bts = new BluetoothTestService();
+        Actual_hr.setText(bts.getCapSenseValue());
         DISPLAY_MAF_HR(MAFHR);
         CHANGE_HEART_SIZE(DUR_FROM_HR);
     }
+    private final BroadcastReceiver mBleUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            switch (action) {
+                case BluetoothTestService.ACTION_DATA_RECEIVED:
+                    // This is called after a notify or a read completes
+                    // Check LED switch Setting
 
+                    /*if (mBluetoothTestService.getLedSwitchState()) {
+                        led_switch.setChecked(true);
+                    } else {
+                        led_switch.setChecked(false);
+                    }*/
+                    A_Hr = bts.getCapSenseValue();
+                    // Get CapSense Slider Value
+
+                    String hrvalue = bts.getCapSenseValue();
+
+                    Actual_hr.setText(hrvalue +" BPM");
+
+                default:
+                    break;
+
+
+            }
+        }
+    };
 }

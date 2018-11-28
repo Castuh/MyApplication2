@@ -49,10 +49,9 @@ public class BluetoothTestService extends Service {
 
     // UUIDs for the service and characteristics that the custom CapSenseLED service uses
    
-    private final static String HR_SERVICE =      "0000180d-0000-1000-8000-00805f9b34fb";
-    //public  final static String ledCharacteristicUUID =       baseUUID + "1";
-    public  final static String HRDATACHARACTERISTIC =  "00002a37-0000-1000-8000-00805f9b34fb";
-    private final static String HRDATACHARDESCRIPTOR =                   "00002902-0000-1000-8000-00805f9b34fb";
+    private final static String HR_SERVICE = "0000180d-0000-1000-8000-00805f9b34fb";
+    public  final static String HRDATACHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
+    private final static String HRDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
 
     // Variables to keep track of the LED switch state and CapSense Value
     private static boolean mLedSwitchState = false;

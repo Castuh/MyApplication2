@@ -21,7 +21,9 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -45,6 +47,7 @@ import android.widget.Toast;
 public class SeniorProject extends AppCompatActivity { //implements AdapterView.OnItemClickListener {
 
     private static final String TAG = "SeniorProject";
+    private Button Connecttracker;
     //Create UI elements and lib variables
     private TextView myLabel;
     private TextView hrLabel;
@@ -55,7 +58,10 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     private Button BT_ONOFF;
     private Button DISCONNECT;
     private Button SEARCH_BT;
+    private Button OpenConSettings;
+    private boolean discoservice = false;
     View v;
+    private Context appcontext;
     private Switch HR_SWITCH;
     private boolean mConnected = false;
     // Variables to manage BLE connection
@@ -121,17 +127,22 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_senior_project);
+        appcontext = getApplicationContext();
         //MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
-        MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
-        BT_CONNECT = (Button) findViewById(R.id.BT_CONNECT);
+        MafWorkout =  findViewById(R.id.MAF_WORKOUT);
+        //BT_CONNECT = (Button) findViewById(R.id.BT_CONNECT);
         myLabel = (TextView) findViewById(R.id.TextV);
         hrLabel = (TextView) findViewById(R.id.hr_view);
-        BT_ONOFF = (Button) findViewById(R.id.BT_ONOFF);
-        lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
-        HR_SWITCH = (Switch) findViewById(R.id.HR_SWITCH);
+        //BT_ONOFF = (Button) findViewById(R.id.BT_ONOFF);
+        //lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
+        //HR_SWITCH = (Switch) findViewById(R.id.HR_SWITCH);
+        /*
         Sync = (Button) findViewById(R.id.SYNC);
         DISCONNECT = (Button) findViewById(R.id.BTDISCONNECT);
         SEARCH_BT = (Button) findViewById(R.id.SEARCH_BT);
+        */
+        OpenConSettings = (Button) findViewById(R.id.ConSettings);
+        Connecttracker = (Button) findViewById(R.id.FitTrackConnect);
         //startBluetooth(v);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBTDevices = new ArrayList<>();
@@ -143,7 +154,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         // Initialize service and connection state variable
         mServiceConnected = false;
         mConnectState = false;
-        Sync.setEnabled(false);
+        //Sync.setEnabled(false);
 
         //This section required for Android 6.0 (Marshmallow)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -161,50 +172,87 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                 builder.show();
             }
         } //End of section for Android 6.0 (Marshmallow)
-
-/*
-        BT_ONOFF.setOnClickListener(new View.OnClickListener() {
+        OpenConSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //enableDisableBT();
-
-                //connectBluetooth(view);
-                //discoverServices(view);
+                OpenSettingsConnection();
 
             }
         });
-        BT_CONNECT.setOnClickListener(new View.OnClickListener() {
+        Connecttracker.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                //searchBluetooth(view);
+            public void onClick(final View v) {
+                startBluetooth(v);
+                // Get a handler that can be used to post to the main thread
+                Handler startbt = new Handler(Looper.getMainLooper());
+                Runnable sbtrun = new Runnable(){
+
+                    @Override
+                    public void run() {
+                        myLabel.setText("searching bluetooth");
+                        searchBluetooth(v);
+
+                    } // This is your code
+                };
+                startbt.postDelayed(sbtrun,500);
+
+                Handler searchbt = new Handler(Looper.getMainLooper());
+                Runnable searchbtrun = new Runnable(){
+
+                    @Override
+                    public void run() {
+                        myLabel.setText("connecting bluetooth");
+                        connectBluetooth(v);
+
+                    } // This is your code
+                };
+                searchbt.postDelayed(searchbtrun,2000);
+                Handler discoverserv = new Handler(Looper.getMainLooper());
+                Runnable discrunnable = new Runnable(){
+
+                    @Override
+                    public void run() {
+                        myLabel.setText("discovering bluetooth");
+                        discoverServices(v);
+
+                    } // This is your code
+                };
+                discoverserv.postDelayed(discrunnable,20000);
+                Handler notifser = new Handler(Looper.getMainLooper());
+                Runnable notifrun = new Runnable(){
+
+                    @Override
+                    public void run() {
+                        myLabel.setText("notify Update");
+
+                        mBluetoothTestService.writeCapSenseNotification(true);
+                    } // This is your code
+                };
+                notifser.postDelayed(notifrun,20500);
 
             }
         });
-        Sync.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-
-            }
-        });*/
         MafWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 OpenMafActivity();
             }
         });
-        HR_SWITCH.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+       /* HR_SWITCH.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Turn CapSense Notifications on/off based on the state of the switch
-                mBluetoothTestService.writeCapSenseNotification(isChecked);
+               // if (discoservice){
+                    mBluetoothTestService.writeCapSenseNotification(true);
                 HRNotifystate = isChecked;  // Keep track of CapSense notification state
-                if(isChecked) { // Notifications are now on so text has to say "No Touch"
-                    hrLabel.setText(R.string.NoTouch);
+                if (isChecked) { // Notifications are now on so text has to say "..."
+                    hrLabel.setText(R.string.NoHr);
                 } else { // Notifications are now off so text has to say "Notify Off"
                     hrLabel.setText(R.string.NotifyOff);
                 }
+            //}
             }
-        });
+        });*/
     }
 
 
@@ -236,7 +284,10 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         Intent intent = new Intent(this, MafActivity.class);
         startActivity(intent);
     }
-
+    public void OpenSettingsConnection() {
+        Intent intent = new Intent(this, ConSettingsActivity.class);
+        startActivity(intent);
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -261,33 +312,30 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
             final String action = intent.getAction();
             switch (action) {
                 case BluetoothTestService.ACTION_BLESCAN_CALLBACK:
-                   // BT_ONOFF.setEnabled(false);
-                    //connect_button.setEnabled(true);
+
+
                     // Disable the search button and enable the connect button
                     break;
                 case BluetoothTestService.ACTION_CONNECTED:
-
+                    //discoverServices(v);
+                    //mBluetoothTestService.writeCapSenseNotification(true);
                     /* This if statement is needed because we sometimes get a GATT_CONNECTED */
 
-                    Sync.setEnabled(true);
+
                     /* action when sending Capsense notifications */
 
                     if (!mConnectState) {
                         // Dsable the connect button, enable the discover services and disconnect buttons
-                        BT_CONNECT.setEnabled(false);
-                        Sync.setEnabled(true);
+
+
                         mConnectState = true;
-                        DISCONNECT.setEnabled(true);
+
                         Log.d(TAG, "Connected to Device");
                         Log.d(TAG, "Connected to Device");
                     }
                     break;
                 case BluetoothTestService.ACTION_DISCONNECTED:
-                    DISCONNECT.setEnabled(false);
-                    SEARCH_BT.setEnabled(true);
-                    BT_ONOFF.setEnabled(true);
-                    BT_CONNECT.setEnabled(true);
-                    Sync.setEnabled(false);
+                   // Connecttracker.setEnabled(true);
 
                 case BluetoothTestService.ACTION_DATA_RECEIVED:
                     // This is called after a notify or a read completes
@@ -365,7 +413,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         // Disable the start button and turn on the search  button
-        BT_ONOFF.setEnabled(false);
+
 
         Log.d(TAG, "Bluetooth is Enabled");
     }
@@ -381,7 +429,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         if(mServiceConnected) {
             mBluetoothTestService.scan();
         }
-        SEARCH_BT.setEnabled(false);
+
 
         /* After this we wait for the scan callback to detect that a device has been found *//*
 
@@ -399,7 +447,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     public void connectBluetooth(View view) {
         mBluetoothTestService.connect();
 
-        BT_CONNECT.setEnabled(false);
+
         /* After this we wait for the gatt callback to report the device is connected *//*
 
          */
@@ -419,7 +467,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         /* This will discover both services and characteristics */
 
         mBluetoothTestService.discoverServices();
-        myLabel.setText("Connected to Device");
+        //myLabel.setText("Connected to Device");
         //lvNewDevices.setAdapter(mBluetoothAdapter.getName());
 
         /* After this we wait for the gatt callback to report the services and characteristics */
@@ -447,297 +495,3 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     }
 }
-/*
-    public void startConnection(){
-        if(mBTDevice != null) {
-            myLabel.setText(mBTDevice.getName());
-            startBTConnection(mBTDevice, MY_UUID_INSECURE);
-        } else {
-            myLabel.setText("Device is null");
-        }
-    }*/
-
-
-
-
-/**
- * starting chat service method
- *//*
-
- */
-/*public void startBTConnection(BluetoothDevice device, UUID uuid){
-        Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
-
-        mBluetoothConnection.startClient(device,uuid);
-    }*//*
-
-    // OnResume, called right before UI is displayed.  Connect to the bluetooth device.
-    */
-/*@Override
-    protected void onResume() {
-        super.onResume();
-        myLabel.setText("Scanning for devices ...");
-
-        //uart.connectFirstAvailable();
-    }*//*
-
- */
-/*private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                mConnected = true;
-                updateConnectionState("connected");
-                invalidateOptionsMenu();
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mConnected = false;
-                updateConnectionState("Disconnected");
-                invalidateOptionsMenu();
-                clearUI();
-            } else if (BluetoothLeService.
-                    ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                // Show all the supported services and characteristics on the
-                // user interface.
-               // displayGattServices(mBluetoothLeService.getSupportedGattServices());
-            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                displayHRData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-            }
-        }
-    };
-    private void clearUI() {
-        //mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
-        hrLabel.setText("no_data");
-    }
-    private void updateConnectionState(final String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                myLabel.setText(message);
-            }
-        });
-    }
-    private void displayHRData(String data) {
-        if (data != null) {
-            hrLabel.setText(data);
-        }
-    }
-    public void enableDisableBT(){
-        if(mBluetoothAdapter == null){
-            Log.d(TAG, "enableDisableBT: Does not have BT capabilities.");
-        }
-        if(!mBluetoothAdapter.isEnabled()){
-            Log.d(TAG, "enableDisableBT: enabling BT.");
-            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivity(enableBTIntent);
-
-            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            //registerReceiver(mBroadcastReceiver1, BTIntent);
-        }
-        if(mBluetoothAdapter.isEnabled()){
-            Log.d(TAG, "enableDisableBT: disabling BT.");
-            mBluetoothAdapter.disable();
-
-            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            //registerReceiver(mBroadcastReceiver1, BTIntent);
-        }
-
-    }
-*//*
-
-
- */
-/* public void btnEnableDisable_Discoverable(View view) {
-        Log.d(TAG, "btnEnableDisable_Discoverable: Making device discoverable for 300 seconds.");
-
-        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivity(discoverableIntent);
-
-        IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-       // registerReceiver(mBroadcastReceiver2,intentFilter);
-
-    }
-*//*
-
- */
-/* public void btnDiscover(View view) {
-        Log.d(TAG, "btnDiscover: Looking for unpaired devices.");
-
-        if(mBluetoothAdapter.isDiscovering()){
-            mBluetoothAdapter.cancelDiscovery();
-            Log.d(TAG, "btnDiscover: Canceling discovery.");
-
-            //check BT permissions in manifest
-            checkBTPermissions();
-
-            mBluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
-        }
-        if(!mBluetoothAdapter.isDiscovering()){
-
-            //check BT permissions in manifest
-            checkBTPermissions();
-
-            mBluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
-        }
-    }*//*
-
-
- */
-/**
- * This method is required for all devices running API23+
- * Android must programmatically check the permissions for bluetooth. Putting the proper permissions
- * in the manifest is not enough.
- *
- * NOTE: This will only execute on versions > LOLLIPOP because it is not needed otherwise.
- *//*
-
- */
-/*
-    private void checkBTPermissions() {
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
-            int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
-            if (permissionCheck != 0) {
-
-                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
-            }
-        }else{
-            Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
-        }
-    }*//*
-
- */
-/* //@Override
-    public void onReceive(BluetoothLeUart uart, BluetoothGattCharacteristic rx) {
-        // Called when data is received by the UART.
-        hrLabel.setText("Received: " + rx.getStringValue(0));
-    }*//*
-
-
-
- */
-/* @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //first cancel discovery because its very memory intensive.
-        mBluetoothAdapter.cancelDiscovery();
-
-        Log.d(TAG, "onItemClick: You Clicked on a device.");
-        String deviceName = mBTDevices.get(i).getName();
-        String deviceAddress = mBTDevices.get(i).getAddress();
-
-        Log.d(TAG, "onItemClick: deviceName = " + deviceName);
-        Log.d(TAG, "onItemClick: deviceAddress = " + deviceAddress);
-
-        //create the bond.
-        //NOTE: Requires API 17+? I think this is JellyBean
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
-            Log.d(TAG, "Trying to pair with " + deviceName);
-            mBTDevices.get(i).createBond();
-
-            mBTDevice = mBTDevices.get(i);
-            mBluetoothConnection = new BluetoothConnectionService(SeniorProject.this);
-        }
-    }*//*
-
- */
-/**
- * Broadcast Receiver for changes made to bluetooth states such as:
- * 1) Discoverability mode on/off or expire.
- *//*
-
-    /*
-    private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)) {
-
-                int mode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
-
-                switch (mode) {
-                    //Device is in Discoverable Mode
-                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
-                        Log.d(TAG, "mBroadcastReceiver2: Discoverability Enabled.");
-                        break;
-                    //Device not in discoverable mode
-                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
-                        Log.d(TAG, "mBroadcastReceiver2: Discoverability Disabled. Able to receive connections.");
-                        break;
-                    case BluetoothAdapter.SCAN_MODE_NONE:
-                        Log.d(TAG, "mBroadcastReceiver2: Discoverability Disabled. Not able to receive connections.");
-                        break;
-                    case BluetoothAdapter.STATE_CONNECTING:
-                        Log.d(TAG, "mBroadcastReceiver2: Connecting....");
-                        break;
-                    case BluetoothAdapter.STATE_CONNECTED:
-                        Log.d(TAG, "mBroadcastReceiver2: Connected.");
-                        break;
-                }
-
-            }
-        }
-    };
-
-
-
-
-  * Broadcast Receiver for listing devices that are not yet paired
-     * -Executed by btnDiscover() method.
-
-
-    private BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            Log.d(TAG, "onReceive: ACTION FOUND.");
-
-            if (action.equals(BluetoothDevice.ACTION_FOUND)){
-                BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
-                mBTDevices.add(device);
-                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-                mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-                lvNewDevices.setAdapter(mDeviceListAdapter);
-            }
-        }
-    };
-
-
-
-
-     * Broadcast Receiver that detects bond state changes (Pairing status changes)
-
-
-    private final BroadcastReceiver mBroadcastReceiver4 = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
-                BluetoothDevice mDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                //3 cases:
-                //case1: bonded already
-                if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED){
-                    Log.d(TAG, "BroadcastReceiver: BOND_BONDED.");
-                    //inside BroadcastReceiver4
-                    mBTDevice = mDevice;
-                }
-                //case2: creating a bone
-                if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
-                }
-                //case3: breaking a bond
-                if (mDevice.getBondState() == BluetoothDevice.BOND_NONE) {
-                    Log.d(TAG, "BroadcastReceiver: BOND_NONE.");
-                }
-            }
-        }
-    };
-
-*/

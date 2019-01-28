@@ -55,7 +55,7 @@ public class BluetoothTestService extends Service {
 
     // Variables to keep track of the LED switch state and CapSense Value
     private static boolean mLedSwitchState = false;
-    private static String mHrValue = "-1"; // This is the No Touch value (0xFFFF)
+    private static String mHrValue = "..."; // This is the No Touch value (0xFFFF)
 
     // Actions used during broadcasts to the main activity
     public final static String ACTION_BLESCAN_CALLBACK =
@@ -73,7 +73,7 @@ public class BluetoothTestService extends Service {
     }
 
     /**
-     * This is a binder for the PSoCCapSenseLedService
+     * This is a binder for the BlueToothTestService
      */
     public class LocalBinder extends Binder {
         BluetoothTestService getService() {

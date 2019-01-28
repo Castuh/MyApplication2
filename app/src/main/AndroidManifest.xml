@@ -37,7 +37,10 @@
         <service
             android:name=".BluetoothTestService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
+
+
+        <activity android:name=".ConSettingsActivity"></activity>
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -24,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,6 +36,8 @@ import android.widget.Button;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorCompletionService;
 
@@ -64,6 +68,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     private Context appcontext;
     private Switch HR_SWITCH;
     private boolean mConnected = false;
+    private static BluetoothGattCharacteristic mGattCharacteristics;
     // Variables to manage BLE connection
     private static boolean mConnectState;
     private static boolean mServiceConnected;
@@ -128,33 +133,26 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_senior_project);
         appcontext = getApplicationContext();
-        //MafWorkout = (Button) findViewById(R.id.MAF_WORKOUT);
+
         MafWorkout =  findViewById(R.id.MAF_WORKOUT);
-        //BT_CONNECT = (Button) findViewById(R.id.BT_CONNECT);
+
         myLabel = (TextView) findViewById(R.id.TextV);
         hrLabel = (TextView) findViewById(R.id.hr_view);
-        //BT_ONOFF = (Button) findViewById(R.id.BT_ONOFF);
-        //lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
-        //HR_SWITCH = (Switch) findViewById(R.id.HR_SWITCH);
-        /*
-        Sync = (Button) findViewById(R.id.SYNC);
-        DISCONNECT = (Button) findViewById(R.id.BTDISCONNECT);
-        SEARCH_BT = (Button) findViewById(R.id.SEARCH_BT);
-        */
+
         OpenConSettings = (Button) findViewById(R.id.ConSettings);
         Connecttracker = (Button) findViewById(R.id.FitTrackConnect);
-        //startBluetooth(v);
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBTDevices = new ArrayList<>();
 
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        //registerReceiver(mBroadcastReceiver4, filter);
+
 
         // Initialize service and connection state variable
         mServiceConnected = false;
         mConnectState = false;
-        //Sync.setEnabled(false);
+
 
         //This section required for Android 6.0 (Marshmallow)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -206,7 +204,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     } // This is your code
                 };
-                searchbt.postDelayed(searchbtrun,2000);
+                searchbt.postDelayed(searchbtrun,2500);
                 Handler discoverserv = new Handler(Looper.getMainLooper());
                 Runnable discrunnable = new Runnable(){
 
@@ -217,7 +215,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     } // This is your code
                 };
-                discoverserv.postDelayed(discrunnable,20000);
+                discoverserv.postDelayed(discrunnable,20500);
                 Handler notifser = new Handler(Looper.getMainLooper());
                 Runnable notifrun = new Runnable(){
 
@@ -226,10 +224,24 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                         myLabel.setText("notify Update");
 
                         mBluetoothTestService.writeCapSenseNotification(true);
+
+                        //mBluetoothTestService.writeStepCharacteristic(true);
                     } // This is your code
                 };
-                notifser.postDelayed(notifrun,20500);
+                notifser.postDelayed(notifrun,21000);
+                Handler notifser2 = new Handler(Looper.getMainLooper());
+                Runnable notifrun2 = new Runnable(){
 
+                    @Override
+                    public void run() {
+                        myLabel.setText("notify Update");
+
+                        //mBluetoothTestService.writeCapSenseNotification(true);
+
+                        mBluetoothTestService.writeStepCharacteristic(true);
+                    } // This is your code
+                };
+                notifser2.postDelayed(notifrun2,22000);
             }
         });
 
@@ -239,20 +251,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                 OpenMafActivity();
             }
         });
-       /* HR_SWITCH.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Turn CapSense Notifications on/off based on the state of the switch
-               // if (discoservice){
-                    mBluetoothTestService.writeCapSenseNotification(true);
-                HRNotifystate = isChecked;  // Keep track of CapSense notification state
-                if (isChecked) { // Notifications are now on so text has to say "..."
-                    hrLabel.setText(R.string.NoHr);
-                } else { // Notifications are now off so text has to say "Notify Off"
-                    hrLabel.setText(R.string.NotifyOff);
-                }
-            //}
-            }
-        });*/
+
     }
 
 
@@ -376,15 +375,15 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         unregisterReceiver(mBleUpdateReceiver);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    //@Override
+    //protected void onDestroy() {
+       // super.onDestroy();
         // Close and unbind the service when the activity goes away
-        mBluetoothTestService.close();
-        unbindService(mServiceConnection);
-        mBluetoothTestService = null;
-        mServiceConnected = false;
-    }
+       // mBluetoothTestService.close();
+        //unbindService(mServiceConnection);
+        //mBluetoothTestService = null;
+        //mServiceConnected = false;
+    //}
 
 
     /**

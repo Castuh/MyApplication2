@@ -46,7 +46,8 @@
             android:layout_marginTop="20dp"
             android:hint="Enter your age"
             android:inputType="number"
-            android:numeric="integer" />
+            android:numeric="integer"
+            android:text="0" />
     </android.support.design.widget.TextInputLayout>
 
 </android.support.constraint.ConstraintLayout>

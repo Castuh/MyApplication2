@@ -24,6 +24,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.util.Log;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,20 +45,28 @@ public class BluetoothTestService extends Service {
     private static BluetoothGatt mBluetoothGatt;
 
     // Bluetooth characteristics that we need to read/write
-    private static BluetoothGattCharacteristic mLedCharacterisitc;
+    private static BluetoothGattCharacteristic mStepCharacteristic;
     private static BluetoothGattCharacteristic mHRCharacteristic;
     private static BluetoothGattDescriptor mHRCCCD;
+    private static BluetoothGattDescriptor mStepCCCD;
+
 
     // UUIDs for the service and characteristics that the custom CapSenseLED service uses
-   
+   //private String uuidoption;
     private final static String HR_SERVICE = "0000180d-0000-1000-8000-00805f9b34fb";
+    private final static String ST_SERVICE = "00110011-4455-6677-8899-AABBCCDDEEFF";
     public  final static String HRDATACHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
     private final static String HRDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
+    private final static String STEPDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
+    //private final static String STEPDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
+    public  final static String STEPDATACHARACTERISTIC = "00000002-0000-1000-8000-00805f9b34fb";
+    //public  final static String STEPDATACHARACTERISTIC = "00002A38-0000-1000-8000-00805f9b34fb";
 
     // Variables to keep track of the LED switch state and CapSense Value
     private static boolean mLedSwitchState = false;
-    private static String mHrValue = "..."; // This is the No Touch value (0xFFFF)
-
+    private static boolean mStepState = false;
+    private static String mHrValue = "..."; // This is the No hr value ...
+    private static String mStepValue = "...";
     // Actions used during broadcasts to the main activity
     public final static String ACTION_BLESCAN_CALLBACK =
             "com.cypress.academy.ble101.ACTION_BLESCAN_CALLBACK";
@@ -126,7 +136,8 @@ public class BluetoothTestService extends Service {
     public void scan() {
         /* Scan for devices and look for the one with the service that we want */
         UUID   capsenseLedService =       UUID.fromString(HR_SERVICE);
-        UUID[] capsenseLedServiceArray = {capsenseLedService};
+        UUID   StepService = UUID.fromString(ST_SERVICE);
+        UUID[] capsenseLedServiceArray = {capsenseLedService,StepService};
 
         // Use old scan method for versions older than lollipop
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -142,7 +153,8 @@ public class BluetoothTestService extends Service {
             filters = new ArrayList<>();
             // We will scan just for the CAR's UUID
             ParcelUuid PUuid = new ParcelUuid(capsenseLedService);
-            ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid).build();
+            ParcelUuid PUUuid = new ParcelUuid(StepService);
+            ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
             filters.add(filter);
             mLEScanner.startScan(filters, settings, mScanCallback);
         }
@@ -215,30 +227,34 @@ public class BluetoothTestService extends Service {
     /**
      * This method is used to read the state of the LED from the device
      */
-    public void readLedCharacteristic() {
+    public void readStepCharacteristic() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        mBluetoothGatt.readCharacteristic(mLedCharacterisitc);
+        mBluetoothGatt.readCharacteristic(mStepCharacteristic);
     }
-
+    public String getStepValue(){
+        return mStepValue;
+    }
     /**
      * This method is used to turn the LED on or off
      *
      * @param value Turns the LED on (1) or off (0)
      */
-    public void writeLedCharacteristic(boolean value) {
+    public void writeStepCharacteristic(boolean value){
+        mBluetoothGatt.setCharacteristicNotification(mStepCharacteristic, value);
         byte[] byteVal = new byte[1];
         if (value) {
-            byteVal[0] = (byte) (1);
+            byteVal[0] = 1;
         } else {
-            byteVal[0] = (byte) (0);
+            byteVal[0] = 0;
         }
-        Log.i(TAG, "LED " + value);
-        mLedSwitchState = value;
-        mLedCharacterisitc.setValue(byteVal);
-        mBluetoothGatt.writeCharacteristic(mLedCharacterisitc);
+        Log.i(TAG, "Step notification " + value);
+
+        mStepCCCD.setValue(byteVal);
+        mBluetoothGatt.writeDescriptor(mStepCCCD);
+
     }
 
     /**
@@ -249,6 +265,7 @@ public class BluetoothTestService extends Service {
     public void writeCapSenseNotification(boolean value) {
         // Set notifications locally in the CCCD
         mBluetoothGatt.setCharacteristicNotification(mHRCharacteristic, value);
+       // mBluetoothGatt.setCharacteristicNotification(mStepCharacteristic, value);
         byte[] byteVal = new byte[1];
         if (value) {
             byteVal[0] = 1;
@@ -259,6 +276,9 @@ public class BluetoothTestService extends Service {
         Log.i(TAG, "HR Notification " + value);
         mHRCCCD.setValue(byteVal);
         mBluetoothGatt.writeDescriptor(mHRCCCD);
+       // mStepCCCD.setValue(byteVal);
+       // mBluetoothGatt.writeDescriptor(mStepCCCD);
+
     }
 
     /**
@@ -266,9 +286,9 @@ public class BluetoothTestService extends Service {
      *
      * @return the value of the LED swtich state
      */
-    public boolean getLedSwitchState() {
+   /* public boolean getLedSwitchState() {
         return mLedSwitchState;
-    }
+    }*/
 
     /**
      * This method returns the value of th CapSense Slider
@@ -343,15 +363,24 @@ public class BluetoothTestService extends Service {
             // Get just the service that we are looking for
             BluetoothGattService mService = gatt.getService(UUID.fromString(HR_SERVICE));
             /* Get characteristics from our desired service */
+            BluetoothGattService mService2 = gatt.getService(UUID.fromString(ST_SERVICE));
 
             mHRCharacteristic = mService.getCharacteristic(UUID.fromString(HRDATACHARACTERISTIC));
             /* Get the hr CCCD */
             mHRCCCD = mHRCharacteristic.getDescriptor(UUID.fromString(HRDATACHARDESCRIPTOR));
 
+            //step characteristic
+            mStepCharacteristic = mService2.getCharacteristic(UUID.fromString(STEPDATACHARACTERISTIC));
+            //step discriptor
+            mStepCCCD = mStepCharacteristic.getDescriptor(UUID.fromString(STEPDATACHARDESCRIPTOR));
+            //writeStepCharacteristic(true);
             // Read the current state of the LED from the device
             //readLedCharacteristic();
-
+            //readStepCharacteristic();
+            //mStepValue = mService.getCharacteristic(UUID.fromString(STEPDATACHARACTERISTIC)).getValue().toString();
             // Broadcast that service/characteristic/descriptor discovery is done
+
+            //readStepCharacteristic();
             broadcastUpdate(ACTION_SERVICES_DISCOVERED);
         }
 
@@ -373,11 +402,12 @@ public class BluetoothTestService extends Service {
                 // In this case, the only read the app does is the LED state.
                 // If the application had additional characteristics to read we could
                 // use a switch statement here to operate on each one separately.
-                /*if(uuid.equalsIgnoreCase(ledCharacteristicUUID)) {
-                    final byte[] data = characteristic.getValue();
-                    // Set the LED switch state variable based on the characteristic value ttat was read
-                    mLedSwitchState = ((data[0] & 0xff) != 0x00);
-                }*/
+                //if(uuid.equalsIgnoreCase(STEPDATACHARACTERISTIC)) {
+                   // final byte[] data = characteristic.getValue();
+                    // Set the LED switch state variable based on the characteristic value ttat was read\
+                    //int value = (data[0] & 0xff);
+                    //mStepValue = toString(value);
+               // }
                 // Notify the main activity that new data is available
                 broadcastUpdate(ACTION_DATA_RECEIVED);
             }
@@ -398,16 +428,37 @@ public class BluetoothTestService extends Service {
 
             // In this case, the only notification the apps gets is the CapSense value.
             // If the application had additional notifications we could
-            // use a switch statement here to operate on each one separately.
-            if(uuid.equalsIgnoreCase(HRDATACHARACTERISTIC)) {
-                int lsb = (characteristic.getValue()[1] & 0xFF);
-                mHrValue = Integer.toString(lsb);
-                // mHrValue = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16,0).toString();
-            }
+            //TODO  make switch statement
+            //characteristic = mStepCharacteristic;
+            //uuid = STEPDATACHARACTERISTIC;
+            switch (uuid) {
+                case HRDATACHARACTERISTIC:
+                    // use a switch statement here to operate on each one separately.
+                    //if (uuid.equalsIgnoreCase(HRDATACHARACTERISTIC)) {
+                        int lsb = (characteristic.getValue()[1] & 0xFF);
+                        mHrValue = Integer.toString(lsb);
+                        // mHrValue = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16,0).toString();
+                    //}
+                    break;
+                case STEPDATACHARACTERISTIC:
+                    //if (uuid.equalsIgnoreCase(STEPDATACHARACTERISTIC)) {
+                        Log.d(TAG,"STEP CHARACTERISTIC");
 
-            // Notify the main activity that new data is available
-            broadcastUpdate(ACTION_DATA_RECEIVED);
-        }
+                       int lsb1 = (characteristic.getValue()[1] & 0xFF);
+                       mStepValue = Integer.toString(lsb1);
+                        // mHrValue = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16,0).toString();
+                    break;
+                default:
+
+                    }
+
+                    // Notify the main activity that new data is available
+                    broadcastUpdate(ACTION_DATA_RECEIVED);
+                }
+
+
+
+
     }; // End of GATT event callback methods
 
     /**

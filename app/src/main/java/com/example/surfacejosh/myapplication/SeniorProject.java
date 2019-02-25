@@ -58,8 +58,8 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     private BluetoothAdapter mBluetoothAdapter;
     private Button Sync;
     private Button MafWorkout;
-    private Button BT_CONNECT;
     private Button BT_ONOFF;
+    private Button BT_CONNECT;
     private Button DISCONNECT;
     private Button SEARCH_BT;
     private Button OpenConSettings;

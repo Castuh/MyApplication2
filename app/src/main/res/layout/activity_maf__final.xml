@@ -126,5 +126,45 @@
         app:layout_constraintStart_toEndOf="@+id/MAF_HR_TV"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
+    <Switch
+        android:id="@+id/MAF_Switch"
+        android:layout_width="114dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:textOff="Start"
+        android:textOn="Stop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/WORKOUT_START"
+        android:layout_width="333dp"
+        android:layout_height="182dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/MAF_Switch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--<android.support.v7.widget.AppCompatGraphView
+        android:layout_width="match_parent"
+        android:layout_height="100dip"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/StepCount"
+        app:seriesColor="#ee0000"
+        app:seriesData="0=5;2=5;3=0;4=2"
+        app:seriesType="line" />-->
 
 </android.support.constraint.ConstraintLayout>

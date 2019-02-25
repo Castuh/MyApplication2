@@ -16,9 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
+import android.widget.Switch;
 import android.widget.TextView;
+
+import static java.lang.Thread.sleep;
 
 
 public class Maf_Final extends AppCompatActivity {
@@ -27,6 +31,8 @@ public class Maf_Final extends AppCompatActivity {
     private TextView StepCountView;
     //boolean displayhr = false;
     private ImageView CIRCLE;
+    private Switch MAF_Switch;
+    private TextView WORKOUT_START;
     int Stepcount;
     int MAFHR;
     int mafhr2;
@@ -58,7 +64,6 @@ public class Maf_Final extends AppCompatActivity {
         }
 
 
-
         /**
          * This is called when the BluetoothTestService is disconnected.
          *
@@ -73,8 +78,8 @@ public class Maf_Final extends AppCompatActivity {
     };
 
 
-    public void CHANGE_HEART_SIZE(){//double DUR){
-        DUR_FROM_HR = (1 / (((double)A_Hr / 60))) * 1000;
+    public void CHANGE_HEART_SIZE() {//double DUR){
+        DUR_FROM_HR = (1 / (((double) A_Hr / 60))) * 1000;
         //double dur = DUR;
         CIRCLE = (ImageView) findViewById(R.id.HR_CIRCLE);
 
@@ -84,21 +89,23 @@ public class Maf_Final extends AppCompatActivity {
                 CIRCLE,
                 PropertyValuesHolder.ofFloat("scaleX", 2f),
                 PropertyValuesHolder.ofFloat("scaleY", 2f));
-        scaleDown.setDuration((long)DUR_FROM_HR);//dur);
+        scaleDown.setDuration((long) DUR_FROM_HR);//dur);
 
         scaleDown.setRepeatCount(ObjectAnimator.INFINITE);
         scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
 
         scaleDown.start();
 
-            CIRCLE.requestLayout();
+        CIRCLE.requestLayout();
 
     }
-    public void doBindService(){
+
+    public void doBindService() {
         Intent gattServiceIntent = new Intent(this, BluetoothTestService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
-    public void DISPLAY_MAF_HR(int hr){
+
+    public void DISPLAY_MAF_HR(int hr) {
 
         MAF_HR_STRING = Integer.toString(hr);
         MAF_HR_AND_LOG = MAFLOG + MAF_HR_STRING;
@@ -114,7 +121,7 @@ public class Maf_Final extends AppCompatActivity {
         extras = getIntent().getExtras();
         Actual_hr = (TextView) findViewById(R.id.HR);
         StepCountView = (TextView) findViewById(R.id.StepCount);
-        if(extras != null){
+        if (extras != null) {
             MAFHR = extras.getInt("MafHeartRate");
             mafhr2 = MAFHR;
 
@@ -127,7 +134,46 @@ public class Maf_Final extends AppCompatActivity {
         DISPLAY_MAF_HR(MAFHR);
         CHANGE_HEART_SIZE();//DUR_FROM_HR);
 
-        }
+        WORKOUT_START = (TextView) findViewById(R.id.WORKOUT_START);
+        MAF_Switch = (Switch) findViewById(R.id.MAF_Switch);
+
+        MAF_Switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean on) {
+                if(on) {
+                    //WORKOUT_START.setText("Starting Workout");
+
+
+                    //Handler MAF_HANDLE = new Handler(Looper.getMainLooper());
+                    WORKOUT_START.setText("EurickaA");
+                    /*Runnable MAF_RUNNABLE = new Runnable(){
+
+                        @Override
+                        public void run() {
+                            WORKOUT_START.setText("Euricka");
+                            MAFRUN();
+
+                        } // This is your code
+                    };*/
+                    MAF_HANDLE.postDelayed(MAF_RUNNABLE,2500);
+                    Thread t = new Thread(Runnable MAF_RUNNABLE = new Runnable(){
+
+                        @Override
+                        public void run() {
+                            WORKOUT_START.setText("Euricka");
+                            MAFRUN();
+
+                        } // This is your code
+                    });
+                }
+                else{
+
+                }
+            }
+        });
+
+    }
+
     private final BroadcastReceiver mBleUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -140,7 +186,7 @@ public class Maf_Final extends AppCompatActivity {
                 case BluetoothTestService.ACTION_DATA_RECEIVED:
                     // This is called after a notify or a read completes
 
-                   //get heartrate
+                    //get heartrate
                     String hrvalue = bts.getCapSenseValue();
                     String stpvalue = bts.getStepValue();
 
@@ -155,6 +201,55 @@ public class Maf_Final extends AppCompatActivity {
             }
         }
     };
-    }
 
+    public void MAFRUN() {
+        float timeframe = System.currentTimeMillis();
+        long runtime = 300000;
+
+        // initial voltage
+
+        while(timeframe < timeframe + runtime) {
+                // send voltage increase
+            try {
+                sleep(15000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            WORKOUT_START.setText("15 Seconds");
+        }
+
+
+        timeframe = System.currentTimeMillis();
+        runtime = 600000;
+
+        while(timeframe < timeframe + runtime) {
+            if(A_Hr < MAFHR) {
+                //increase voltage
+            }
+            if(A_Hr > MAFHR) {
+                //decrease voltage
+            }
+            try {
+                sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            WORKOUT_START.setText("5 Seconds");
+        }
+
+
+        timeframe = System.currentTimeMillis();
+        runtime = 300000;
+
+        while(timeframe < timeframe + runtime) {
+            // send voltage decrease
+            try {
+                sleep(15000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            WORKOUT_START.setText("15 Seconds");
+        }
+        }
+    }
 

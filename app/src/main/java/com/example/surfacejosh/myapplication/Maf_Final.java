@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 
 import android.content.ServiceConnection;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
@@ -194,78 +195,74 @@ public class Maf_Final extends AppCompatActivity {
                 if (on) {
                     //WORKOUT_START.setText("Starting Workout");
 
-
-                    //Handler MAF_HANDLE = new Handler(Looper.getMainLooper());
+                    HandlerThread handlerThread = new HandlerThread("MyMafThread");
+                    handlerThread.start();
+                    Looper looper = handlerThread.getLooper();
+                    Handler handler = new Handler(looper);
+                   // Handler MAF_HANDLE = new Handler(Looper.getMainLooper());
                     WORKOUT_START.setText("EurickaA");
-                    Runnable MAF_RUNNABLE = (new Runnable(){
+
+                    handler.post(new Runnable(){
 
                         @Override
                         public void run() {
                             WORKOUT_START.setText("Euricka");
 
-                                float timeframe = System.currentTimeMillis();
-                                long runtime = 300000;
+                            float timeframe = System.currentTimeMillis();
+                            long runtime = 300000;
 
-                                // initial voltage
+                            // initial voltage
 
-                                while (timeframe < timeframe + runtime) {
-                                    // send voltage increase
-                                    try {
-                                        sleep(15000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    WORKOUT_START.setText("15 Seconds");
+                            while (timeframe < timeframe + runtime) {
+                                // send voltage increase
+                                try {
+                                    sleep(15000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
                                 }
+                                WORKOUT_START.setText("15 Seconds");
+                            }
 
 
-                                timeframe = System.currentTimeMillis();
-                                runtime = 600000;
+                            timeframe = System.currentTimeMillis();
+                            runtime = 600000;
 
-                                while (timeframe < timeframe + runtime) {
-                                    if (A_Hr < MAFHR) {
-                                        //increase voltage
-                                    }
-                                    if (A_Hr > MAFHR) {
-                                        //decrease voltage
-                                    }
-                                    try {
-                                        sleep(5000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    WORKOUT_START.setText("5 Seconds");
+                            while (timeframe < timeframe + runtime) {
+                                if (A_Hr < MAFHR) {
+                                    //increase voltage
                                 }
-
-
-                                timeframe = System.currentTimeMillis();
-                                runtime = 300000;
-
-                                while (timeframe < timeframe + runtime) {
-                                    // send voltage decrease
-                                    try {
-                                        sleep(15000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    WORKOUT_START.setText("15 Seconds");
+                                if (A_Hr > MAFHR) {
+                                    //decrease voltage
                                 }
+                                try {
+                                    sleep(5000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                WORKOUT_START.setText("5 Seconds");
+                            }
 
 
-                        } // This is your code
+                            timeframe = System.currentTimeMillis();
+                            runtime = 300000;
+
+                            while (timeframe < timeframe + runtime) {
+                                // send voltage decrease
+                                try {
+                                    sleep(15000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                WORKOUT_START.setText("15 Seconds");
+                            }
+
+
+                        }
                     });
-                    //MAF_HANDLE.postDelayed(MAF_RUNNABLE, 2500);
-                    /*Thread t = new Thread(Runnable MAF_RUNNABLE = new Runnable() {
 
-                        @Override
-                        public void run() {
-                            WORKOUT_START.setText("Please work");
-                            MAFRUN();
-
-                        } // This is your code
-                    });*/
                 } else {
                     WORKOUT_START.setText("stop");
+
                 }
             }
         });

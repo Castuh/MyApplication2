@@ -209,14 +209,25 @@ public class Maf_Final extends AppCompatActivity {
                         public void run() {
                             WORKOUT_START.setText("Euricka");
 
-                            float timeframe = System.currentTimeMillis();
-                            long runtime = 300000;
-                            float period = timeframe + runtime;
+
                             // initial voltage
                            // Serial.write
 
+                            for(int t = 0; t < 20; t++){
+                                try {
+                                    sleep(15000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
 
-                            while (timeframe < period) {
+                                try {
+                                    WORKOUT_START.setText("15 Seconds");
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            /*while (timeframe < period) {
                                 // send voltage increase
                                 try {
                                     sleep(15000);
@@ -224,13 +235,24 @@ public class Maf_Final extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                                 WORKOUT_START.setText("15 Seconds");
+                            }*/
+
+                            for(int t = 0; t < 120; t++){
+                                try {
+                                    sleep(5000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                try {
+                                    WORKOUT_START.setText("5 Seconds");
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
 
 
-                            timeframe = System.currentTimeMillis();
-                            runtime = 600000;
-
-                            while (timeframe < timeframe + runtime) {
+                            /*while (timeframe < timeframe + runtime) {
                                 if (A_Hr < MAFHR) {
                                     //increase voltage
                                 }
@@ -243,13 +265,24 @@ public class Maf_Final extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                                 WORKOUT_START.setText("5 Seconds");
+                            }*/
+
+
+                            for(int t = 0; t < 20; t++){
+                                try {
+                                    sleep(15000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                try {
+                                    WORKOUT_START.setText("15 Seconds");
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
 
-
-                            timeframe = System.currentTimeMillis();
-                            runtime = 300000;
-
-                            while (timeframe < timeframe + runtime) {
+                            /*while (timeframe < timeframe + runtime) {
                                 // send voltage decrease
                                 try {
                                     sleep(15000);
@@ -257,7 +290,7 @@ public class Maf_Final extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                                 WORKOUT_START.setText("15 Seconds");
-                            }
+                            }*/
 
 
                         }

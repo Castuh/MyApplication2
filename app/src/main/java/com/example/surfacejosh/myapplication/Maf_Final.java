@@ -38,6 +38,7 @@ public class Maf_Final extends AppCompatActivity {
     int MAFHR;
     int mafhr2;
     int A_Hr = 60;
+    double speed = 2.0;
     Bundle extras;
     String MAFLOG = "";
     String MAF_HR_AND_LOG;
@@ -210,10 +211,12 @@ public class Maf_Final extends AppCompatActivity {
 
                             float timeframe = System.currentTimeMillis();
                             long runtime = 300000;
-
+                            float period = timeframe + runtime;
                             // initial voltage
+                           // Serial.write
 
-                            while (timeframe < timeframe + runtime) {
+
+                            while (timeframe < period) {
                                 // send voltage increase
                                 try {
                                     sleep(15000);

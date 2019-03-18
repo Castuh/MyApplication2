@@ -159,7 +159,32 @@ public class BluetoothTestService extends Service {
             mLEScanner.startScan(filters, settings, mScanCallback);
         }
     }
+    public void scan(String uuid) {
+        /* Scan for devices and look for the one with the service that we want */
+        UUID   TreadService = UUID.fromString(uuid);
 
+        UUID[] TreadMillserviceArray = {TreadService};
+
+        // Use old scan method for versions older than lollipop
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            //noinspection deprecation
+            mBluetoothAdapter.startLeScan(TreadMillserviceArray, mLeScanCallback);
+        } else { // New BLE scanning introduced in LOLLIPOP
+            ScanSettings settings;
+            List<ScanFilter> filters;
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            settings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
+            filters = new ArrayList<>();
+            // We will scan just for the CAR's UUID
+            ParcelUuid PUuid = new ParcelUuid(TreadService);
+            //ParcelUuid PUUuid = new ParcelUuid(StepService);
+            ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid).build();//,PUUuid).build();
+            filters.add(filter);
+            mLEScanner.startScan(filters, settings, mScanCallback);
+        }
+    }
     /**
      * Connects to the GATT server hosted on the Bluetooth LE device.
      *

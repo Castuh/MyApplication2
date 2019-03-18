@@ -97,7 +97,7 @@
         app:layout_constraintVertical_bias="0.867" />
 
     <Button
-        android:id="@+id/ConSettings"
+        android:id="@+id/TreadConnect"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="184dp"
         android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="20dp"
-        android:text="Connection/Settings"
+        android:text="Treadmill Connect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

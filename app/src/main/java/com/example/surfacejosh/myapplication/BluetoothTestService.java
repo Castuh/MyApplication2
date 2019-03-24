@@ -47,6 +47,7 @@ public class BluetoothTestService extends Service {
     // Bluetooth characteristics that we need to read/write
     private static BluetoothGattCharacteristic mStepCharacteristic;
     private static BluetoothGattCharacteristic mHRCharacteristic;
+    private static BluetoothGattCharacteristic mTreadCharacteristic;
     private static BluetoothGattDescriptor mHRCCCD;
     private static BluetoothGattDescriptor mStepCCCD;
 
@@ -55,11 +56,13 @@ public class BluetoothTestService extends Service {
    //private String uuidoption;
     private final static String HR_SERVICE = "0000180d-0000-1000-8000-00805f9b34fb";
     private final static String ST_SERVICE = "00110011-4455-6677-8899-AABBCCDDEEFF";
+    private final static String TR_SERVICE = "00110011-4455-6677-8899-BBCCAADDEEFF";
     public  final static String HRDATACHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
     private final static String HRDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
     private final static String STEPDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
     //private final static String STEPDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
     public  final static String STEPDATACHARACTERISTIC = "00000002-0000-1000-8000-00805f9b34fb";
+    public final static String SpeedDataCharacteristic = "000000A8-0000-1000-8000-00805f9b34fb";
     //public  final static String STEPDATACHARACTERISTIC = "00002A38-0000-1000-8000-00805f9b34fb";
 
     // Variables to keep track of the LED switch state and CapSense Value
@@ -161,7 +164,7 @@ public class BluetoothTestService extends Service {
     }
     public void scan(String uuid) {
         /* Scan for devices and look for the one with the service that we want */
-        UUID   TreadService = UUID.fromString(uuid);
+        UUID   TreadService = UUID.fromString(TR_SERVICE);
 
         UUID[] TreadMillserviceArray = {TreadService};
 
@@ -394,13 +397,19 @@ public class BluetoothTestService extends Service {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             // Get just the service that we are looking for
+            //hr service
             BluetoothGattService mService = gatt.getService(UUID.fromString(HR_SERVICE));
-            /* Get characteristics from our desired service */
+            //step service
             BluetoothGattService mService2 = gatt.getService(UUID.fromString(ST_SERVICE));
-
+            //Tread service
+            BluetoothGattService mService3 = gatt.getService(UUID.fromString(TR_SERVICE));
+            /* Get characteristics from our desired service */
             mHRCharacteristic = mService.getCharacteristic(UUID.fromString(HRDATACHARACTERISTIC));
             /* Get the hr CCCD */
             mHRCCCD = mHRCharacteristic.getDescriptor(UUID.fromString(HRDATACHARDESCRIPTOR));
+
+            /*TreadCharacteristic*/
+            mTreadCharacteristic = mService3.getCharacteristic(UUID.fromString(SpeedDataCharacteristic));
 
             //step characteristic
             mStepCharacteristic = mService2.getCharacteristic(UUID.fromString(STEPDATACHARACTERISTIC));

@@ -282,7 +282,15 @@ public class BluetoothTestService extends Service {
 
         mStepCCCD.setValue(byteVal);
         mBluetoothGatt.writeDescriptor(mStepCCCD);
+    }
+    public void writeSpeedCharacteristic(boolean value){
+        mBluetoothGatt.setCharacteristicNotification(mStepCharacteristic, value);
+        byte[] byteVal = new byte[1];
 
+        Log.i(TAG, "Step notification " + value);
+
+        mStepCCCD.setValue(byteVal);
+        mBluetoothGatt.writeDescriptor(mStepCCCD);
     }
 
     /**
@@ -447,6 +455,33 @@ public class BluetoothTestService extends Service {
             }
         }
 
+        public void writeSpeedCharacteristic(String value) {
+
+           /* //value.
+            byte[] byteVal = new byte[1];
+
+            if (value) {
+
+                byteVal[0] = (byte) (1);
+
+            } else {
+
+                byteVal[0] = (byte) (0);
+
+            }
+
+            Log.i(TAG, "LED " + value);
+
+            mLedSwitchState = value;
+
+            //mLedCharacterisitc.setValue(byteVal);*/
+
+          //  mBluetoothGatt.writeCharacteristic(mLedCharacterisitc);
+
+        }
+
+
+
         /**
          * This is called when a characteristic with notify set changes.
          * It broadcasts an update to the main activity with the changed data.
@@ -494,7 +529,10 @@ public class BluetoothTestService extends Service {
 
 
     }; // End of GATT event callback methods
-
+    public void writeCharacteristic(BluetoothGattCharacteristic characteristic)
+    {
+        mBluetoothGatt.writeCharacteristic(characteristic);
+    }
     /**
      * Sends a broadcast to the listener in the main activity.
      *

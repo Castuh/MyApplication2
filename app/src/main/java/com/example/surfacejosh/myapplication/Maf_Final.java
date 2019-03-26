@@ -46,6 +46,7 @@ public class Maf_Final extends AppCompatActivity {
     double DUR_FROM_HR;
     //int hrdur;
     BluetoothTestService bts;
+    BluetoothTestServiceTread bts2;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -61,8 +62,10 @@ public class Maf_Final extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder service) {
 
             bts = ((BluetoothTestService.LocalBinder) service).getService();
+            bts2 = ((BluetoothTestServiceTread.LocalBinder) service).getService();
 
             bts.initialize();
+            bts2.initialize();
         }
 
 
@@ -76,6 +79,7 @@ public class Maf_Final extends AppCompatActivity {
         public void onServiceDisconnected(ComponentName componentName) {
 
             bts = null;
+            bts2 = null;
         }
     };
 
@@ -105,6 +109,7 @@ public class Maf_Final extends AppCompatActivity {
     public void doBindService() {
         Intent gattServiceIntent = new Intent(this, BluetoothTestService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
     }
 
     /*public void MAFRUN() {

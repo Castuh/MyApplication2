@@ -73,7 +73,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     private static boolean mConnectState;
     private static boolean mServiceConnected;
     private static BluetoothTestService mBluetoothTestService;
-
+    private static BluetoothTestService mBluetoothTestServiceTread;
     private static final int REQUEST_ENABLE_BLE = 1;
     // Keep track of whether hr Notifications are on or off
     private static boolean HRNotifystate = false;
@@ -106,8 +106,10 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             Log.i(TAG, "onServiceConnected");
             mBluetoothTestService = ((BluetoothTestService.LocalBinder) service).getService();
+            mBluetoothTestServiceTread = ((BluetoothTestService.LocalBinder) service).getService();
             mServiceConnected = true;
             mBluetoothTestService.initialize();
+            mBluetoothTestServiceTread.initialize();
         }
 
 
@@ -122,6 +124,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         public void onServiceDisconnected(ComponentName componentName) {
             Log.i(TAG, "onServiceDisconnected");
             mBluetoothTestService = null;
+            mBluetoothTestServiceTread = null;
         }
     };
 
@@ -180,9 +183,9 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     @Override
                     public void run() {
-                        myLabel.setText("searching bluetooth");
+                        myLabel.setText("searching tread bluetooth");
 
-                        searchBluetoothTread(v);
+                        treadsearchBluetooth(v);
                     } // This is your code
                 };
                 startbt.postDelayed(sbtrun,500);
@@ -192,8 +195,8 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     @Override
                     public void run() {
-                        myLabel.setText("connecting bluetooth");
-                        connectBluetooth(v);
+                        myLabel.setText("connecting tread bluetooth");
+                        treadconnectBluetooth(v);
 
                     } // This is your code
                 };
@@ -203,20 +206,20 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     @Override
                     public void run() {
-                        myLabel.setText("discovering bluetooth");
-                        discoverServices(v);
+                        myLabel.setText("discovering tread bluetooth");
+                        treadDiscoverServices(v);
 
                     } // This is your code
                 };
                 discoverserv.postDelayed(discrunnable,20500);
-                Handler notifser = new Handler(Looper.getMainLooper());
+                /*Handler notifser = new Handler(Looper.getMainLooper());
                 Runnable notifrun = new Runnable(){
 
                     @Override
                     public void run() {
                         myLabel.setText("notify Update");
 
-                        mBluetoothTestService.writeCapSenseNotification(true);
+                        //mBluetoothTestService.writeCapSenseNotification(true);
 
                         //mBluetoothTestService.writeStepCharacteristic(true);
                     } // This is your code
@@ -231,10 +234,10 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                         //mBluetoothTestService.writeCapSenseNotification(true);
 
-                        mBluetoothTestService.writeStepCharacteristic(true);
+                        //mBluetoothTestService.writeStepCharacteristic(true);
                     } // This is your code
                 };
-                notifser2.postDelayed(notifrun2,22000);
+                notifser2.postDelayed(notifrun2,22000);*/
             }
 
 
@@ -360,6 +363,12 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         filter.addAction(mBluetoothTestService.ACTION_DISCONNECTED);
         filter.addAction(mBluetoothTestService.ACTION_SERVICES_DISCOVERED);
         filter.addAction(mBluetoothTestService.ACTION_DATA_RECEIVED);
+        //tread
+        filter.addAction(mBluetoothTestServiceTread.ACTION_BLESCAN_CALLBACK);
+        filter.addAction(mBluetoothTestServiceTread.ACTION_CONNECTED);
+        filter.addAction(mBluetoothTestServiceTread.ACTION_DISCONNECTED);
+        filter.addAction(mBluetoothTestServiceTread.ACTION_SERVICES_DISCOVERED);
+        filter.addAction(mBluetoothTestServiceTread.ACTION_DATA_RECEIVED);
         registerReceiver(mBleUpdateReceiver, filter);
     }
 
@@ -501,8 +510,8 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     }
     public void searchBluetoothTread(View view) {
         if(mServiceConnected) {
-            mBluetoothTestService.scan();
-        }
+            mBluetoothTestService.scan("UUID OF TREADMILL SERVICE");
+        }/*TODO SETUP ARDUINO UUID FOR TREADMILL*/
 
 
         /* After this we wait for the scan callback to detect that a device has been found *//*
@@ -560,6 +569,84 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public void Disconnect(View view) {
         mBluetoothTestService.disconnect();
+
+
+        /* After this we wait for the gatt callback to report the device is disconnected *//*
+
+         */
+        /* That event broadcasts a message which is picked up by the mGattUpdateReceiver */
+
+    }
+
+  //
+    //
+    //   Treadmill bt connect area below
+    //
+    //
+    //
+
+
+    public void treadsearchBluetooth(View view) {
+        if(mServiceConnected) {
+            mBluetoothTestServiceTread.scan("UUID OF TREADMILL SERVICE");
+        }/*TODO SETUP ARDUINO UUID FOR TREADMILL*/
+
+
+        /* After this we wait for the scan callback to detect that a device has been found *//*
+
+         */
+        /* The callback broadcasts a message which is picked up by the mGattUpdateReceiver */
+
+    }
+
+    /**
+     * This method handles the Connect to Device button
+     *
+     * @param view the view object
+     */
+
+    public void treadconnectBluetooth(View view) {
+        mBluetoothTestServiceTread.connect();
+
+
+        /* After this we wait for the gatt callback to report the device is connected *//*
+
+         */
+        /* That event broadcasts a message which is picked up by the mGattUpdateReceiver */
+
+    }
+
+
+    /**
+     * This method handles the Discover Services and Characteristics button
+     *
+     * @param view the view object
+     */
+
+    public void treadDiscoverServices(View view) {
+
+        /* This will discover both services and characteristics */
+
+        mBluetoothTestServiceTread.discoverServices();
+        //myLabel.setText("Connected to Device");
+        //lvNewDevices.setAdapter(mBluetoothAdapter.getName());
+
+        /* After this we wait for the gatt callback to report the services and characteristics */
+
+
+        /* That event broadcasts a message which is picked up by the mGattUpdateReceiver */
+
+    }
+
+
+    /**
+     * This method handles the Disconnect button
+     *
+     * @param view the view object
+     */
+
+    public void treadDisconnect(View view) {
+        mBluetoothTestServiceTread.disconnect();
 
 
         /* After this we wait for the gatt callback to report the device is disconnected *//*

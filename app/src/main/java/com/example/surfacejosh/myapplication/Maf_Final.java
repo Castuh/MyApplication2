@@ -46,8 +46,8 @@ public class Maf_Final extends AppCompatActivity {
     double DUR_FROM_HR;
     //int hrdur;
     BluetoothTestService bts;
-    BluetoothTestServiceTread bts2;
-
+    //BluetoothTestServiceTread bts2;
+    private HandlerThread handlerThread = new HandlerThread("handlerThread");
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
 
@@ -62,10 +62,9 @@ public class Maf_Final extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder service) {
 
             bts = ((BluetoothTestService.LocalBinder) service).getService();
-            bts2 = ((BluetoothTestServiceTread.LocalBinder) service).getService();
-
+            //bts2 = ((BluetoothTestServiceTread.LocalBinder) service).getService();
             bts.initialize();
-            bts2.initialize();
+            //bts2.initialize();
         }
 
 
@@ -79,7 +78,7 @@ public class Maf_Final extends AppCompatActivity {
         public void onServiceDisconnected(ComponentName componentName) {
 
             bts = null;
-            bts2 = null;
+           // bts2 = null;
         }
     };
 
@@ -108,59 +107,12 @@ public class Maf_Final extends AppCompatActivity {
 
     public void doBindService() {
         Intent gattServiceIntent = new Intent(this, BluetoothTestService.class);
+        //Intent gattServiceIntent2 = new Intent(this, BluetoothTestServiceTread.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+       // bindService(gattServiceIntent2, mServiceConnection, BIND_AUTO_CREATE);
 
     }
 
-    /*public void MAFRUN() {
-        float timeframe = System.currentTimeMillis();
-        long runtime = 300000;
-
-        // initial voltage
-
-        while (timeframe < timeframe + runtime) {
-            // send voltage increase
-            try {
-                sleep(15000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            WORKOUT_START.setText("15 Seconds");
-        }
-
-
-        timeframe = System.currentTimeMillis();
-        runtime = 600000;
-
-        while (timeframe < timeframe + runtime) {
-            if (A_Hr < MAFHR) {
-                //increase voltage
-            }
-            if (A_Hr > MAFHR) {
-                //decrease voltage
-            }
-            try {
-                sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            WORKOUT_START.setText("5 Seconds");
-        }
-
-
-        timeframe = System.currentTimeMillis();
-        runtime = 300000;
-
-        while (timeframe < timeframe + runtime) {
-            // send voltage decrease
-            try {
-                sleep(15000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            WORKOUT_START.setText("15 Seconds");
-        }
-    }*/
 
 
     public void DISPLAY_MAF_HR(int hr) {
@@ -187,7 +139,11 @@ public class Maf_Final extends AppCompatActivity {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(bts.ACTION_DATA_RECEIVED);
         Intent gattServiceIntent = new Intent(this, BluetoothTestService.class);
+        //Todo Still dont know if works
+        //Intent gattServiceIntentTread = new Intent(this, BluetoothTestServiceTread.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        //TODO not sure if works
+        //bindService(gattServiceIntentTread, mServiceConnection, BIND_AUTO_CREATE);
         registerReceiver(mBleUpdateReceiver, filter);
         DISPLAY_MAF_HR(MAFHR);
         CHANGE_HEART_SIZE();//DUR_FROM_HR);
@@ -198,13 +154,14 @@ public class Maf_Final extends AppCompatActivity {
         MAF_Switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean on) {
+
                 if (on) {
                     //WORKOUT_START.setText("Starting Workout");
+                    //TODO FIX HANDLER NOT QUITTING OUT OF LOOPS  ::BUG::
 
-                    HandlerThread handlerThread = new HandlerThread("MyMafThread");
                     handlerThread.start();
                     Looper looper = handlerThread.getLooper();
-                    Handler handler = new Handler(looper);
+                    final Handler handler = new Handler(looper);
                    // Handler MAF_HANDLE = new Handler(Looper.getMainLooper());
                     WORKOUT_START.setText("EurickaA");
 
@@ -221,6 +178,15 @@ public class Maf_Final extends AppCompatActivity {
                             for(int t = 0; t < 20; t++){
                                 try {
                                     sleep(15000);
+                                    if(MAF_Switch.isChecked() == false) {
+
+                                        try {
+                                            WORKOUT_START.setText("Methodology Stopped");
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        handlerThread.quit();
+                                    }
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -303,6 +269,7 @@ public class Maf_Final extends AppCompatActivity {
 
                 } else {
                     WORKOUT_START.setText("stop");
+                    handlerThread.quitSafely();
 
                 }
             }

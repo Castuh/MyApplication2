@@ -106,10 +106,10 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             Log.i(TAG, "onServiceConnected");
             mBluetoothTestService = ((BluetoothTestService.LocalBinder) service).getService();
-            mBluetoothTestServiceTread = ((BluetoothTestServiceTread.LocalBinder) service).getService();
+            //mBluetoothTestServiceTread = ((BluetoothTestServiceTread.LocalBinder) service).getService();
             mServiceConnected = true;
             mBluetoothTestService.initialize();
-            mBluetoothTestServiceTread.initialize();
+            //mBluetoothTestServiceTread.initialize();
         }
 
 
@@ -588,8 +588,8 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public void treadsearchBluetooth(View view) {
         if(mServiceConnected) {
-            mBluetoothTestServiceTread.scan();
-            //mBluetoothTestService.scan("UUID OF TREADMILL SERVICE");
+            //mBluetoothTestServiceTread.scan();
+            mBluetoothTestService.scan(3);
         }
 
 
@@ -607,8 +607,8 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
      */
 
     public void treadconnectBluetooth(View view) {
-        mBluetoothTestServiceTread.connect();
-        //mBluetoothTestService.connect();
+        //mBluetoothTestServiceTread.connect();
+        mBluetoothTestService.connect();
 
         /* After this we wait for the gatt callback to report the device is connected *//*
 
@@ -628,8 +628,8 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
         /* This will discover both services and characteristics */
 
-        //mBluetoothTestService.discoverServices();
-        mBluetoothTestServiceTread.discoverServices();
+        mBluetoothTestService.discoverServices();
+        //mBluetoothTestServiceTread.discoverServices();
         //myLabel.setText("Connected to Device");
         //lvNewDevices.setAdapter(mBluetoothAdapter.getName());
 
@@ -648,8 +648,8 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
      */
 
     public void treadDisconnect(View view) {
-        mBluetoothTestServiceTread.disconnect();
-        //mBluetoothTestService.disconnect();
+        //mBluetoothTestServiceTread.disconnect();
+        mBluetoothTestService.disconnect();
 
         /* After this we wait for the gatt callback to report the device is disconnected *//*
 

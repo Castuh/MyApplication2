@@ -73,7 +73,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     private static boolean mConnectState;
     private static boolean mServiceConnected;
     private static BluetoothTestService mBluetoothTestService;
-    private static BluetoothTestService mBluetoothTestServiceTread;
+    private static BluetoothTestServiceTread mBluetoothTestServiceTread;
     private static final int REQUEST_ENABLE_BLE = 1;
     // Keep track of whether hr Notifications are on or off
     private static boolean HRNotifystate = false;
@@ -106,7 +106,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             Log.i(TAG, "onServiceConnected");
             mBluetoothTestService = ((BluetoothTestService.LocalBinder) service).getService();
-            mBluetoothTestServiceTread = ((BluetoothTestService.LocalBinder) service).getService();
+            mBluetoothTestServiceTread = ((BluetoothTestServiceTread.LocalBinder) service).getService();
             mServiceConnected = true;
             mBluetoothTestService.initialize();
             mBluetoothTestServiceTread.initialize();
@@ -510,7 +510,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     }
     public void searchBluetoothTread(View view) {
         if(mServiceConnected) {
-            mBluetoothTestService.scan("UUID OF TREADMILL SERVICE");
+            mBluetoothTestService.scan();
         }/*TODO SETUP ARDUINO UUID FOR TREADMILL*/
 
 
@@ -588,8 +588,9 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public void treadsearchBluetooth(View view) {
         if(mServiceConnected) {
-            mBluetoothTestServiceTread.scan("UUID OF TREADMILL SERVICE");
-        }/*TODO SETUP ARDUINO UUID FOR TREADMILL*/
+            mBluetoothTestServiceTread.scan();
+            //mBluetoothTestService.scan("UUID OF TREADMILL SERVICE");
+        }
 
 
         /* After this we wait for the scan callback to detect that a device has been found *//*
@@ -607,7 +608,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public void treadconnectBluetooth(View view) {
         mBluetoothTestServiceTread.connect();
-
+        //mBluetoothTestService.connect();
 
         /* After this we wait for the gatt callback to report the device is connected *//*
 
@@ -627,6 +628,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
         /* This will discover both services and characteristics */
 
+        //mBluetoothTestService.discoverServices();
         mBluetoothTestServiceTread.discoverServices();
         //myLabel.setText("Connected to Device");
         //lvNewDevices.setAdapter(mBluetoothAdapter.getName());
@@ -647,7 +649,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public void treadDisconnect(View view) {
         mBluetoothTestServiceTread.disconnect();
-
+        //mBluetoothTestService.disconnect();
 
         /* After this we wait for the gatt callback to report the device is disconnected *//*
 

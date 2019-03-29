@@ -56,24 +56,18 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     private TextView myLabel;
     private TextView hrLabel;
     private BluetoothAdapter mBluetoothAdapter;
-    private Button Sync;
     private Button MafWorkout;
-    private Button BT_ONOFF;
-    private Button BT_CONNECT;
-    private Button DISCONNECT;
-    private Button SEARCH_BT;
     private Button TreadMillConnect;
     private boolean discoservice = false;
     View v;
     private Context appcontext;
     private Switch HR_SWITCH;
     private boolean mConnected = false;
-    private static BluetoothGattCharacteristic mGattCharacteristics;
+
     // Variables to manage BLE connection
     private static boolean mConnectState;
     private static boolean mServiceConnected;
     private static BluetoothTestService mBluetoothTestService;
-    private static BluetoothTestServiceTread mBluetoothTestServiceTread;
     private static final int REQUEST_ENABLE_BLE = 1;
     // Keep track of whether hr Notifications are on or off
     private static boolean HRNotifystate = false;
@@ -83,9 +77,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
 
-    public DeviceListAdapter mDeviceListAdapter;
-    ListView lvNewDevices;
-
+    BluetoothTestService bts2 = new BluetoothTestService();
 
     /**
      * This manages the lifecycle of the BLE service.
@@ -93,6 +85,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
      */
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
+
 
 
         /**
@@ -106,6 +99,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             Log.i(TAG, "onServiceConnected");
             mBluetoothTestService = ((BluetoothTestService.LocalBinder) service).getService();
+
             //mBluetoothTestServiceTread = ((BluetoothTestServiceTread.LocalBinder) service).getService();
             mServiceConnected = true;
             mBluetoothTestService.initialize();
@@ -124,7 +118,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         public void onServiceDisconnected(ComponentName componentName) {
             Log.i(TAG, "onServiceDisconnected");
             mBluetoothTestService = null;
-            mBluetoothTestServiceTread = null;
+            //mBluetoothTestServiceTread = null;
         }
     };
 
@@ -178,71 +172,60 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
             public void onClick(final View v) {
                 startBluetooth(v);
                 // Get a handler that can be used to post to the main thread
-                Handler startbt = new Handler(Looper.getMainLooper());
-                Runnable sbtrun = new Runnable(){
+                Handler startbtt = new Handler(Looper.getMainLooper());
+                Runnable sbtrunt = new Runnable() {
 
                     @Override
                     public void run() {
-                        myLabel.setText("searching tread bluetooth");
-
-                        treadsearchBluetooth(v);
+                        myLabel.setText("searching bluetooth");
+                        searchBluetoothTread(v);
+                        //myLabel.setText(mBluetoothTestService.getDeviceName());
                     } // This is your code
                 };
-                startbt.postDelayed(sbtrun,500);
+                startbtt.postDelayed(sbtrunt, 1300);
 
-                Handler searchbt = new Handler(Looper.getMainLooper());
-                Runnable searchbtrun = new Runnable(){
+                Handler searchbtt = new Handler(Looper.getMainLooper());
+                Runnable searchbtrunt = new Runnable() {
 
                     @Override
                     public void run() {
-                        myLabel.setText("connecting tread bluetooth");
+                        myLabel.setText("connecting bluetooth");
                         treadconnectBluetooth(v);
 
                     } // This is your code
                 };
-                searchbt.postDelayed(searchbtrun,2500);
-                Handler discoverserv = new Handler(Looper.getMainLooper());
-                Runnable discrunnable = new Runnable(){
+               searchbtt.postDelayed(searchbtrunt, 3000);
+                Handler discoverservt = new Handler(Looper.getMainLooper());
+                Runnable discrunnablet = new Runnable() {
 
                     @Override
                     public void run() {
-                        myLabel.setText("discovering tread bluetooth");
+                        myLabel.setText("discovering bluetooth");
                         treadDiscoverServices(v);
 
                     } // This is your code
                 };
-                discoverserv.postDelayed(discrunnable,20500);
-                /*Handler notifser = new Handler(Looper.getMainLooper());
-                Runnable notifrun = new Runnable(){
+                discoverservt.postDelayed(discrunnablet, 29000);
+                Handler notifsert = new Handler(Looper.getMainLooper());
+                Runnable notifrunt = new Runnable(){
 
                     @Override
                     public void run() {
-                        myLabel.setText("notify Update");
+                        myLabel.setText(mBluetoothTestService.getDeviceName());
 
-                        //mBluetoothTestService.writeCapSenseNotification(true);
-
+                        //mBluetoothTestService.writespeednotification(true);
+                        mBluetoothTestService.readSpeedCharacteristic();
                         //mBluetoothTestService.writeStepCharacteristic(true);
                     } // This is your code
                 };
-                notifser.postDelayed(notifrun,21000);
-                Handler notifser2 = new Handler(Looper.getMainLooper());
-                Runnable notifrun2 = new Runnable(){
+                notifsert.postDelayed(notifrunt,40000);
 
-                    @Override
-                    public void run() {
-                        myLabel.setText("notify Update");
-
-                        //mBluetoothTestService.writeCapSenseNotification(true);
-
-                        //mBluetoothTestService.writeStepCharacteristic(true);
-                    } // This is your code
-                };
-                notifser2.postDelayed(notifrun2,22000);*/
             }
+            });
 
 
 
-        });
+
         Connecttracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -258,7 +241,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     } // This is your code
                 };
-                startbt.postDelayed(sbtrun,500);
+                startbt.postDelayed(sbtrun,1500);
 
                 Handler searchbt = new Handler(Looper.getMainLooper());
                 Runnable searchbtrun = new Runnable(){
@@ -270,7 +253,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     } // This is your code
                 };
-                searchbt.postDelayed(searchbtrun,2500);
+                searchbt.postDelayed(searchbtrun,3500);
                 Handler discoverserv = new Handler(Looper.getMainLooper());
                 Runnable discrunnable = new Runnable(){
 
@@ -281,20 +264,20 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
                     } // This is your code
                 };
-                discoverserv.postDelayed(discrunnable,20500);
+                discoverserv.postDelayed(discrunnable,16000);
                 Handler notifser = new Handler(Looper.getMainLooper());
                 Runnable notifrun = new Runnable(){
 
                     @Override
                     public void run() {
                         myLabel.setText("notify Update");
-
-                        mBluetoothTestService.writeCapSenseNotification(true);
-
+                       // if(mBluetoothTestService. != null) {
+                            mBluetoothTestService.writeCapSenseNotification(true);
+                       // }
                         //mBluetoothTestService.writeStepCharacteristic(true);
                     } // This is your code
                 };
-                notifser.postDelayed(notifrun,21000);
+                notifser.postDelayed(notifrun,25000);
                 Handler notifser2 = new Handler(Looper.getMainLooper());
                 Runnable notifrun2 = new Runnable(){
 
@@ -303,11 +286,14 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                         myLabel.setText("notify Update");
 
                         //mBluetoothTestService.writeCapSenseNotification(true);
-
+                      //  if(mBluetoothTestService.getDeviceName() != null) {
                         mBluetoothTestService.writeStepCharacteristic(true);
+                       // }
+
+
                     } // This is your code
                 };
-                notifser2.postDelayed(notifrun2,22000);
+                notifser2.postDelayed(notifrun2,27400);
             }
         });
 
@@ -349,10 +335,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         Intent intent = new Intent(this, MafActivity.class);
         startActivity(intent);
     }
-    public void OpenSettingsConnection() {
-        Intent intent = new Intent(this, ConSettingsActivity.class);
-        startActivity(intent);
-    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -364,11 +347,6 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         filter.addAction(mBluetoothTestService.ACTION_SERVICES_DISCOVERED);
         filter.addAction(mBluetoothTestService.ACTION_DATA_RECEIVED);
         //tread
-        filter.addAction(mBluetoothTestServiceTread.ACTION_BLESCAN_CALLBACK);
-        filter.addAction(mBluetoothTestServiceTread.ACTION_CONNECTED);
-        filter.addAction(mBluetoothTestServiceTread.ACTION_DISCONNECTED);
-        filter.addAction(mBluetoothTestServiceTread.ACTION_SERVICES_DISCOVERED);
-        filter.addAction(mBluetoothTestServiceTread.ACTION_DATA_RECEIVED);
         registerReceiver(mBleUpdateReceiver, filter);
     }
 
@@ -586,19 +564,13 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     //
 
 
-    public void treadsearchBluetooth(View view) {
-        if(mServiceConnected) {
-            //mBluetoothTestServiceTread.scan();
-            mBluetoothTestService.scan(3);
-        }
-
 
         /* After this we wait for the scan callback to detect that a device has been found *//*
 
          */
         /* The callback broadcasts a message which is picked up by the mGattUpdateReceiver */
 
-    }
+
 
     /**
      * This method handles the Connect to Device button
@@ -608,7 +580,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public void treadconnectBluetooth(View view) {
         //mBluetoothTestServiceTread.connect();
-        mBluetoothTestService.connect();
+        mBluetoothTestService.connectTread();
 
         /* After this we wait for the gatt callback to report the device is connected *//*
 
@@ -628,7 +600,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
         /* This will discover both services and characteristics */
 
-        mBluetoothTestService.discoverServices();
+        mBluetoothTestService.discoverServicesTread();
         //mBluetoothTestServiceTread.discoverServices();
         //myLabel.setText("Connected to Device");
         //lvNewDevices.setAdapter(mBluetoothAdapter.getName());

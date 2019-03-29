@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 
@@ -27,23 +29,32 @@ import static java.lang.Thread.sleep;
 
 
 public class Maf_Final extends AppCompatActivity {
+    private Button SpeedDown;
+    private Button SpeedStop;
     private TextView MAF_HR;
     private TextView Actual_hr;
     private TextView StepCountView;
+    private Button Speedup;
     //boolean displayhr = false;
     private ImageView CIRCLE;
     private Switch MAF_Switch;
     private TextView WORKOUT_START;
     int Stepcount;
+    String speedvalue;
     int MAFHR;
     int mafhr2;
     int A_Hr = 60;
-    double speed = 2.0;
+    //  TREADMILL  speedup/slowdown/ and stop or ( no speed change )
+    String spdup = "2";
+    String spdown = "5";
+    String spdstop = "6";
+    ////////////////////////
     Bundle extras;
     String MAFLOG = "";
     String MAF_HR_AND_LOG;
     String MAF_HR_STRING;
     double DUR_FROM_HR;
+
     //int hrdur;
     BluetoothTestService bts;
     //BluetoothTestServiceTread bts2;
@@ -131,6 +142,9 @@ public class Maf_Final extends AppCompatActivity {
         extras = getIntent().getExtras();
         Actual_hr = (TextView) findViewById(R.id.HR);
         StepCountView = (TextView) findViewById(R.id.StepCount);
+        Speedup = (Button) findViewById(R.id.speedup);
+        SpeedDown = (Button) findViewById(R.id.speeddown);
+        SpeedStop = (Button) findViewById(R.id.speedstop);
         if (extras != null) {
             MAFHR = extras.getInt("MafHeartRate");
             mafhr2 = MAFHR;
@@ -150,7 +164,28 @@ public class Maf_Final extends AppCompatActivity {
 
         WORKOUT_START = (TextView) findViewById(R.id.WORKOUT_START);
         MAF_Switch = (Switch) findViewById(R.id.MAF_Switch);
-
+        Speedup.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(final View v) {
+                                           bts.writeSpeedCharacteristic(spdup);
+                                          WORKOUT_START.setText(spdup);
+                                          bts.readStepCharacteristic();
+                                       }
+                                   });
+        SpeedDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                bts.writeSpeedCharacteristic(spdown);
+                WORKOUT_START.setText(spdown);
+            }
+        });
+        SpeedStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                bts.writeSpeedCharacteristic(spdstop);
+                WORKOUT_START.setText(spdstop);
+            }
+        });
         MAF_Switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean on) {

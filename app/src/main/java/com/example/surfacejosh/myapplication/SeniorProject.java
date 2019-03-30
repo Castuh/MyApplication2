@@ -53,6 +53,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     private static final String TAG = "SeniorProject";
     private Button Connecttracker;
     //Create UI elements and lib variables
+    private int scanaction = 0;
     private TextView myLabel;
     private TextView hrLabel;
     private BluetoothAdapter mBluetoothAdapter;
@@ -172,6 +173,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
             public void onClick(final View v) {
                 startBluetooth(v);
                 // Get a handler that can be used to post to the main thread
+
                 Handler startbtt = new Handler(Looper.getMainLooper());
                 Runnable sbtrunt = new Runnable() {
 
@@ -182,7 +184,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                         //myLabel.setText(mBluetoothTestService.getDeviceName());
                     } // This is your code
                 };
-                startbtt.postDelayed(sbtrunt, 1300);
+                startbtt.postDelayed(sbtrunt, 1500);/*
 
                 Handler searchbtt = new Handler(Looper.getMainLooper());
                 Runnable searchbtrunt = new Runnable() {
@@ -218,7 +220,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                         //mBluetoothTestService.writeStepCharacteristic(true);
                     } // This is your code
                 };
-                notifsert.postDelayed(notifrunt,40000);
+                notifsert.postDelayed(notifrunt,40000);*/
 
             }
             });
@@ -243,57 +245,6 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                 };
                 startbt.postDelayed(sbtrun,1500);
 
-                Handler searchbt = new Handler(Looper.getMainLooper());
-                Runnable searchbtrun = new Runnable(){
-
-                    @Override
-                    public void run() {
-                        myLabel.setText("connecting bluetooth");
-                        connectBluetooth(v);
-
-                    } // This is your code
-                };
-                searchbt.postDelayed(searchbtrun,3500);
-                Handler discoverserv = new Handler(Looper.getMainLooper());
-                Runnable discrunnable = new Runnable(){
-
-                    @Override
-                    public void run() {
-                        myLabel.setText("discovering bluetooth");
-                        discoverServices(v);
-
-                    } // This is your code
-                };
-                discoverserv.postDelayed(discrunnable,16000);
-                Handler notifser = new Handler(Looper.getMainLooper());
-                Runnable notifrun = new Runnable(){
-
-                    @Override
-                    public void run() {
-                        myLabel.setText("notify Update");
-                       // if(mBluetoothTestService. != null) {
-                            mBluetoothTestService.writeCapSenseNotification(true);
-                       // }
-                        //mBluetoothTestService.writeStepCharacteristic(true);
-                    } // This is your code
-                };
-                notifser.postDelayed(notifrun,25000);
-                Handler notifser2 = new Handler(Looper.getMainLooper());
-                Runnable notifrun2 = new Runnable(){
-
-                    @Override
-                    public void run() {
-                        myLabel.setText("notify Update");
-
-                        //mBluetoothTestService.writeCapSenseNotification(true);
-                      //  if(mBluetoothTestService.getDeviceName() != null) {
-                        mBluetoothTestService.writeStepCharacteristic(true);
-                       // }
-
-
-                    } // This is your code
-                };
-                notifser2.postDelayed(notifrun2,27400);
             }
         });
 
@@ -341,11 +292,16 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         super.onResume();
         // Register the broadcast receiver. This specified the messages the main activity looks for from the PSoCCapSenseLedService
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(mBluetoothTestService.ACTION_BLESCAN_CALLBACK);
-        filter.addAction(mBluetoothTestService.ACTION_CONNECTED);
-        filter.addAction(mBluetoothTestService.ACTION_DISCONNECTED);
-        filter.addAction(mBluetoothTestService.ACTION_SERVICES_DISCOVERED);
-        filter.addAction(mBluetoothTestService.ACTION_DATA_RECEIVED);
+
+        //filter.addAction(mBluetoothTestService.ACTION_DISCONNECTED);
+        filter.addAction(mBluetoothTestService.ACTION_BLESCAN_CALLBACK_FIT_TRACKER);
+        filter.addAction(mBluetoothTestService.ACTION_BLESCAN_CALLBACK_TREADMILL);
+        filter.addAction(mBluetoothTestService.ACTION_SERVICES_DISCOVERED_FIT_TRACKER);
+        filter.addAction(mBluetoothTestService.ACTION_SERVICES_DISCOVERED_TREADMILL);
+        filter.addAction(mBluetoothTestService.ACTION_DATA_RECEIVED_TREADMILL);
+        filter.addAction(mBluetoothTestService.ACTION_DATA_RECEIVED_FIT_TRACKER);
+        filter.addAction(mBluetoothTestService.ACTION_CONNECTED_TO_FIT_TRACKER);
+        filter.addAction(mBluetoothTestService.ACTION_CONNECTED_TO_TREADMILL);
         //tread
         registerReceiver(mBleUpdateReceiver, filter);
     }
@@ -360,33 +316,88 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             switch (action) {
-                case BluetoothTestService.ACTION_BLESCAN_CALLBACK:
+                case BluetoothTestService.ACTION_CONNECTED_TO_FIT_TRACKER:
+                    myLabel.setText("discovering bluetooth");
+                    discoverServices(v);
 
+                    Handler WriteStepNotifThread = new Handler(Looper.getMainLooper());
+                    Runnable WriteStepNotifThreadRun = new Runnable(){
+
+                        @Override
+                        public void run() {
+                            myLabel.setText("notify Update");
+                            // if(mBluetoothTestService. != null) {
+                            mBluetoothTestService.writeStepCharacteristic(true);
+                            //mBluetoothTestService.writeCapSenseNotification(true);
+                            // }
+                            //mBluetoothTestService.writeStepCharacteristic(true);
+                        } // This is your code
+                    };
+                    WriteStepNotifThread.postDelayed(WriteStepNotifThreadRun,1000);
+                    Handler WriteHRNotifThread = new Handler(Looper.getMainLooper());
+                    Runnable WriteHRNotifThreadRun = new Runnable(){
+
+                        @Override
+                        public void run() {
+                            myLabel.setText("notify Update");
+
+                            //mBluetoothTestService.writeCapSenseNotification(true);
+                            //  if(mBluetoothTestService.getDeviceName() != null) {
+                            mBluetoothTestService.writeCapSenseNotification(true);
+                            //mBluetoothTestService.writeStepCharacteristic(true);
+                            // }
+
+
+                        } // This is your code
+                    };
+                    WriteHRNotifThread.postDelayed(WriteHRNotifThreadRun,1250);
+                    break;
+                case BluetoothTestService.ACTION_BLESCAN_CALLBACK_FIT_TRACKER:
+                    myLabel.setText("connecting bluetooth Fitness tracker");
+                    connectBluetooth(v);
 
                     // Disable the search button and enable the connect button
                     break;
-                case BluetoothTestService.ACTION_CONNECTED:
+                case BluetoothTestService.ACTION_BLESCAN_CALLBACK_TREADMILL:
+                    myLabel.setText("connecting bluetooth Treadmill");
+                    treadconnectBluetooth(v);
+
+                    // Disable the search button and enable the connect button
+                    break;
+                case BluetoothTestService.ACTION_CONNECTED_TO_TREADMILL:
+                    myLabel.setText("discovering treadmill");
+                    treadDiscoverServices(v);
+                    //myLabel.setText("discovering bluetooth");
                     //discoverServices(v);
-                    //mBluetoothTestService.writeCapSenseNotification(true);
-                    /* This if statement is needed because we sometimes get a GATT_CONNECTED */
+
+                  /*  Handler WritespeedThread = new Handler(Looper.getMainLooper());
+                    Runnable WritespeedThreadrun = new Runnable(){
+
+                        @Override
+                        public void run() {
+                            myLabel.setText("notify Update");
+
+                            mBluetoothTestService.readSpeedCharacteristic();
+
+                        }
+                    };
+                    WritespeedThread.postDelayed(WritespeedThreadrun,0);
+*/
 
 
-                    /* action when sending Capsense notifications */
 
                     if (!mConnectState) {
-                        // Dsable the connect button, enable the discover services and disconnect buttons
-
 
                         mConnectState = true;
 
                         Log.d(TAG, "Connected to Device");
-                        Log.d(TAG, "Connected to Device");
+                       // Log.d(TAG, "Connected to Device");
                     }
                     break;
-                case BluetoothTestService.ACTION_DISCONNECTED:
+                //case BluetoothTestService.ACTION_DISCONNECTED:
                    // Connecttracker.setEnabled(true);
 
-                case BluetoothTestService.ACTION_DATA_RECEIVED:
+                case BluetoothTestService.ACTION_DATA_RECEIVED_FIT_TRACKER:
                     // This is called after a notify or a read completes
                     // Check LED switch Setting
 
@@ -400,6 +411,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                     String hrvalue = mBluetoothTestService.getCapSenseValue();
 
                     hrLabel.setText(hrvalue +" BPM");
+                    break;
 
                 default:
                     break;
@@ -425,15 +437,15 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         unregisterReceiver(mBleUpdateReceiver);
     }
 
-    //@Override
-    //protected void onDestroy() {
-       // super.onDestroy();
+   /* @Override
+    protected void onDestroy() {
+        super.onDestroy();
         // Close and unbind the service when the activity goes away
-       // mBluetoothTestService.close();
-        //unbindService(mServiceConnection);
-        //mBluetoothTestService = null;
-        //mServiceConnected = false;
-    //}
+        mBluetoothTestService.close();
+        unbindService(mServiceConnection);
+        mBluetoothTestService = null;
+        mServiceConnected = false;
+    }*/
 
 
     /**
@@ -476,6 +488,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public void searchBluetooth(View view) {
         if(mServiceConnected) {
+            mBluetoothTestService.getScanStatusFromMain(1);
             mBluetoothTestService.scan();
         }
 
@@ -487,9 +500,10 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     }
     public void searchBluetoothTread(View view) {
-        if(mServiceConnected) {
+        //if(mServiceConnected) {
+            mBluetoothTestService.getScanStatusFromMain(2);
             mBluetoothTestService.scan();
-        }/*TODO SETUP ARDUINO UUID FOR TREADMILL*/
+        //}/*TODO SETUP ARDUINO UUID FOR TREADMILL*/
 
 
         /* After this we wait for the scan callback to detect that a device has been found *//*

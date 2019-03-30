@@ -151,7 +151,7 @@ public class Maf_Final extends AppCompatActivity {
 
         }
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(bts.ACTION_DATA_RECEIVED);
+        filter.addAction(bts.ACTION_DATA_RECEIVED_FIT_TRACKER);
         Intent gattServiceIntent = new Intent(this, BluetoothTestService.class);
         //Todo Still dont know if works
         //Intent gattServiceIntentTread = new Intent(this, BluetoothTestServiceTread.class);
@@ -318,11 +318,12 @@ public class Maf_Final extends AppCompatActivity {
             final String action = intent.getAction();
             switch (action) {
 
-                case BluetoothTestService.ACTION_DISCONNECTED:
+                //case BluetoothTestService.ACTION_DISCONNECTED:
                     // Connecttracker.setEnabled(true);
 
-                case BluetoothTestService.ACTION_DATA_RECEIVED:
+                case BluetoothTestService.ACTION_DATA_RECEIVED_FIT_TRACKER:
                     // This is called after a notify or a read completes
+                    //TODO: Change these actions states to Fit_Tracker and Treadmill Action broadcasts
 
                     //get heartrate
                     String hrvalue = bts.getCapSenseValue();

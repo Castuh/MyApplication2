@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
@@ -70,23 +71,26 @@ public class BluetoothTestService extends Service {
     //public  final static String STEPDATACHARACTERISTIC = "00002A38-0000-1000-8000-00805f9b34fb";
 
     // Variables to keep track of the LED switch state and CapSense Value
+    private int scanaction = 0;
     private static String speedread = "0";
     private static boolean mLedSwitchState = false;
     private static boolean mStepState = false;
     private static String mHrValue = "..."; // This is the No hr value ...
     private static String mStepValue = "...";
     // Actions used during broadcasts to the main activity
-    public final static String ACTION_BLESCAN_CALLBACK =
-            "com.cypress.academy.ble101.ACTION_BLESCAN_CALLBACK";
-    public final static String ACTION_CONNECTED =
-            "com.cypress.academy.ble101.ACTION_CONNECTED";
-    public final static String ACTION_DISCONNECTED =
-            "com.cypress.academy.ble101.ACTION_DISCONNECTED";
-    public final static String ACTION_SERVICES_DISCOVERED =
-            "com.cypress.academy.ble101.ACTION_SERVICES_DISCOVERED";
-    public final static String ACTION_DATA_RECEIVED =
-            "com.cypress.academy.ble101.ACTION_DATA_RECEIVED";
+    public final static String ACTION_CONNECTED_TO_FIT_TRACKER = "ACTION_CONNECTED_TO_FIT_TRACKER";
+    public final static String ACTION_CONNECTED_TO_TREADMILL = "ACTION_CONNECTED_TO_TREADMILL";
 
+    public final static String ACTION_BLESCAN_CALLBACK_TREADMILL = "ACTION_BLESCAN_CALLBACK_TREADMILL";
+    public final static String ACTION_BLESCAN_CALLBACK_FIT_TRACKER= "ACTION_BLESCAN_CALLBACK_FIT_TRACKER";
+
+    public final static String ACTION_DISCONNECTED_TREADMILL ="ACTION_DISCONNECTED_TREADMILL";
+    public final static String ACTION_DISCONNECTED_FIT_TRACKER ="ACTION_DISCONNECTED_FIT_TRACKER";
+
+    public final static String ACTION_SERVICES_DISCOVERED_FIT_TRACKER = "ACTION_SERVICES_DISCOVERED_FIT_TRACKER";
+    public final static String ACTION_SERVICES_DISCOVERED_TREADMILL = "ACTION_SERVICES_DISCOVERED_TREADMILL";
+    public final static String ACTION_DATA_RECEIVED_FIT_TRACKER = "ACTION_DATA_RECEIVED";
+    public final static String ACTION_DATA_RECEIVED_TREADMILL = "ACTION_DATA_RECEIVED_TREADMILL";
     public BluetoothTestService() {
     }
 
@@ -141,22 +145,24 @@ public class BluetoothTestService extends Service {
     /**
      * Scans for BLE devices that support the service we are looking for
      */
+    public void getScanStatusFromMain(int actionfrommain){
+        scanaction = actionfrommain;
+    }
 
     public void scan() {
-        /* Scan for devices and look for the one with the service that we want */
-
-        UUID   capsenseLedService =       UUID.fromString(HR_SERVICE);
+        /*Scan for devices and look for the one with the service that we want */
+        UUID   HrService =       UUID.fromString(HR_SERVICE);
         UUID   StepService = UUID.fromString(ST_SERVICE);
         UUID   TreadService = UUID.fromString(TR_SERVICE);
-        UUID[] capsenseLedServiceArray = {capsenseLedService,StepService,TreadService};
+        UUID[] TreadServiceArray = {TreadService};
 
         // Use old scan method for versions older than lollipop
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             //noinspection deprecation
 
-                mBluetoothAdapter.startLeScan(capsenseLedServiceArray, mLeScanCallback);
+            mBluetoothAdapter.startLeScan(TreadServiceArray, mLeScanCallback);
 
-                mBluetoothAdapter.startLeScan(capsenseLedServiceArray, mLeScanCallbackTread);
+            mBluetoothAdapter.startLeScan(TreadServiceArray, mLeScanCallbackTread);
 
 
         } else { // New BLE scanning introduced in LOLLIPOP
@@ -168,7 +174,8 @@ public class BluetoothTestService extends Service {
                     .build();
             filters = new ArrayList<>();
             // We will scan just for the CAR's UUID
-            ParcelUuid PUuid = new ParcelUuid(capsenseLedService);
+
+            ParcelUuid PUuid = new ParcelUuid(HrService);
             ParcelUuid PUUuid = new ParcelUuid(StepService);
             ParcelUuid PUuidd = new ParcelUuid(TreadService);
             ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
@@ -176,11 +183,96 @@ public class BluetoothTestService extends Service {
             filters.add(filter);
             filters.add(filter2);
 
-                mLEScanner.startScan(filters, settings, mScanCallback);
+            mLEScanner.startScan(filters, settings, mScanCallback);
 
-                mLEScanner.startScan(filters, settings, mScanCallbackTread);
+            //mLEScanner.startScan(filters, settings, mScanCallbackTread);
         }
+        /*switch(scanaction) {
+            case 1:
+                UUID   HrService  = UUID.fromString(HR_SERVICE);
+                UUID   StepService = UUID.fromString(ST_SERVICE);
+               // UUID   TreadService = UUID.fromString(TR_SERVICE);
+                UUID[] HrStepServiceArray = {HrService,StepService};
+
+                // Use old scan method for versions older than lollipop
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    //noinspection deprecation
+
+                    mBluetoothAdapter.startLeScan(HrStepServiceArray, mLeScanCallback);
+
+                    //mBluetoothAdapter.startLeScan(HrStepServiceArray, mLeScanCallbackTread);
+
+
+                } else { // New BLE scanning introduced in LOLLIPOP
+                    ScanSettings settings;
+                    List<ScanFilter> filters;
+                    mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+                    settings = new ScanSettings.Builder()
+                            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                            .build();
+                    filters = new ArrayList<>();
+                    // We will scan just for the CAR's UUID
+                    ParcelUuid PUuid = new ParcelUuid(HrService);
+                    ParcelUuid PUUuid = new ParcelUuid(StepService);
+                    //ParcelUuid PUuidd = new ParcelUuid(TreadService);
+                    ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
+                    //ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
+                    filters.add(filter);
+                    //filters.add(filter2);
+
+                    mLEScanner.startScan(filters, settings, mScanCallback);
+
+                   // mLEScanner.startScan(filters, settings, mScanCallbackTread);
+                }
+
+
+                break;
+            case 2:
+               //UUID   capsenseLedService =       UUID.fromString(HR_SERVICE);
+                //UUID   StepService = UUID.fromString(ST_SERVICE);
+                UUID   TreadService = UUID.fromString(TR_SERVICE);
+                UUID[] TreadServiceArray = {TreadService};
+
+                // Use old scan method for versions older than lollipop
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    //noinspection deprecation
+
+                    //mBluetoothAdapter.startLeScan(TreadServiceArray, mLeScanCallback);
+
+                    mBluetoothAdapter.startLeScan(TreadServiceArray, mLeScanCallbackTread);
+
+
+                } else { // New BLE scanning introduced in LOLLIPOP
+                    ScanSettings settings;
+                    List<ScanFilter> filters;
+                    mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+                    settings = new ScanSettings.Builder()
+                            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                            .build();
+                    filters = new ArrayList<>();
+                    // We will scan just for the CAR's UUID
+                    //ParcelUuid PUuid = new ParcelUuid(TreadService);
+                   // ParcelUuid PUUuid = new ParcelUuid(StepService);
+                    ParcelUuid PUuidd = new ParcelUuid(TreadService);
+                   // ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
+                    ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
+                    //filters.add(filter);
+                    filters.add(filter2);
+
+                    //mLEScanner.startScan(filters, settings, mScanCallback);
+
+                    mLEScanner.startScan(filters, settings, mScanCallback);
+                }
+                break;
+
+            default:
+                break;
+
+        }*/
+
     }
+
+
 
     /**
      * Connects to the GATT server hosted on the Bluetooth LE device.
@@ -195,12 +287,14 @@ public class BluetoothTestService extends Service {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return false;
         }
+/*
 
         // Previously connected device.  Try to reconnect.
         if (mBluetoothGatt != null) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             return mBluetoothGatt.connect();
         }
+*/
 
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
@@ -216,12 +310,14 @@ public class BluetoothTestService extends Service {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return false;
         }
+/*
 
         // Previously connected device.  Try to reconnect.
         if (mBluetoothGattTread != null) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             return mBluetoothGattTread.connect();
         }
+*/
 
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
@@ -416,7 +512,7 @@ public class BluetoothTestService extends Service {
                     mLeDeviceTread = device;
                     //noinspection deprecation
                     mBluetoothAdapter.stopLeScan(mLeScanCallbackTread); // Stop scanning after the first device is found
-                    broadcastUpdate(ACTION_BLESCAN_CALLBACK); // Tell the main activity that a device has been found
+                    broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
                 }
             };
 
@@ -427,7 +523,7 @@ public class BluetoothTestService extends Service {
                     mLeDevice = device;
                     //noinspection deprecation
                     mBluetoothAdapter.stopLeScan(mLeScanCallback); // Stop scanning after the first device is found
-                    broadcastUpdate(ACTION_BLESCAN_CALLBACK); // Tell the main activity that a device has been found
+                    broadcastUpdate(ACTION_BLESCAN_CALLBACK_FIT_TRACKER); // Tell the main activity that a device has been found
                 }
             };
 
@@ -442,24 +538,28 @@ public class BluetoothTestService extends Service {
         public void onScanResult(int callbackType, ScanResult result) {
 
 
-            if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81")){
+            if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81") && scanaction == 1){
                 mLeDevice = result.getDevice();
+                mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
+                broadcastUpdate(ACTION_BLESCAN_CALLBACK_FIT_TRACKER); // Tell the main activity that a device has been found
+
             }
-            if(result.getDevice().getAddress().equals("E9:44:48:4F:C6:D1")){
+            if(result.getDevice().getAddress().equals("E9:44:48:4F:C6:D1") && scanaction == 2){
                 mLeDeviceTread = result.getDevice();
+                mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
+                broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
+
             }
-            mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
-            broadcastUpdate(ACTION_BLESCAN_CALLBACK); // Tell the main activity that a device has been found
         }
     };
-    private final ScanCallback mScanCallbackTread = new ScanCallback() {
+    /*private final ScanCallback mScanCallbackTread = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-
+            mLeDeviceTread = result.getDevice();
             mLEScanner.stopScan(mScanCallbackTread); // Stop scanning after the first device is found
-            broadcastUpdate(ACTION_BLESCAN_CALLBACK); // Tell the main activity that a device has been found
-        }
-    };
+            broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
+       }
+    };*/
 
 
     /**
@@ -471,15 +571,24 @@ public class BluetoothTestService extends Service {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                broadcastUpdate(ACTION_CONNECTED);
+               // broadcastUpdate(ACTION_CONNECTED);
+                broadcastUpdate(ACTION_CONNECTED_TO_FIT_TRACKER);
                 Log.i(TAG, "Connected to GATT server.");
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "Disconnected from GATT server.");
-                broadcastUpdate(ACTION_DISCONNECTED);
+                broadcastUpdate(ACTION_DISCONNECTED_FIT_TRACKER);
+
             }
+
+
+
         }
 
+        /*@Override
+        public void onConnectionUpdated(BluetoothGatt gatt, int interval, int latency, int timeout,
+                                        int status){
 
+        }*/
         /**
          * This is called when a service discovery has completed.
          *
@@ -534,7 +643,7 @@ public class BluetoothTestService extends Service {
             // Broadcast that service/characteristic/descriptor discovery is done
 
             //readStepCharacteristic();
-            broadcastUpdate(ACTION_SERVICES_DISCOVERED);
+            broadcastUpdate(ACTION_SERVICES_DISCOVERED_FIT_TRACKER);
         }
 
         /**
@@ -565,7 +674,7 @@ public class BluetoothTestService extends Service {
                     //mStepValue = toString(value);
                 }*/
                 // Notify the main activity that new data is available
-                broadcastUpdate(ACTION_DATA_RECEIVED);
+                broadcastUpdate(ACTION_DATA_RECEIVED_FIT_TRACKER);
             }
         }
 
@@ -592,30 +701,20 @@ public class BluetoothTestService extends Service {
             switch (uuid) {
                 case HRDATACHARACTERISTIC:
                     // use a switch statement here to operate on each one separately.
-                    //if (uuid.equalsIgnoreCase(HRDATACHARACTERISTIC)) {
-                    final byte[] data = characteristic.getValue();
-                    int spint = (characteristic.getValue()[0] & 0x000000FF);
-                        int lsb = (characteristic.getValue()[0] & 0xFF);
-                        mHrValue = Integer.toString(lsb);
-                        // mHrValue = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16,0).toString();
+                    int hrb1 = (characteristic.getValue()[0]& 0xFF);
+                    int hrb2 = (characteristic.getValue()[1]& 0xFF);
+                    int concathr = hrb2 << 8;
+                    int finconhr = concathr | hrb1;
+                    mHrValue = Integer.toString(finconhr);
                     //}
                     break;
                 case STEPDATACHARACTERISTIC:
-                    //if (uuid.equalsIgnoreCase(STEPDATACHARACTERISTIC)) {
-                        Log.d(TAG,"STEP CHARACTERISTIC");
+                    int spint2 = (characteristic.getValue()[0]& 0xFF);
+                    int spint3 = (characteristic.getValue()[1]& 0xFF);
+                    int concat = spint3 << 8;
+                    int fincon = concat | spint2;
+                    mStepValue = Integer.toString(fincon);
 
-                        int spint2 = (characteristic.getValue()[0]& 0xFF);
-                        int spint3 = (characteristic.getValue()[1]& 0xFF);
-                        int concat = spint3 << 8;
-                        int fincon = concat | spint2;
-                        mStepValue = Integer.toString(fincon);
-                        //final byte[] dataer = characteristic.getValue();
-
-                       //int lsb1 = (characteristic.getValue()[0] & 0xFF);
-                       //int lsb2 = (characteristic.getValue()[1] & 0xFF);
-                       //int total = lsb1 + lsb2;
-                       //mStepValue = Integer.toString(total);
-                        // mHrValue = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16,0).toString();
                     break;
 
                 default:
@@ -623,7 +722,7 @@ public class BluetoothTestService extends Service {
                     }
 
                     // Notify the main activity that new data is available
-                    broadcastUpdate(ACTION_DATA_RECEIVED);
+                    broadcastUpdate(ACTION_DATA_RECEIVED_FIT_TRACKER);
                 }
 
 
@@ -640,12 +739,13 @@ public class BluetoothTestService extends Service {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                broadcastUpdate(ACTION_CONNECTED);
+                broadcastUpdate(ACTION_CONNECTED_TO_TREADMILL);
                 Log.i(TAG, "Connected to GATT Tread server.");
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "Disconnected from Tread GATT server.");
-                broadcastUpdate(ACTION_DISCONNECTED);
+                broadcastUpdate(ACTION_DISCONNECTED_TREADMILL);
             }
+
         }
 
 
@@ -703,7 +803,7 @@ public class BluetoothTestService extends Service {
             // Broadcast that service/characteristic/descriptor discovery is done
 
             //readStepCharacteristic();
-            broadcastUpdate(ACTION_SERVICES_DISCOVERED);
+            broadcastUpdate(ACTION_SERVICES_DISCOVERED_TREADMILL);
         }
 
         /**
@@ -733,7 +833,7 @@ public class BluetoothTestService extends Service {
                     //mStepValue = toString(value);
                 }
                 // Notify the main activity that new data is available
-                broadcastUpdate(ACTION_DATA_RECEIVED);
+                broadcastUpdate(ACTION_DATA_RECEIVED_TREADMILL);
             }
         }
 
@@ -766,7 +866,7 @@ public class BluetoothTestService extends Service {
             }*/
 
             // Notify the main activity that new data is available
-            broadcastUpdate(ACTION_DATA_RECEIVED);
+            broadcastUpdate(ACTION_DATA_RECEIVED_TREADMILL);
         }
 
 

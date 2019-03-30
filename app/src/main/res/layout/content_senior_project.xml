@@ -23,10 +23,10 @@
         android:text="Fitness Tracker Connect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.013"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MAF_WORKOUT"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.841"
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <Button
@@ -75,10 +75,10 @@
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/FitTrackConnect"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MAF_WORKOUT"
-        app:layout_constraintVertical_bias="0.973" />
+        app:layout_constraintVertical_bias="0.995" />
 
     <TextView
         android:id="@+id/hr_view"
@@ -92,16 +92,16 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.995"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.867" />
+        app:layout_constraintVertical_bias="0.757" />
 
     <Button
         android:id="@+id/TreadConnect"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="184dp"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -109,10 +109,10 @@
         android:text="Treadmill Connect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.961"
         app:layout_constraintStart_toEndOf="@+id/FitTrackConnect"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.897" />
 
 
 </android.support.constraint.ConstraintLayout>

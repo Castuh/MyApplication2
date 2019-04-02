@@ -54,11 +54,16 @@ public class Maf_Final extends AppCompatActivity {
     String MAF_HR_AND_LOG;
     String MAF_HR_STRING;
     double DUR_FROM_HR;
-
+    int seconds = 0;
+    int secondsdisplay = 0;
+    int Mafworkoutstate = 0;
+    int MafEndSecs1 = 300; // 300 seconds   Change to 10,10,10 to test each phase of workout
+    int MafEndSecs2 = 600; //600
+    int MafEndSecs3 = 300; //300
     //int hrdur;
     BluetoothTestService bts;
-    //BluetoothTestServiceTread bts2;
-    private HandlerThread handlerThread = new HandlerThread("handlerThread");
+
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
 
@@ -73,9 +78,9 @@ public class Maf_Final extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder service) {
 
             bts = ((BluetoothTestService.LocalBinder) service).getService();
-            //bts2 = ((BluetoothTestServiceTread.LocalBinder) service).getService();
+
             bts.initialize();
-            //bts2.initialize();
+
         }
 
 
@@ -89,7 +94,7 @@ public class Maf_Final extends AppCompatActivity {
         public void onServiceDisconnected(ComponentName componentName) {
 
             bts = null;
-           // bts2 = null;
+
         }
     };
 
@@ -103,8 +108,8 @@ public class Maf_Final extends AppCompatActivity {
 
         ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(
                 CIRCLE,
-                PropertyValuesHolder.ofFloat("scaleX", 2f),
-                PropertyValuesHolder.ofFloat("scaleY", 2f));
+                PropertyValuesHolder.ofFloat("scaleX", 1.3f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.3f));
         scaleDown.setDuration((long) DUR_FROM_HR);//dur);
 
         scaleDown.setRepeatCount(ObjectAnimator.INFINITE);
@@ -118,9 +123,9 @@ public class Maf_Final extends AppCompatActivity {
 
     public void doBindService() {
         Intent gattServiceIntent = new Intent(this, BluetoothTestService.class);
-        //Intent gattServiceIntent2 = new Intent(this, BluetoothTestServiceTread.class);
+
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-       // bindService(gattServiceIntent2, mServiceConnection, BIND_AUTO_CREATE);
+
 
     }
 
@@ -153,15 +158,10 @@ public class Maf_Final extends AppCompatActivity {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(bts.ACTION_DATA_RECEIVED_FIT_TRACKER);
         Intent gattServiceIntent = new Intent(this, BluetoothTestService.class);
-        //Todo Still dont know if works
-        //Intent gattServiceIntentTread = new Intent(this, BluetoothTestServiceTread.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-        //TODO not sure if works
-        //bindService(gattServiceIntentTread, mServiceConnection, BIND_AUTO_CREATE);
         registerReceiver(mBleUpdateReceiver, filter);
         DISPLAY_MAF_HR(MAFHR);
         CHANGE_HEART_SIZE();//DUR_FROM_HR);
-
         WORKOUT_START = (TextView) findViewById(R.id.WORKOUT_START);
         MAF_Switch = (Switch) findViewById(R.id.MAF_Switch);
         Speedup.setOnClickListener(new View.OnClickListener() {
@@ -191,6 +191,7 @@ public class Maf_Final extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean on) {
 
                 if (on) {
+                    HandlerThread handlerThread = new HandlerThread("handlerThread");
                     //WORKOUT_START.setText("Starting Workout");
                     //TODO FIX HANDLER NOT QUITTING OUT OF LOOPS  ::BUG::
 
@@ -209,102 +210,141 @@ public class Maf_Final extends AppCompatActivity {
 
                             // initial voltage
                            // Serial.write
+                            if(MAF_Switch.isChecked() == true && Mafworkoutstate == 0) {
+                                for (int t = 0; t <= MafEndSecs1; t++) {
+                                    try {
+                                        if (MAF_Switch.isChecked() == true) {
+                                            if(seconds < 15){
+                                                WORKOUT_START.setText("Warmup started");
+                                            }
+                                            sleep(1000);
+                                            seconds++;
+                                            secondsdisplay++;
 
-                            for(int t = 0; t < 20; t++){
-                                try {
-                                    sleep(15000);
-                                    if(MAF_Switch.isChecked() == false) {
+                                        }
+
+                                        if (MAF_Switch.isChecked() == false) {
+
+                                            try {
+                                                secondsdisplay = seconds;
+                                                WORKOUT_START.setText("Methodology Stopped  prt 1 at: " + secondsdisplay + " Seconds");
+                                                seconds = 0;
+                                                Mafworkoutstate = 0;
+
+                                                break;
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    try {
+                                        if (MAF_Switch.isChecked() == true && seconds%15 == 0 && Mafworkoutstate == 0) {
+                                            WORKOUT_START.setText("P1: 15 Seconds gone by: total seconds: " + (seconds));
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (seconds == MafEndSecs1){
+                                        Mafworkoutstate++;
+                                    }
+                                }
+                            }
+
+
+                            if(MAF_Switch.isChecked() == true && Mafworkoutstate == 1) {
+                                for (int t = 0; t <= MafEndSecs2; t++) {
+                                    try {
+                                        if (MAF_Switch.isChecked() == true) {
+
+                                            sleep(1000);
+                                            seconds++;
+                                            secondsdisplay++;
+
+                                        }
+
+                                        if (MAF_Switch.isChecked() == false) {
+
+                                            try {
+
+                                                secondsdisplay = seconds;
+                                                WORKOUT_START.setText("Methodology Stopped prt 2 at: " + secondsdisplay + " Seconds");
+                                                seconds = 0;
+                                                Mafworkoutstate = 0;
+                                                break;
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    try {
+                                        if (MAF_Switch.isChecked() == true && seconds%5 == 0 && Mafworkoutstate == 1) {
+                                            WORKOUT_START.setText("P2: 5 Seconds gone by: total seconds: " + (seconds));
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (seconds - MafEndSecs1 == MafEndSecs2){
+                                        Mafworkoutstate++;
+                                    }
+                                }
+                            }
+
+                                if (MAF_Switch.isChecked() == true && Mafworkoutstate == 2) {
+                                    for (int t = 0; t <= MafEndSecs3; t++) {
+                                        try {
+                                            if (MAF_Switch.isChecked() == true) {
+                                                //WORKOUT_START.setText("entering warmdown");
+                                                sleep(1000);
+                                                seconds++;
+                                                secondsdisplay++;
+
+                                            }
+
+                                            if (MAF_Switch.isChecked() == false) {
+
+                                                try {
+                                                    secondsdisplay = seconds;
+                                                    WORKOUT_START.setText("Methodology stopped prt3 at : " + secondsdisplay + " Seconds");
+                                                    seconds = 0;
+                                                    Mafworkoutstate = 0;
+                                                    break;
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
 
                                         try {
-                                            WORKOUT_START.setText("Methodology Stopped");
+                                            if (MAF_Switch.isChecked() == true && seconds%15 == 0&& Mafworkoutstate == 2) {
+                                                WORKOUT_START.setText("P3: 15 Seconds gone by: total seconds: " + (seconds));
+                                            }
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-                                        handlerThread.quit();
+                                        if (seconds == MafEndSecs3+ MafEndSecs2 +MafEndSecs1){
+                                            //TODO:: End workout.
+                                            secondsdisplay = 0;
+                                            seconds = 0;
+                                            Mafworkoutstate = 0;
+                                            WORKOUT_START.setText("END WORKOUT");
+                                            break;
+                                        }
                                     }
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
 
-                                try {
-                                    WORKOUT_START.setText("15 Seconds");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
                             }
-
-                            /*while (timeframe < period) {
-                                // send voltage increase
-                                try {
-                                    sleep(15000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                WORKOUT_START.setText("15 Seconds");
-                            }*/
-
-                            for(int t = 0; t < 120; t++){
-                                try {
-                                    sleep(5000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                                try {
-                                    WORKOUT_START.setText("5 Seconds");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-
-                            /*while (timeframe < timeframe + runtime) {
-                                if (A_Hr < MAFHR) {
-                                    //increase voltage
-                                }
-                                if (A_Hr > MAFHR) {
-                                    //decrease voltage
-                                }
-                                try {
-                                    sleep(5000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                WORKOUT_START.setText("5 Seconds");
-                            }*/
-
-
-                            for(int t = 0; t < 20; t++){
-                                try {
-                                    sleep(15000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                                try {
-                                    WORKOUT_START.setText("15 Seconds");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            /*while (timeframe < timeframe + runtime) {
-                                // send voltage decrease
-                                try {
-                                    sleep(15000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                WORKOUT_START.setText("15 Seconds");
-                            }*/
-
-
-                        }
                     });
-
-                } else {
-                    WORKOUT_START.setText("stop");
-                    handlerThread.quitSafely();
 
                 }
             }

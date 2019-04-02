@@ -100,8 +100,6 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             Log.i(TAG, "onServiceConnected");
             mBluetoothTestService = ((BluetoothTestService.LocalBinder) service).getService();
-
-            //mBluetoothTestServiceTread = ((BluetoothTestServiceTread.LocalBinder) service).getService();
             mServiceConnected = true;
             mBluetoothTestService.initialize();
             //mBluetoothTestServiceTread.initialize();

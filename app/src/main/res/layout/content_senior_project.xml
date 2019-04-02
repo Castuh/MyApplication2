@@ -2,32 +2,12 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.surfacejosh.myapplication.SeniorProject"
-    tools:showIn="@layout/activity_senior_project"
-    android:background="#c0c0c0"
-    >
-
-
-    <Button
-        android:id="@+id/FitTrackConnect"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="147dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="20dp"
-        android:background="@android:color/background_dark"
-        android:text="Fitness Tracker Connect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.013"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/MAF_WORKOUT"
-        app:layout_constraintVertical_bias="0.841"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
+    tools:showIn="@layout/activity_senior_project" android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<!--
 
     <Button
         android:id="@+id/MAF_WORKOUT"
@@ -40,12 +20,14 @@
         android:layout_marginBottom="10dp"
         android:background="@android:color/holo_orange_light"
         android:text="MAF WORKOUT"
+        android:textAlignment="center"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.08" />
 
     <Button
         android:id="@+id/button2"
@@ -62,7 +44,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/MAF_WORKOUT"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.08" />
 
     <TextView
         android:id="@+id/TextV"
@@ -72,13 +54,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="251dp"
         android:layout_marginBottom="8dp"
-        android:text="TextView"
+        android:text="Connection Info"
         app:layout_constraintBottom_toTopOf="@+id/FitTrackConnect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MAF_WORKOUT"
-        app:layout_constraintVertical_bias="0.995" />
+        app:layout_constraintVertical_bias="0.965" />
 
     <TextView
         android:id="@+id/hr_view"
@@ -92,27 +74,46 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.995"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.757" />
+        app:layout_constraintVertical_bias="0.774" />
 
     <Button
         android:id="@+id/TreadConnect"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="184dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="60dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="20dp"
         android:text="Treadmill Connect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.961"
-        app:layout_constraintStart_toEndOf="@+id/FitTrackConnect"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.897" />
+        app:layout_constraintVertical_bias="0.926" />
 
+    <Button
+        android:id="@+id/FitTrackConnect"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="184dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="68dp"
+        android:text="Fitness Tracker Connect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/TreadConnect"
+        app:layout_constraintHorizontal_bias="0.259"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MAF_WORKOUT"
+        app:layout_constraintVertical_bias="1.0" />
 
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="413dp" />
+
+-->
 </android.support.constraint.ConstraintLayout>

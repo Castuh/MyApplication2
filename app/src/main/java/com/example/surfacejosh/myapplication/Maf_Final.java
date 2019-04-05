@@ -44,6 +44,8 @@ public class Maf_Final extends AppCompatActivity {
     int MAFHR;
     int mafhr2;
     int A_Hr = 60;
+    int rangedown;
+    int rangeup;
     //  TREADMILL  speedup/slowdown/ and stop or ( no speed change )
     String spdup = "2";
     String spdown = "5";
@@ -220,6 +222,17 @@ public class Maf_Final extends AppCompatActivity {
                                             sleep(1000);
                                             seconds++;
                                             secondsdisplay++;
+                                            if(seconds % 4 == 0) {
+                                                bts.writeSpeedCharacteristic("0");
+                                            }
+                                            else if(A_Hr > MAFHR){
+                                                bts.writeSpeedCharacteristic(spdown);
+                                                //WORKOUT_START.setText(spdown);
+                                            }
+                                            else if(A_Hr < MAFHR) {
+                                                bts.writeSpeedCharacteristic(spdup);
+                                                //WORKOUT_START.setText(spdup);
+                                            }
 
                                         }
 
@@ -230,6 +243,8 @@ public class Maf_Final extends AppCompatActivity {
                                                 WORKOUT_START.setText("Methodology Stopped  prt 1 at: " + secondsdisplay + " Seconds");
                                                 seconds = 0;
                                                 Mafworkoutstate = 0;
+                                                bts.writeSpeedCharacteristic(spdstop);
+                                                WORKOUT_START.setText(spdstop);
 
                                                 break;
                                             } catch (Exception e) {
@@ -242,7 +257,7 @@ public class Maf_Final extends AppCompatActivity {
                                     }
 
                                     try {
-                                        if (MAF_Switch.isChecked() == true && seconds%15 == 0 && Mafworkoutstate == 0) {
+                                        if (MAF_Switch.isChecked() == true && seconds%10 == 0 && Mafworkoutstate == 0) {
                                             WORKOUT_START.setText("P1: 15 Seconds gone by: total seconds: " + (seconds));
                                         }
                                     } catch (Exception e) {
@@ -263,7 +278,14 @@ public class Maf_Final extends AppCompatActivity {
                                             sleep(1000);
                                             seconds++;
                                             secondsdisplay++;
-
+                                            if(A_Hr < MAFHR) {
+                                                bts.writeSpeedCharacteristic(spdup);
+                                                WORKOUT_START.setText(spdup);
+                                            }
+                                            if(A_Hr > MAFHR) {
+                                                bts.writeSpeedCharacteristic(spdown);
+                                                WORKOUT_START.setText(spdown);
+                                            }
                                         }
 
                                         if (MAF_Switch.isChecked() == false) {
@@ -274,6 +296,8 @@ public class Maf_Final extends AppCompatActivity {
                                                 WORKOUT_START.setText("Methodology Stopped prt 2 at: " + secondsdisplay + " Seconds");
                                                 seconds = 0;
                                                 Mafworkoutstate = 0;
+                                                bts.writeSpeedCharacteristic(spdstop);
+                                                WORKOUT_START.setText(spdstop);
                                                 break;
                                             } catch (Exception e) {
                                                 e.printStackTrace();
@@ -305,7 +329,10 @@ public class Maf_Final extends AppCompatActivity {
                                                 sleep(1000);
                                                 seconds++;
                                                 secondsdisplay++;
-
+                                                if(A_Hr > MAFHR) {
+                                                    bts.writeSpeedCharacteristic(spdown);
+                                                    WORKOUT_START.setText(spdown);
+                                                }
                                             }
 
                                             if (MAF_Switch.isChecked() == false) {
@@ -315,6 +342,8 @@ public class Maf_Final extends AppCompatActivity {
                                                     WORKOUT_START.setText("Methodology stopped prt3 at : " + secondsdisplay + " Seconds");
                                                     seconds = 0;
                                                     Mafworkoutstate = 0;
+                                                    bts.writeSpeedCharacteristic(spdstop);
+                                                    WORKOUT_START.setText(spdstop);
                                                     break;
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
@@ -337,6 +366,8 @@ public class Maf_Final extends AppCompatActivity {
                                             secondsdisplay = 0;
                                             seconds = 0;
                                             Mafworkoutstate = 0;
+                                            bts.writeSpeedCharacteristic(spdstop);
+                                            WORKOUT_START.setText(spdstop);
                                             WORKOUT_START.setText("END WORKOUT");
                                             break;
                                         }

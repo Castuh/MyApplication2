@@ -25,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+
 import static java.lang.Thread.sleep;
 
 
@@ -39,6 +41,9 @@ public class Maf_Final extends AppCompatActivity {
     private ImageView CIRCLE;
     private Switch MAF_Switch;
     private TextView WORKOUT_START;
+    private TextView WORKOUT_MODE;
+    GraphView GRAPH;
+    int TreadSpeedReading;
     int Stepcount;
     String speedvalue;
     int MAFHR;
@@ -152,6 +157,15 @@ public class Maf_Final extends AppCompatActivity {
         Speedup = (Button) findViewById(R.id.speedup);
         SpeedDown = (Button) findViewById(R.id.speeddown);
         SpeedStop = (Button) findViewById(R.id.speedstop);
+       // GRAPH = (GraphView) findViewById(R.id.graph);
+        /*LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(0, 1),
+                new DataPoint(1, 5),
+                new DataPoint(2, 3),
+                new DataPoint(3, 2),
+                new DataPoint(4, 6)
+        });*/
+        //GRAPH.addSeries(series);
         if (extras != null) {
             MAFHR = extras.getInt("MafHeartRate");
             mafhr2 = MAFHR;
@@ -165,6 +179,7 @@ public class Maf_Final extends AppCompatActivity {
         DISPLAY_MAF_HR(MAFHR);
         CHANGE_HEART_SIZE();//DUR_FROM_HR);
         WORKOUT_START = (TextView) findViewById(R.id.WORKOUT_START);
+        WORKOUT_MODE = (TextView) findViewById(R.id.WORKOUT_MODE);
         MAF_Switch = (Switch) findViewById(R.id.MAF_Switch);
         Speedup.setOnClickListener(new View.OnClickListener() {
                                        @Override
@@ -216,23 +231,19 @@ public class Maf_Final extends AppCompatActivity {
                                 for (int t = 0; t <= MafEndSecs1; t++) {
                                     try {
                                         if (MAF_Switch.isChecked() == true) {
-                                            if(seconds < 15){
-                                                WORKOUT_START.setText("Warmup started");
-                                            }
+                                            //if(seconds < 15){
+                                                WORKOUT_MODE.setText("WARM-UP");
+                                           // }
                                             sleep(1000);
                                             seconds++;
                                             secondsdisplay++;
-                                            if(seconds % 4 == 0) {
-                                                bts.writeSpeedCharacteristic("0");
+                                            if(seconds % 1 == 0) {
+                                                bts.readSpeedCharacteristic();
+                                               TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
+                                               //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
+
                                             }
-                                            else if(A_Hr > MAFHR){
-                                                bts.writeSpeedCharacteristic(spdown);
-                                                //WORKOUT_START.setText(spdown);
-                                            }
-                                            else if(A_Hr < MAFHR) {
-                                                bts.writeSpeedCharacteristic(spdup);
-                                                //WORKOUT_START.setText(spdup);
-                                            }
+
 
                                         }
 
@@ -257,8 +268,16 @@ public class Maf_Final extends AppCompatActivity {
                                     }
 
                                     try {
-                                        if (MAF_Switch.isChecked() == true && seconds%10 == 0 && Mafworkoutstate == 0) {
-                                            WORKOUT_START.setText("P1: 15 Seconds gone by: total seconds: " + (seconds));
+                                        if (MAF_Switch.isChecked() == true && seconds%5 == 0 && Mafworkoutstate == 0 && TreadSpeedReading == 0) {
+                                            WORKOUT_START.setText("P1: 5 Seconds gone by: total seconds: " + (seconds));
+                                            if(A_Hr > MAFHR){
+                                                bts.writeSpeedCharacteristic(spdown);
+                                                //WORKOUT_START.setText(spdown);
+                                            }
+                                            else if(A_Hr < MAFHR) {
+                                                bts.writeSpeedCharacteristic(spdup);
+                                                //WORKOUT_START.setText(spdup);
+                                            }
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -274,7 +293,7 @@ public class Maf_Final extends AppCompatActivity {
                                 for (int t = 0; t <= MafEndSecs2; t++) {
                                     try {
                                         if (MAF_Switch.isChecked() == true) {
-
+                                            WORKOUT_MODE.setText("MID-MAF");
                                             sleep(1000);
                                             seconds++;
                                             secondsdisplay++;
@@ -325,7 +344,7 @@ public class Maf_Final extends AppCompatActivity {
                                     for (int t = 0; t <= MafEndSecs3; t++) {
                                         try {
                                             if (MAF_Switch.isChecked() == true) {
-                                                //WORKOUT_START.setText("entering warmdown");
+                                                WORKOUT_MODE.setText("WARM DOWN");
                                                 sleep(1000);
                                                 seconds++;
                                                 secondsdisplay++;

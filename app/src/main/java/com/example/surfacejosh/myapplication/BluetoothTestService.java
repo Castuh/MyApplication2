@@ -826,11 +826,11 @@ public class BluetoothTestService extends Service {
                 // use a switch statement here to operate on each one separately.
                 if(uuid.equalsIgnoreCase(SpeedDataCharacteristic)) {
                     // final byte[] data = characteristic.getValue();
-                    int spint = (characteristic.getValue()[0]);
-                    speedread = Integer.toString(spint);
-                    // Set the LED switch state variable based on the characteristic value ttat was read\
-                    //int value = (data[0] & 0xff);
-                    //mStepValue = toString(value);
+                    int speedbyte1 = (characteristic.getValue()[0]& 0xFF);
+                    //int speedbyte2 = (characteristic.getValue()[1]& 0xFF);
+                    //int concatspeed = speedbyte2 << 8;
+                    //int finconspeed = concatspeed | speedbyte1;
+                    speedread = Integer.toString(speedbyte1);//finconspeed);
                 }
                 // Notify the main activity that new data is available
                 broadcastUpdate(ACTION_DATA_RECEIVED_TREADMILL);

@@ -148,6 +148,8 @@ public class Maf_Final extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final int rangedown;
+        final int rangeup;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maf__final);
         doBindService();
@@ -203,6 +205,8 @@ public class Maf_Final extends AppCompatActivity {
                 WORKOUT_START.setText(spdstop);
             }
         });
+        rangedown = A_Hr - 5;
+        rangeup = A_Hr + 5;
         MAF_Switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean on) {
@@ -270,11 +274,11 @@ public class Maf_Final extends AppCompatActivity {
                                     try {
                                         if (MAF_Switch.isChecked() == true && seconds%5 == 0 && Mafworkoutstate == 0 && TreadSpeedReading == 0) {
                                             WORKOUT_START.setText("P1: 5 Seconds gone by: total seconds: " + (seconds));
-                                            if(A_Hr > MAFHR){
+                                            if(rangeup > MAFHR){
                                                 bts.writeSpeedCharacteristic(spdown);
                                                 //WORKOUT_START.setText(spdown);
                                             }
-                                            else if(A_Hr < MAFHR) {
+                                            else if(rangedown < MAFHR) {
                                                 bts.writeSpeedCharacteristic(spdup);
                                                 //WORKOUT_START.setText(spdup);
                                             }
@@ -330,10 +334,10 @@ public class Maf_Final extends AppCompatActivity {
                                         if (MAF_Switch.isChecked() == true && seconds%5 == 0 && Mafworkoutstate == 0 && TreadSpeedReading == 0) {
                                             WORKOUT_START.setText("P1: 5 Seconds gone by: total seconds: " + (seconds));
                                             if(A_Hr > MAFHR){
-                                                bts.writeSpeedCharacteristic(spdown);
+                                             rangeup   bts.writeSpeedCharacteristic(spdown);
                                                 //WORKOUT_START.setText(spdown);
                                             }
-                                            else if(A_Hr < MAFHR) {
+                                            else if(rangedown < MAFHR) {
                                                 bts.writeSpeedCharacteristic(spdup);
                                                 //WORKOUT_START.setText(spdup);
                                             }

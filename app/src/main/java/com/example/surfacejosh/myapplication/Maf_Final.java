@@ -333,8 +333,8 @@ public class Maf_Final extends AppCompatActivity {
                                     try {
                                         if (MAF_Switch.isChecked() == true && seconds%5 == 0 && Mafworkoutstate == 0 && TreadSpeedReading == 0) {
                                             WORKOUT_START.setText("P1: 5 Seconds gone by: total seconds: " + (seconds));
-                                            if(A_Hr > MAFHR){
-                                             rangeup   bts.writeSpeedCharacteristic(spdown);
+                                            if(rangeup > MAFHR){
+                                                bts.writeSpeedCharacteristic(spdown);
                                                 //WORKOUT_START.setText(spdown);
                                             }
                                             else if(rangedown < MAFHR) {

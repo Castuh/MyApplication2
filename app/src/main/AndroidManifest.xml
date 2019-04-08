@@ -40,7 +40,6 @@
             android:exported="false" />
 
 
-        <activity android:name=".ConSettingsActivity"></activity>
     </application>
 
 </manifest>

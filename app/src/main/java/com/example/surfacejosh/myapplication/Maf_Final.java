@@ -48,10 +48,10 @@ public class Maf_Final extends AppCompatActivity {
     String speedvalue;
     int MAFHR;
     int mafhr2;
+    int stateofwarmup =0;
     int A_Hr = 60;
-    int rangedown;
-    int rangeup;
     //  TREADMILL  speedup/slowdown/ and stop or ( no speed change )
+    String startup ="1";
     String spdup = "2";
     String spdown = "5";
     String spdstop = "6";
@@ -205,8 +205,7 @@ public class Maf_Final extends AppCompatActivity {
                 WORKOUT_START.setText(spdstop);
             }
         });
-        rangedown = A_Hr - 5;
-        rangeup = A_Hr + 5;
+
         MAF_Switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean on) {
@@ -239,17 +238,27 @@ public class Maf_Final extends AppCompatActivity {
                                                 WORKOUT_MODE.setText("WARM-UP");
                                            // }
                                             sleep(1000);
+                                            //startup speed
+                                            if(seconds <=5){
+
+                                                bts.writeSpeedCharacteristic("1");
+                                                if(seconds == 5) {
+                                                    stateofwarmup = 1;
+                                                }
+                                                }
+                                            }
                                             seconds++;
                                             secondsdisplay++;
-                                            if(seconds % 1 == 0) {
-                                                bts.readSpeedCharacteristic();
+
+                                            if(seconds % 2 == 0 && seconds >= 6) {
+                                                bts.writeSpeedCharacteristic("0");
                                                TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 
                                             }
 
 
-                                        }
+
 
                                         if (MAF_Switch.isChecked() == false) {
 
@@ -272,15 +281,22 @@ public class Maf_Final extends AppCompatActivity {
                                     }
 
                                     try {
-                                        if (MAF_Switch.isChecked() == true && seconds%5 == 0 && Mafworkoutstate == 0 && TreadSpeedReading == 0) {
+                                        if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 0 && stateofwarmup == 1) {
                                             WORKOUT_START.setText("P1: 5 Seconds gone by: total seconds: " + (seconds));
-                                            if(rangeup > MAFHR){
-                                                bts.writeSpeedCharacteristic(spdown);
-                                                //WORKOUT_START.setText(spdown);
-                                            }
-                                            else if(rangedown < MAFHR) {
-                                                bts.writeSpeedCharacteristic(spdup);
-                                                //WORKOUT_START.setText(spdup);
+
+                                                if(A_Hr <= 205 && A_Hr >= MAFHR) {
+                                                    bts.writeSpeedCharacteristic(spdown);
+                                                    //WORKOUT_START.setText(spdown);
+                                                }
+
+
+                                               else if(A_Hr >= 40 && A_Hr <= MAFHR){
+                                                    bts.writeSpeedCharacteristic(spdup);
+                                                    //WORKOUT_START.setText(spdup);
+                                                }
+
+                                            else {
+                                                bts.writeSpeedCharacteristic("0");
                                             }
                                         }
                                     } catch (Exception e) {
@@ -319,6 +335,7 @@ public class Maf_Final extends AppCompatActivity {
                                                 seconds = 0;
                                                 Mafworkoutstate = 0;
                                                 bts.writeSpeedCharacteristic(spdstop);
+                                                bts.writeSpeedCharacteristic(spdstop);
                                                 WORKOUT_START.setText(spdstop);
                                                 break;
                                             } catch (Exception e) {
@@ -333,13 +350,20 @@ public class Maf_Final extends AppCompatActivity {
                                     try {
                                         if (MAF_Switch.isChecked() == true && seconds%5 == 0 && Mafworkoutstate == 0 && TreadSpeedReading == 0) {
                                             WORKOUT_START.setText("P1: 5 Seconds gone by: total seconds: " + (seconds));
-                                            if(rangeup > MAFHR){
-                                                bts.writeSpeedCharacteristic(spdown);
-                                                //WORKOUT_START.setText(spdown);
+                                            if(A_Hr > MAFHR){
+                                                if(A_Hr <= 205 && A_Hr >= MAFHR) {
+                                                    bts.writeSpeedCharacteristic(spdown);
+                                                    //WORKOUT_START.setText(spdown);
+                                                }
                                             }
-                                            else if(rangedown < MAFHR) {
-                                                bts.writeSpeedCharacteristic(spdup);
-                                                //WORKOUT_START.setText(spdup);
+                                            else if(A_Hr < MAFHR) {
+                                                if(A_Hr >= 40 && A_Hr <= MAFHR){
+                                                    bts.writeSpeedCharacteristic(spdup);
+                                                    //WORKOUT_START.setText(spdup);
+                                                }
+                                            }
+                                            else {
+                                                bts.writeSpeedCharacteristic("0");
                                             }
                                         }
                                     } catch (Exception e) {

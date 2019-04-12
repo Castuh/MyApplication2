@@ -64,9 +64,9 @@ public class Maf_Final extends AppCompatActivity {
     int seconds = 0;
     int secondsdisplay = 0;
     int Mafworkoutstate = 0;
-    int MafEndSecs1 = 5; // 300 seconds   Change to 10,10,10 to test each phase of workout
-    int MafEndSecs2 = 5; //600
-    int MafEndSecs3 = 10; //300
+    int MafEndSecs1 = 100; // 300 seconds   Change to 10,10,10 to test each phase of workout
+    int MafEndSecs2 = 200; //600
+    int MafEndSecs3 = 100; //300
     //int hrdur;
     BluetoothTestService bts;
 

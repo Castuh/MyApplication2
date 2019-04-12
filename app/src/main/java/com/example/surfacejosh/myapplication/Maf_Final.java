@@ -64,9 +64,9 @@ public class Maf_Final extends AppCompatActivity {
     int seconds = 0;
     int secondsdisplay = 0;
     int Mafworkoutstate = 0;
-    int MafEndSecs1 = 300; // 300 seconds   Change to 10,10,10 to test each phase of workout
-    int MafEndSecs2 = 600; //600
-    int MafEndSecs3 = 300; //300
+    int MafEndSecs1 = 5; // 300 seconds   Change to 10,10,10 to test each phase of workout
+    int MafEndSecs2 = 5; //600
+    int MafEndSecs3 = 10; //300
     //int hrdur;
     BluetoothTestService bts;
 
@@ -219,13 +219,13 @@ public class Maf_Final extends AppCompatActivity {
                     Looper looper = handlerThread.getLooper();
                     final Handler handler = new Handler(looper);
                    // Handler MAF_HANDLE = new Handler(Looper.getMainLooper());
-                    WORKOUT_START.setText("EurickaA");
+                    //WORKOUT_START.setText("EurickaA");
 
                     handler.post(new Runnable(){
 
                         @Override
                         public void run() {
-                            WORKOUT_START.setText("Euricka");
+                            WORKOUT_START.setText("Starting Maf Workout");
 
 
                             // initial voltage
@@ -427,7 +427,7 @@ public class Maf_Final extends AppCompatActivity {
                                                 WORKOUT_START.setText("P3: 3 Seconds gone by: total seconds: " + (seconds));
                                                 //if(A_Hr > MAFHR) {
                                                     bts.writeSpeedCharacteristic(spdown);
-                                                    WORKOUT_START.setText(spdown);
+                                                    WORKOUT_START.setText("Slowing down");
                                                 //}
                                             }
                                         } catch (Exception e) {
@@ -435,12 +435,25 @@ public class Maf_Final extends AppCompatActivity {
                                         }
                                         if (seconds == MafEndSecs3+ MafEndSecs2 +MafEndSecs1){
                                             //TODO:: End workout.
+                                            try{
                                             secondsdisplay = 0;
                                             seconds = 0;
                                             Mafworkoutstate = 0;
-                                            bts.writeSpeedCharacteristic(spdstop);
-                                            WORKOUT_START.setText(spdstop);
-                                            WORKOUT_START.setText("END WORKOUT");
+                                            //WORKOUT_START.setText(spdstop);
+
+                                            for(int ij=0;ij<20;ij++){
+                                                bts.writeSpeedCharacteristic(spdstop);
+
+                                                    sleep(250);
+                                                WORKOUT_START.setText("stop");
+
+                                            }
+
+                                                WORKOUT_START.setText("END WORKOUT");
+                                                MAF_Switch.setChecked(false);
+                                            } catch(Exception e){
+                                                e.printStackTrace();
+                                            }
                                             break;
                                         }
                                     }

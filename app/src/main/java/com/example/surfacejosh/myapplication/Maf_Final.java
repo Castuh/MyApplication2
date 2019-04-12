@@ -25,7 +25,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.jjoe64.graphview.GraphView;
+//import com.jjoe64.graphview.GraphView;
 
 import static java.lang.Thread.sleep;
 
@@ -42,7 +42,7 @@ public class Maf_Final extends AppCompatActivity {
     private Switch MAF_Switch;
     private TextView WORKOUT_START;
     private TextView WORKOUT_MODE;
-    GraphView GRAPH;
+    //GraphView GRAPH;
     int TreadSpeedReading;
     int Stepcount;
     String speedvalue;
@@ -271,6 +271,7 @@ public class Maf_Final extends AppCompatActivity {
                                                 while(MAF_Switch.isChecked() == false){
                                                     //do nothing
                                                     bts.writeSpeedCharacteristic(spdstop);
+                                                    sleep(250);
                                                 }
 
                                                 break;
@@ -320,8 +321,8 @@ public class Maf_Final extends AppCompatActivity {
                                             sleep(1000);
                                             seconds++;
                                             secondsdisplay++;
-                                            if(seconds % 1 == 0) {
-                                                bts.readSpeedCharacteristic();
+                                            if(seconds % 2 == 0 && seconds >= 6) {
+                                                bts.writeSpeedCharacteristic("0");
                                                 TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                 //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 
@@ -341,6 +342,7 @@ public class Maf_Final extends AppCompatActivity {
                                                 while(MAF_Switch.isChecked() == false){
                                                     //do nothing
                                                     bts.writeSpeedCharacteristic(spdstop);
+                                                    sleep(250);
                                                 }
                                                 break;
                                             } catch (Exception e) {
@@ -388,8 +390,8 @@ public class Maf_Final extends AppCompatActivity {
                                                 sleep(1000);
                                                 seconds++;
                                                 secondsdisplay++;
-                                                if(seconds % 1 == 0) {
-                                                    bts.readSpeedCharacteristic();
+                                                if(seconds % 2 == 0 && seconds >= 6) {
+                                                    bts.writeSpeedCharacteristic("0");
                                                     TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                     //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 
@@ -408,6 +410,7 @@ public class Maf_Final extends AppCompatActivity {
                                                     while(MAF_Switch.isChecked() == false){
                                                         //do nothing
                                                         bts.writeSpeedCharacteristic(spdstop);
+                                                        sleep(250);
                                                     }
                                                     break;
                                                 } catch (Exception e) {

@@ -233,6 +233,10 @@ public class Maf_Final extends AppCompatActivity {
                             if(MAF_Switch.isChecked() == true && Mafworkoutstate == 0) {
                                 for (int t = 0; t <= MafEndSecs1; t++) {
                                     try {
+                                        if (MAF_HR.getText().equals("...")) {
+
+
+                                        }
                                         if (MAF_Switch.isChecked() == true) {
                                             //if(seconds < 15){
                                                 WORKOUT_MODE.setText("WARM-UP");
@@ -285,8 +289,19 @@ public class Maf_Final extends AppCompatActivity {
                                     }
 
                                     try {
-                                        if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 0 ) {
-                                            WORKOUT_START.setText("P1: 5 Seconds gone by: total seconds: " + (seconds));
+                                    boolean hrignore = false;
+                                    String hrstatus = Actual_hr.getText().toString();
+                                    String Elipses = "...";
+                                    if(hrstatus.compareToIgnoreCase("...") == 0){
+                                        hrignore = true;
+                                    }
+
+                                    if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 0 && hrignore == true) {
+                                        bts.writeSpeedCharacteristic("0");
+                                        WORKOUT_START.setText("Waiting for HR");
+
+                                    }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 0 && !hrignore == true) {
+                                            WORKOUT_START.setText("P1: 3 Seconds gone by: total seconds: " + (seconds));
 
                                                 if(A_Hr <= 205 && A_Hr >= MAFHR) {
                                                     bts.writeSpeedCharacteristic(spdown);
@@ -355,7 +370,19 @@ public class Maf_Final extends AppCompatActivity {
                                     }
 
                                     try {
-                                        if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 1 ) {
+
+                                        boolean hrignore = false;
+                                        String hrstatus = Actual_hr.getText().toString();
+
+                                        if(hrstatus.compareToIgnoreCase("...") == 0){
+                                            hrignore = true;
+                                        }
+
+                                        if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 1 && hrignore == true) {
+                                            bts.writeSpeedCharacteristic("0");
+                                            WORKOUT_START.setText("Waiting for HR");
+
+                                        }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 1 && !hrignore == true) {
                                             WORKOUT_START.setText("P2: 3 Seconds gone by: total seconds: " + (seconds));
                                             if(A_Hr > MAFHR){
                                                 if(A_Hr <= 205 && A_Hr >= MAFHR) {
@@ -423,7 +450,18 @@ public class Maf_Final extends AppCompatActivity {
                                         }
 
                                         try {
-                                            if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 2) {
+                                            boolean hrignore = false;
+                                            String hrstatus = Actual_hr.getText().toString();
+                                            String Elipses = "...";
+                                            if(hrstatus.compareToIgnoreCase("...") == 0){
+                                                hrignore = true;
+                                            }
+
+                                            if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 2 && hrignore == true) {
+                                                bts.writeSpeedCharacteristic("0");
+                                                WORKOUT_START.setText("Waiting for HR");
+
+                                            }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 2&& !hrignore == true) {
                                                 WORKOUT_START.setText("P3: 3 Seconds gone by: total seconds: " + (seconds));
                                                 //if(A_Hr > MAFHR) {
                                                     bts.writeSpeedCharacteristic(spdown);

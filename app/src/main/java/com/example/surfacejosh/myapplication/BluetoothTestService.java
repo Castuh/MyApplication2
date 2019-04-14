@@ -705,7 +705,11 @@ public class BluetoothTestService extends Service {
                     int hrb2 = (characteristic.getValue()[1]& 0xFF);
                     int concathr = hrb2 << 8;
                     int finconhr = concathr | hrb1;
-                    mHrValue = Integer.toString(finconhr);
+                    if(finconhr == 0){
+                        mHrValue = "...";
+                    }else {
+                        mHrValue = Integer.toString(finconhr);
+                    }
                     //}
                     break;
                 case STEPDATACHARACTERISTIC:

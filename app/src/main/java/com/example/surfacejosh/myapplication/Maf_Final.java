@@ -148,8 +148,6 @@ public class Maf_Final extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final int rangedown;
-        final int rangeup;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maf__final);
         doBindService();

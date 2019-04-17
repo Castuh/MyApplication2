@@ -46,14 +46,14 @@ public class MafActivity extends AppCompatActivity {
         setContentView(R.layout.activity_maf);
         Submit = (Button) findViewById(R.id.SubmitMafweights);
 
-            Submit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Maf_HR = CalcMafHr();
-                    OpenMaf_Final(Maf_HR);
+        Submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Maf_HR = CalcMafHr();
+                OpenMaf_Final(Maf_HR);
 
-                }
-            });
+            }
+        });
 
         /*else if(Integer.parseInt(TIE.getText().toString()) >= 0 && Integer.parseInt(TIE.getText().toString()) <= 120)
         {*/

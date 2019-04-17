@@ -22,14 +22,14 @@
         android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
+        app:layout_constraintEnd_toStartOf="@+id/FREE_RUN"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.08" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/FREE_RUN"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="156dp"
         android:layout_height="119dp"
@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/MAF_WORKOUT"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.08" />
+        app:layout_constraintVertical_bias="0.079" />
 
     <TextView
         android:id="@+id/TextV"
@@ -72,7 +72,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="0.917"
         app:layout_constraintStart_toEndOf="@+id/TextV"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toBottomOf="@+id/FREE_RUN"
         app:layout_constraintVertical_bias="0.964" />
 
     <Button

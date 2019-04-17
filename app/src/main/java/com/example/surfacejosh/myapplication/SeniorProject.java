@@ -58,6 +58,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     private TextView hrLabel;
     private BluetoothAdapter mBluetoothAdapter;
     private Button MafWorkout;
+    private Button FreeRun;
     private Button TreadMillConnect;
     private boolean discoservice = false;
     View v;
@@ -131,6 +132,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
         appcontext = getApplicationContext();
 
         MafWorkout =  findViewById(R.id.MAF_WORKOUT);
+        FreeRun = findViewById(R.id.FREE_RUN);
 
         myLabel = (TextView) findViewById(R.id.TextV);
         hrLabel = (TextView) findViewById(R.id.hr_view);
@@ -252,7 +254,12 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                 OpenMafActivity();
             }
         });
-
+        FreeRun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenFRActivity();
+            }
+        });
     }
 
 
@@ -282,6 +289,10 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
 
     public void OpenMafActivity() {
         Intent intent = new Intent(this, MafActivity.class);
+        startActivity(intent);
+    }
+    public void OpenFRActivity() {
+        Intent intent = new Intent( this, FreeRun.class);
         startActivity(intent);
     }
 

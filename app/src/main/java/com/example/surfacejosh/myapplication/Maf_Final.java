@@ -294,7 +294,7 @@ public class Maf_Final extends AppCompatActivity {
                                         hrignore = true;
                                     }
 
-                                    if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 0 && hrignore == true) {
+                                    if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 0 && hrignore == true) {
                                         bts.writeSpeedCharacteristic("0");
                                         WORKOUT_START.setText("Waiting for HR");
 
@@ -376,7 +376,7 @@ public class Maf_Final extends AppCompatActivity {
                                             hrignore = true;
                                         }
 
-                                        if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 1 && hrignore == true) {
+                                        if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 1 && hrignore == true) {
                                             bts.writeSpeedCharacteristic("0");
                                             WORKOUT_START.setText("Waiting for HR");
 
@@ -455,7 +455,7 @@ public class Maf_Final extends AppCompatActivity {
                                                 hrignore = true;
                                             }
 
-                                            if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 2 && hrignore == true) {
+                                            if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 2 && hrignore == true) {
                                                 bts.writeSpeedCharacteristic("0");
                                                 WORKOUT_START.setText("Waiting for HR");
 

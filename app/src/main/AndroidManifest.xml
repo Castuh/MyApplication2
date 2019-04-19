@@ -33,6 +33,7 @@
         </activity>
         <activity android:name=".MafActivity" />
         <activity android:name=".Maf_Final" />
+        <activity android:name=".FreeRun"/>
 
         <service
             android:name=".BluetoothTestService"

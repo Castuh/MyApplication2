@@ -19,7 +19,7 @@ public class FreeRun extends AppCompatActivity {
 
     public void OpenLD_Final(){
 
-        Intent intent = new Intent(FreeRun.this, LD_Final.class);
+    Intent intent = new Intent( this, LD_Final.class);
         startActivity(intent);
     }
 

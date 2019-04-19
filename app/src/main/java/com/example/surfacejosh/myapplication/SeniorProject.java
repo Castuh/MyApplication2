@@ -288,7 +288,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
     } //End of section for Android 6.0 (Marshmallow)
 
     public void OpenMafActivity() {
-        Intent intent = new Intent(this, MafActivity.class);
+        Intent intent = new Intent( this, MafActivity.class);
         startActivity(intent);
     }
     public void OpenFRActivity() {

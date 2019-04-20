@@ -150,22 +150,11 @@ public class BluetoothTestService extends Service {
     }
 
     public void scan() {
-        /*Scan for devices and look for the one with the service that we want */
-        UUID   HrService =       UUID.fromString(HR_SERVICE);
-        UUID   StepService = UUID.fromString(ST_SERVICE);
-        UUID   TreadService = UUID.fromString(TR_SERVICE);
-        UUID[] TreadServiceArray = {TreadService};
 
-        // Use old scan method for versions older than lollipop
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            //noinspection deprecation
-
-            mBluetoothAdapter.startLeScan(TreadServiceArray, mLeScanCallback);
-
-            mBluetoothAdapter.startLeScan(TreadServiceArray, mLeScanCallbackTread);
-
-
-        } else { // New BLE scanning introduced in LOLLIPOP
+        ///if fitnesstracker scan
+        if(scanaction == 1){
+            UUID   HrService =       UUID.fromString(HR_SERVICE);
+            UUID   StepService = UUID.fromString(ST_SERVICE);
             ScanSettings settings;
             List<ScanFilter> filters;
             mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
@@ -173,20 +162,65 @@ public class BluetoothTestService extends Service {
                     .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                     .build();
             filters = new ArrayList<>();
-            // We will scan just for the CAR's UUID
-
             ParcelUuid PUuid = new ParcelUuid(HrService);
             ParcelUuid PUUuid = new ParcelUuid(StepService);
-            ParcelUuid PUuidd = new ParcelUuid(TreadService);
             ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
+            filters.add(filter);
+            mLEScanner.startScan(filters, settings, mScanCallback);
+        } else if (scanaction == 2){ ///if tread scan
+            UUID   TreadService = UUID.fromString(TR_SERVICE);
+            ScanSettings settings;
+            List<ScanFilter> filters;
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            settings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
+            filters = new ArrayList<>();
+            ParcelUuid PUuidd = new ParcelUuid(TreadService);
+            ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
+            filters.add(filter2);
+            mLEScanner.startScan(filters, settings, mScanCallback);
+        }
+
+
+
+        /*Scan for devices and look for the one with the service that we want */
+      /*  UUID   HrService =       UUID.fromString(HR_SERVICE);
+        UUID   StepService = UUID.fromString(ST_SERVICE);*/
+        /*UUID   TreadService = UUID.fromString(TR_SERVICE);
+        UUID[] TreadServiceArray = {TreadService};*/
+
+        // Use old scan method for versions older than lollipop
+        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            //noinspection deprecation
+
+          /*  mBluetoothAdapter.startLeScan(TreadServiceArray, mLeScanCallback);
+
+            mBluetoothAdapter.startLeScan(TreadServiceArray, mLeScanCallbackTread);
+*/
+
+       // } else { // New BLE scanning introduced in LOLLIPOP
+           /* ScanSettings settings;
+            List<ScanFilter> filters;
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            settings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
+            filters = new ArrayList<>();*/
+            // We will scan just for the CAR's UUID
+
+            /*ParcelUuid PUuid = new ParcelUuid(HrService);
+            ParcelUuid PUUuid = new ParcelUuid(StepService);
+            ParcelUuid PUuidd = new ParcelUuid(TreadService);*/
+           /* ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
             ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
             filters.add(filter);
             filters.add(filter2);
 
-            mLEScanner.startScan(filters, settings, mScanCallback);
+            mLEScanner.startScan(filters, settings, mScanCallback);*/
 
             //mLEScanner.startScan(filters, settings, mScanCallbackTread);
-        }
+       // }
         /*switch(scanaction) {
             case 1:
                 UUID   HrService  = UUID.fromString(HR_SERVICE);

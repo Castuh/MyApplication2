@@ -296,24 +296,25 @@ public class Maf_Final extends AppCompatActivity {
 
                                     if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 0 && hrignore == true) {
                                         bts.writeSpeedCharacteristic("0");
-                                        WORKOUT_START.setText("Waiting for HR");
+                                        WORKOUT_START.setText("P1: Waiting for HR");
 
                                     }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 0 && !hrignore == true) {
-                                            WORKOUT_START.setText("P1: 3 Seconds gone by: total seconds: " + (seconds));
+                                           // WORKOUT_START.setText("P1: 3 Seconds gone by: total seconds: " + (seconds));
 
                                                 if(A_Hr <= 205 && A_Hr >= MAFHR) {
                                                     bts.writeSpeedCharacteristic(spdown);
-                                                    //WORKOUT_START.setText(spdown);
+                                                    WORKOUT_START.setText("P1: Slowing down at "+ seconds +" Seconds");
                                                 }
 
 
                                                else if(A_Hr >= 40 && A_Hr <= MAFHR){
                                                     bts.writeSpeedCharacteristic(spdup);
-                                                    //WORKOUT_START.setText(spdup);
+                                                    WORKOUT_START.setText("P1: Speeding up at "+ seconds +" Seconds");
                                                 }
 
                                             else {
                                                 bts.writeSpeedCharacteristic("0");
+                                                WORKOUT_START.setText("P1: Keep the Pace");
                                             }
                                         }
                                     } catch (Exception e) {
@@ -381,21 +382,21 @@ public class Maf_Final extends AppCompatActivity {
                                             WORKOUT_START.setText("Waiting for HR");
 
                                         }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 1 && !hrignore == true) {
-                                            WORKOUT_START.setText("P2: 3 Seconds gone by: total seconds: " + (seconds));
-                                            if(A_Hr > MAFHR){
-                                                if(A_Hr <= 205 && A_Hr >= MAFHR) {
-                                                    bts.writeSpeedCharacteristic(spdown);
-                                                    //WORKOUT_START.setText(spdown);
-                                                }
+                                            //WORKOUT_START.setText("P2: 3 Seconds gone by: total seconds: " + (seconds));
+                                            if(A_Hr <= 205 && A_Hr >= MAFHR) {
+                                                bts.writeSpeedCharacteristic(spdown);
+                                                WORKOUT_START.setText("P2: Slowing down at "+ seconds +" Seconds");
                                             }
-                                            else if(A_Hr < MAFHR) {
-                                                if(A_Hr >= 40 && A_Hr <= MAFHR){
-                                                    bts.writeSpeedCharacteristic(spdup);
-                                                    //WORKOUT_START.setText(spdup);
-                                                }
+
+
+                                            else if(A_Hr >= 40 && A_Hr <= MAFHR){
+                                                bts.writeSpeedCharacteristic(spdup);
+                                                WORKOUT_START.setText("P2: Speeding up at "+ seconds +" Seconds");
                                             }
+
                                             else {
                                                 bts.writeSpeedCharacteristic("0");
+                                                WORKOUT_START.setText("P2: Keep the Pace");
                                             }
                                         }
                                     } catch (Exception e) {
@@ -460,10 +461,10 @@ public class Maf_Final extends AppCompatActivity {
                                                 WORKOUT_START.setText("Waiting for HR");
 
                                             }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 2&& !hrignore == true) {
-                                                WORKOUT_START.setText("P3: 3 Seconds gone by: total seconds: " + (seconds));
+                                               // WORKOUT_START.setText("P3: 3 Seconds gone by: total seconds: " + (seconds));
                                                 //if(A_Hr > MAFHR) {
                                                     bts.writeSpeedCharacteristic(spdown);
-                                                    WORKOUT_START.setText("Slowing down");
+                                                    WORKOUT_START.setText("P3: Slowing down "+seconds+" seconds");
                                                 //}
                                             }
                                         } catch (Exception e) {

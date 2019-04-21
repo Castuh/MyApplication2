@@ -75,6 +75,7 @@ public class BluetoothTestService extends Service {
     private static String speedread = "0";
     private static boolean mLedSwitchState = false;
     private static boolean mStepState = false;
+    private static int ZeroCount = 0;
     private static String mHrValue = "..."; // This is the No hr value ...
     private static String mStepValue = "...";
     // Actions used during broadcasts to the main activity
@@ -618,7 +619,11 @@ public class BluetoothTestService extends Service {
                     int concathr = hrb2 << 8;
                     int finconhr = concathr | hrb1;
                     if(finconhr == 0){
+                        ZeroCount++;
+                        if(ZeroCount == 20){
                         mHrValue = "...";
+                        ZeroCount = 0;
+                        }
                     }else {
                         mHrValue = Integer.toString(finconhr);
                     }

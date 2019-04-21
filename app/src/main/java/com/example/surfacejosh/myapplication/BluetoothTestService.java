@@ -152,6 +152,20 @@ public class BluetoothTestService extends Service {
     public void scan() {
 
         ///if fitnesstracker scan
+        if (scanaction == 2){ ///if tread scan
+            UUID   TreadService = UUID.fromString(TR_SERVICE);
+            ScanSettings settings;
+            List<ScanFilter> filters;
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            settings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
+            filters = new ArrayList<>();
+            ParcelUuid PUuidd = new ParcelUuid(TreadService);
+            ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
+            filters.add(filter2);
+            mLEScanner.startScan(filters, settings, mScanCallbackTread);
+        }
         if(scanaction == 1){
             UUID   HrService =       UUID.fromString(HR_SERVICE);
             UUID   StepService = UUID.fromString(ST_SERVICE);
@@ -167,21 +181,7 @@ public class BluetoothTestService extends Service {
             ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
             filters.add(filter);
             mLEScanner.startScan(filters, settings, mScanCallback);
-        } else if (scanaction == 2){ ///if tread scan
-            UUID   TreadService = UUID.fromString(TR_SERVICE);
-            ScanSettings settings;
-            List<ScanFilter> filters;
-            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-            settings = new ScanSettings.Builder()
-                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                    .build();
-            filters = new ArrayList<>();
-            ParcelUuid PUuidd = new ParcelUuid(TreadService);
-            ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
-            filters.add(filter2);
-            mLEScanner.startScan(filters, settings, mScanCallback);
         }
-
     }
 
 
@@ -450,28 +450,28 @@ public class BluetoothTestService extends Service {
         public void onScanResult(int callbackType, ScanResult result) {
 
 
-            if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81") && scanaction == 1){
+            /*if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81") && scanaction == 1){*/
                 mLeDevice = result.getDevice();
                 mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
                 broadcastUpdate(ACTION_BLESCAN_CALLBACK_FIT_TRACKER); // Tell the main activity that a device has been found
 
-            }
-            if(result.getDevice().getAddress().equals("E9:44:48:4F:C6:D1") && scanaction == 2){
+          /*  }*/
+           /* if(result.getDevice().getAddress().equals("E9:44:48:4F:C6:D1") && scanaction == 2){
                 mLeDeviceTread = result.getDevice();
                 mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
                 broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
 
-            }
+            }*/
         }
     };
-    /*private final ScanCallback mScanCallbackTread = new ScanCallback() {
+    private final ScanCallback mScanCallbackTread = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             mLeDeviceTread = result.getDevice();
             mLEScanner.stopScan(mScanCallbackTread); // Stop scanning after the first device is found
             broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
        }
-    };*/
+    };
 
 
     /**

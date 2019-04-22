@@ -2,6 +2,7 @@ package com.example.surfacejosh.myapplication;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -232,6 +233,7 @@ public class Maf_Final extends AppCompatActivity {
 
                     handler.post(new Runnable(){
 
+                        @SuppressLint("SetTextI18n")
                         @Override
                         public void run() {
                             WORKOUT_START.setText("Starting Maf Workout");
@@ -265,7 +267,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                             if(seconds % 2 == 0 && seconds >= 6) {
                                                 bts.writeSpeedCharacteristic("0");
-                                                WORKOUT_START.setText("P1: Keep the Pace");
+                                               // WORKOUT_START.setText("P1: Keep the Pace");
                                                //TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 
@@ -400,12 +402,12 @@ public class Maf_Final extends AppCompatActivity {
                                             hrignore = true;
                                         }
 
-                                        if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 1 && hrignore == true) {
+                                        if (MAF_Switch.isChecked() && seconds%3 == 0 && Mafworkoutstate == 1 && hrignore) {
                                             bts.writeSpeedCharacteristic("0");
                                             WORKOUT_START.setText("Waiting for HR "+seconds);
 
-                                        }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 1 && !hrignore == true) {
-                                            //WORKOUT_START.setText("P2: 3 Seconds gone by: total seconds: " + (seconds));
+                                        }else if (MAF_Switch.isChecked() && seconds%3 == 0 && Mafworkoutstate == 1 && !hrignore) {
+
                                             if(A_Hr <= 205 && A_Hr >= MAFHR) {
                                                 bts.writeSpeedCharacteristic(spdown);
                                                 WORKOUT_START.setText("P2: Slowing down at "+ seconds +" Seconds");
@@ -448,7 +450,7 @@ public class Maf_Final extends AppCompatActivity {
                                                 secondsdisplay++;
                                                 if(seconds % 2 == 0 && seconds >= 6) {
                                                     bts.writeSpeedCharacteristic("0");
-                                                    WORKOUT_START.setText("P3: Keep the Pace");
+                                                   // WORKOUT_START.setText("P3: Keep the Pace");
                                                     //TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                     //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 

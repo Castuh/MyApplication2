@@ -171,7 +171,28 @@ public class BluetoothTestService extends Service {
             ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
             filters.add(filter);
             mLEScanner.startScan(filters, settings, mScanCallback);
+
         }
+       /* ScanSettings settings;
+        List<ScanFilter> filters;
+        mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        settings = new ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .build();
+        filters = new ArrayList<>();
+        // We will scan just for the CAR's UUID
+
+        ParcelUuid PUuid = new ParcelUuid(HrService);
+        ParcelUuid PUUuid = new ParcelUuid(StepService);
+        ParcelUuid PUuidd = new ParcelUuid(TreadService);
+        ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
+        ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
+        filters.add(filter);
+        filters.add(filter2);
+
+        mLEScanner.startScan(filters, settings, mScanCallback);
+*/
+
     }
 
 
@@ -368,6 +389,25 @@ public class BluetoothTestService extends Service {
        }
     };
 
+    /*private final ScanCallback mScanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+
+
+            if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81") && scanaction == 1){
+                mLeDevice = result.getDevice();
+                mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
+                broadcastUpdate(ACTION_BLESCAN_CALLBACK_FIT_TRACKER); // Tell the main activity that a device has been found
+
+            }
+            if(result.getDevice().getAddress().equals("E9:44:48:4F:C6:D1") && scanaction == 2){
+                mLeDeviceTread = result.getDevice();
+                mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
+                broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
+
+            }
+        }
+    };*/
 
 
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {

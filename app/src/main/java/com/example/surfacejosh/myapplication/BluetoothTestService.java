@@ -441,7 +441,7 @@ public class BluetoothTestService extends Service {
                     int hrb2 = (characteristic.getValue()[1]& 0xFF);
                     int concathr = hrb2 << 8;
                     int finconhr = concathr | hrb1;
-                    if(finconhr == 0){
+                    if(finconhr <= 30 || finconhr >= 205){
                         ZeroCount++;
                         if(ZeroCount == 20){
                         mHrValue = "...";

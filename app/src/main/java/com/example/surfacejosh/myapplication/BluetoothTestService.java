@@ -32,9 +32,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Service for managing the BLE data connection with the GATT database.
- */
+
 @TargetApi(Build.VERSION_CODES.LOLLIPOP) // This is required to allow us to use the lollipop and later scan APIs
 public class BluetoothTestService extends Service {
     private final static String TAG = BluetoothTestService.class.getSimpleName();
@@ -95,9 +93,6 @@ public class BluetoothTestService extends Service {
     public BluetoothTestService() {
     }
 
-    /**
-     * This is a binder for the BlueToothTestService
-     */
     public class LocalBinder extends Binder {
         BluetoothTestService getService() {
             return BluetoothTestService.this;
@@ -118,11 +113,7 @@ public class BluetoothTestService extends Service {
 
     private final IBinder mBinder = new LocalBinder();
 
-    /**
-     * Initializes a reference to the local Bluetooth adapter.
-     *
-     * @return Return true if the initialization is successful.
-     */
+
     public boolean initialize() {
         // For API level 18 and above, get a reference to BluetoothAdapter through
         // BluetoothManager.
@@ -143,9 +134,7 @@ public class BluetoothTestService extends Service {
         return true;
     }
 
-    /**
-     * Scans for BLE devices that support the service we are looking for
-     */
+  //Gets the status of which device to connect to
     public void getScanStatusFromMain(int actionfrommain){
         scanaction = actionfrommain;
     }
@@ -187,30 +176,12 @@ public class BluetoothTestService extends Service {
 
 
 
-    /**
-     * Connects to the GATT server hosted on the Bluetooth LE device.
-     *
-     * @return Return true if the connection is initiated successfully. The connection result
-     * is reported asynchronously through the
-     * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
-     * callback.
-     */
     public boolean connect() {
         if (mBluetoothAdapter == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return false;
         }
-/*
 
-        // Previously connected device.  Try to reconnect.
-        if (mBluetoothGatt != null) {
-            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-            return mBluetoothGatt.connect();
-        }
-*/
-
-        // We want to directly connect to the device, so we are setting the autoConnect
-        // parameter to false.
         mBluetoothGatt = mLeDevice.connectGatt(this, false, mGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         return true;
@@ -223,25 +194,12 @@ public class BluetoothTestService extends Service {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return false;
         }
-/*
-
-        // Previously connected device.  Try to reconnect.
-        if (mBluetoothGattTread != null) {
-            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-            return mBluetoothGattTread.connect();
-        }
-*/
-
-        // We want to directly connect to the device, so we are setting the autoConnect
-        // parameter to false.
         mBluetoothGattTread = mLeDeviceTread.connectGatt(this, false, mGattCallbackTread);
         Log.d(TAG, "Trying to create a new connection Treadmill.");
         return true;
     }
 
-    /**
-     * Runs service discovery on the connected device.
-     */
+
     public void discoverServices() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
@@ -257,12 +215,7 @@ public class BluetoothTestService extends Service {
         mBluetoothGattTread.discoverServices();
     }
 
-    /**
-     * Disconnects an existing connection or cancel a pending connection. The disconnection result
-     * is reported asynchronously through the
-     * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
-     * callback.
-     */
+
     public void disconnect() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
@@ -272,10 +225,7 @@ public class BluetoothTestService extends Service {
         mBluetoothGattTread.disconnect();
     }
 
-    /**
-     * After using a given BLE device, the app must call this method to ensure resources are
-     * released properly.
-     */
+
     public void close() {
         if (mBluetoothGatt == null && mBluetoothGattTread == null) {
             return;
@@ -286,9 +236,7 @@ public class BluetoothTestService extends Service {
         mBluetoothGattTread = null;
     }
 
-    /**
-     * This method is used to read the state of the LED from the device
-     */
+
     public void readSpeedCharacteristic() {
         if (mBluetoothAdapter == null || mBluetoothGattTread == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
@@ -308,11 +256,7 @@ public class BluetoothTestService extends Service {
     public String getStepValue(){
         return mStepValue;
     }
-    /**
-     * This method is used to turn the LED on or off
-     *
-     * @param value Turns the LED on (1) or off (0)
-     */
+
     public void writeStepCharacteristic(boolean value){
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
@@ -349,11 +293,6 @@ public class BluetoothTestService extends Service {
         }
     }
 
-    /**
-     * This method enables or disables notifications for the CapSense slider
-     *
-     * @param value Turns notifications on (1) or off (0)
-     */
     public void writeCapSenseNotification(boolean value) {
         // Set notifications locally in the CCCD
         mBluetoothGatt.setCharacteristicNotification(mHRCharacteristic, value);
@@ -372,38 +311,8 @@ public class BluetoothTestService extends Service {
        // mBluetoothGatt.writeDescriptor(mStepCCCD);
 
     }
-    /*public void  writespeednotification(boolean value) {
-        // Set notifications locally in the CCCD
-        mBluetoothGattTread.setCharacteristicNotification(mTreadCharacteristic, value);
-        // mBluetoothGatt.setCharacteristicNotification(mStepCharacteristic, value);
-        byte[] byteVal = new byte[1];
-        if (value) {
-            byteVal[0] = 1;
-        } else {
-            byteVal[0] = 0;
-        }
-        // Write Notification value to the device
-        Log.i(TAG, "speed notification " + value);
-        mspCCCD.setValue(byteVal);
-        mBluetoothGattTread.writeDescriptor(mspCCCD);
-        // mStepCCCD.setValue(byteVal);
-        // mBluetoothGatt.writeDescriptor(mStepCCCD);
-    }*/
 
-    /**
-     * This method returns the state of the LED switch
-     *
-     * @return the value of the LED swtich state
-     */
-   /* public boolean getLedSwitchState() {
-        return mLedSwitchState;
-    }*/
 
-    /**
-     * This method returns the value of th CapSense Slider
-     *
-     * @return the value of the CapSense Slider
-     */
     public String getCapSenseValue() {
         return mHrValue;
     }
@@ -411,12 +320,7 @@ public class BluetoothTestService extends Service {
         return speedread;
     }
 
-    /**
-     * Implements the callback for when scanning for devices has found a device with
-     * the service we are looking for.
-     *
-     * This is the callback for BLE scanning on versions prior to Lollipop
-     */
+
     private BluetoothAdapter.LeScanCallback mLeScanCallbackTread =
             new BluetoothAdapter.LeScanCallback() {
                 @Override
@@ -440,12 +344,7 @@ public class BluetoothTestService extends Service {
                 }
             };
 
-    /**
-     * Implements the callback for when scanning for devices has faound a device with
-     * the service we are looking for.
-     *
-     * This is the callback for BLE scanning for LOLLIPOP and later
-     */
+
     private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -456,13 +355,8 @@ public class BluetoothTestService extends Service {
                 mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
                 broadcastUpdate(ACTION_BLESCAN_CALLBACK_FIT_TRACKER); // Tell the main activity that a device has been found
 
-          /*  }*/
-           /* if(result.getDevice().getAddress().equals("E9:44:48:4F:C6:D1") && scanaction == 2){
-                mLeDeviceTread = result.getDevice();
-                mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
-                broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
 
-            }*/
+
         }
     };
     private final ScanCallback mScanCallbackTread = new ScanCallback() {
@@ -475,10 +369,6 @@ public class BluetoothTestService extends Service {
     };
 
 
-    /**
-     * Implements callback methods for GATT events that the app cares about.  For example,
-     * connection change and services discovered.
-     */
 
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
@@ -497,37 +387,14 @@ public class BluetoothTestService extends Service {
 
         }
 
-        /*@Override
-        public void onConnectionUpdated(BluetoothGatt gatt, int interval, int latency, int timeout,
-                                        int status){
 
-        }*/
-        /**
-         * This is called when a service discovery has completed.
-         *
-         * It gets the characteristics we are interested in and then
-         * broadcasts an update to the main activity.
-         *
-         * @param gatt The GATT database object
-         * @param status Status of whether the write was successful.
-         */
+
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-           /* if(mLeDevice == null){
 
-                if(mLeDeviceTread.getAddress().equals("E9:44:48:4F:C6:D1")) {
-                    BluetoothGattService mService3 = gatt.getService(UUID.fromString(TR_SERVICE));
-                    *//*TreadCharacteristic*//*
-
-                    mTreadCharacteristic = mService3.getCharacteristic(UUID.fromString(SpeedDataCharacteristic));
-                    mspCCCD = mTreadCharacteristic.getDescriptor(UUID.fromString(HRDATACHARDESCRIPTOR));
-                    readSpeedCharacteristic();
-                }
-            }*/
-            //if(mLeDeviceTread == null) {
                 if(mLeDevice.getAddress().equals("C0:D4:40:C4:1A:81")) {
                     // Get just the service that we are looking for
-//hr service
+                    //hr service
                     BluetoothGattService mService = gatt.getService(UUID.fromString(HR_SERVICE));
                     //step service
                     BluetoothGattService mService2 = gatt.getService(UUID.fromString(ST_SERVICE));
@@ -543,74 +410,30 @@ public class BluetoothTestService extends Service {
                     //step discriptor
                     mStepCCCD = mStepCharacteristic.getDescriptor(UUID.fromString(STEPDATACHARDESCRIPTOR));
                 }
-            //}
-            //Tread service
 
-
-            //writeStepCharacteristic(true);
-            // Read the current state of the LED from the device
-            //readLedCharacteristic();
-            //readStepCharacteristic();
-
-            //mStepValue = mService.getCharacteristic(UUID.fromString(STEPDATACHARACTERISTIC)).getValue().toString();
-            // Broadcast that service/characteristic/descriptor discovery is done
-
-            //readStepCharacteristic();
             broadcastUpdate(ACTION_SERVICES_DISCOVERED_FIT_TRACKER);
         }
 
-        /**
-         * This is called when a read completes
-         *
-         * @param gatt the GATT database object
-         * @param characteristic the GATT characteristic that was read
-         * @param status the status of the transaction
-         */
+
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                // Verify that the read was the LED state
-                String uuid = characteristic.getUuid().toString();
-                // In this case, the only read the app does is the LED state.
-                // If the application had additional characteristics to read we could
-                // use a switch statement here to operate on each one separately.
-               /* if(uuid.equalsIgnoreCase(STEPDATACHARACTERISTIC)) {
-                  // final byte[] data = characteristic.getValue();
-                    int spint = (characteristic.getValue()[0]);
-                  mStepValue = Integer.toString(spint);
 
-                    // Set the LED switch state variable based on the characteristic value ttat was read\
-                    //int value = (data[0] & 0xff);
-                    //mStepValue = toString(value);
-                }*/
-                // Notify the main activity that new data is available
+                String uuid = characteristic.getUuid().toString();
+
                 broadcastUpdate(ACTION_DATA_RECEIVED_FIT_TRACKER);
             }
         }
 
-
-
-        /**
-         * This is called when a characteristic with notify set changes.
-         * It broadcasts an update to the main activity with the changed data.
-         *
-         * @param gatt The GATT database object
-         * @param characteristic The characteristic that was changed
-         */
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
 
             String uuid = characteristic.getUuid().toString();
 
-            // In this case, the only notification the apps gets is the CapSense value.
-            // If the application had additional notifications we could
-            //TODO  make switch statement
-            //characteristic = mStepCharacteristic;
-            //uuid = STEPDATACHARACTERISTIC;
             switch (uuid) {
                 case HRDATACHARACTERISTIC:
                     // use a switch statement here to operate on each one separately.
@@ -670,18 +493,10 @@ public class BluetoothTestService extends Service {
         }
 
 
-        /**
-         * This is called when a service discovery has completed.
-         *
-         * It gets the characteristics we are interested in and then
-         * broadcasts an update to the main activity.
-         *
-         * @param gatt The GATT database object
-         * @param status Status of whether the write was successful.
-         */
+
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            //if(mLeDevice == null){
+
 
                 if(mLeDeviceTread.getAddress().equals("E9:44:48:4F:C6:D1")) {
                     BluetoothGattService mService3 = gatt.getService(UUID.fromString(TR_SERVICE));
@@ -691,49 +506,10 @@ public class BluetoothTestService extends Service {
                     mspCCCD = mTreadCharacteristic.getDescriptor(UUID.fromString(HRDATACHARDESCRIPTOR));
                     //readSpeedCharacteristic();
                 }
-           // }
-           /* if(mLeDeviceTread == null) {
-                if(mLeDevice.getAddress().equals("C0:D4:40:C4:1A:81")) {
-                    // Get just the service that we are looking for
 
-                    BluetoothGattService mService = gatt.getService(UUID.fromString(HR_SERVICE));
-                    //step service
-                    BluetoothGattService mService2 = gatt.getService(UUID.fromString(ST_SERVICE));
-                    *//* Get characteristics from our desired service *//*
-                    mHRCharacteristic = mService.getCharacteristic(UUID.fromString(HRDATACHARACTERISTIC));
-                    *//* Get the hr CCCD *//*
-                    mHRCCCD = mHRCharacteristic.getDescriptor(UUID.fromString(HRDATACHARDESCRIPTOR));
-
-
-
-                    //step characteristic
-                    mStepCharacteristic = mService2.getCharacteristic(UUID.fromString(STEPDATACHARACTERISTIC));
-                    //step discriptor
-                    mStepCCCD = mStepCharacteristic.getDescriptor(UUID.fromString(STEPDATACHARDESCRIPTOR));
-                }
-            }
-
-
-*/
-            //writeStepCharacteristic(true);
-            // Read the current state of the LED from the device
-            //readLedCharacteristic();
-            //readStepCharacteristic();
-
-            //mStepValue = mService.getCharacteristic(UUID.fromString(STEPDATACHARACTERISTIC)).getValue().toString();
-            // Broadcast that service/characteristic/descriptor discovery is done
-
-            //readStepCharacteristic();
             broadcastUpdate(ACTION_SERVICES_DISCOVERED_TREADMILL);
         }
 
-        /**
-         * This is called when a read completes
-         *
-         * @param gatt the GATT database object
-         * @param characteristic the GATT characteristic that was read
-         * @param status the status of the transaction
-         */
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
@@ -758,35 +534,12 @@ public class BluetoothTestService extends Service {
             }
         }
 
-
-        /**
-         * This is called when a characteristic with notify set changes.
-         * It broadcasts an update to the main activity with the changed data.
-         *
-         * @param gatt The GATT database object
-         * @param characteristic The characteristic that was changed
-         */
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
 
             String uuid = characteristic.getUuid().toString();
 
-            // In this case, the only notification the apps gets is the CapSense value.
-            // If the application had additional notifications we could
-            //TODO  make switch statement
-            //characteristic = mStepCharacteristic;
-            //uuid = STEPDATACHARACTERISTIC;
-            /*switch (uuid) {
-                case SpeedDataCharacteristic:
-                    Log.d(TAG,"speed CHARACTERISTIC");
-                    int lsb2 = (characteristic.getValue()[1] & 0xFF);
-                    speedread = Integer.toString(lsb2);
-                default:
-
-            }*/
-
-            // Notify the main activity that new data is available
             broadcastUpdate(ACTION_DATA_RECEIVED_TREADMILL);
         }
 
@@ -799,11 +552,7 @@ public class BluetoothTestService extends Service {
     {
         mBluetoothGatt.writeCharacteristic(characteristic);
     }
-    /**
-     * Sends a broadcast to the listener in the main activity.
-     *
-     * @param action The type of action that occurred.
-     */
+
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
         sendBroadcast(intent);

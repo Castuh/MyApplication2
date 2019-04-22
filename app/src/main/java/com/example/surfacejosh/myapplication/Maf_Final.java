@@ -36,6 +36,7 @@ public class Maf_Final extends AppCompatActivity {
     private TextView MAF_HR;
     private TextView Actual_hr;
     private TextView StepCountView;
+    private TextView Calories;
     private Button Speedup;
     //boolean displayhr = false;
     private ImageView CIRCLE;
@@ -47,9 +48,14 @@ public class Maf_Final extends AppCompatActivity {
     int Stepcount;
     String speedvalue;
     int MAFHR;
+    int age = 0;
     int mafhr2;
     int stateofwarmup =0;
+
+    int weight = 0;
     int A_Hr = 60;
+    int calint = 0;
+    float caloriesburned = 0.0f;
     //  TREADMILL  speedup/slowdown/ and stop or ( no speed change )
     String startup ="1";
     String spdup = "2";
@@ -64,9 +70,9 @@ public class Maf_Final extends AppCompatActivity {
     int seconds = 0;
     int secondsdisplay = 0;
     int Mafworkoutstate = 0;
-    int MafEndSecs1 = 100; // 300 seconds   Change to 10,10,10 to test each phase of workout
-    int MafEndSecs2 = 200; //600
-    int MafEndSecs3 = 100; //300
+    int MafEndSecs1 = 75; // 300 seconds   Change to 10,10,10 to test each phase of workout
+    int MafEndSecs2 = 150; //600
+    int MafEndSecs3 = 75; //300
     //int hrdur;
     BluetoothTestService bts;
 
@@ -157,6 +163,7 @@ public class Maf_Final extends AppCompatActivity {
         Speedup = (Button) findViewById(R.id.speedup);
         SpeedDown = (Button) findViewById(R.id.speeddown);
         SpeedStop = (Button) findViewById(R.id.speedstop);
+        Calories = (TextView) findViewById(R.id.CALORIESBURNED);
        // GRAPH = (GraphView) findViewById(R.id.graph);
         /*LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
                 new DataPoint(0, 1),
@@ -169,8 +176,12 @@ public class Maf_Final extends AppCompatActivity {
         if (extras != null) {
             MAFHR = extras.getInt("MafHeartRate");
             mafhr2 = MAFHR;
+            weight = extras.getInt("Weight");
+            //weight = Integer.parseInt(WeightI);
+            age = extras.getInt("Age");
 
         }
+        //weight = Integer.parseInt(WeightI);
         final IntentFilter filter = new IntentFilter();
         filter.addAction(bts.ACTION_DATA_RECEIVED_FIT_TRACKER);
         Intent gattServiceIntent = new Intent(this, BluetoothTestService.class);
@@ -296,7 +307,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                     if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 0 && hrignore == true) {
                                         bts.writeSpeedCharacteristic("0");
-                                        WORKOUT_START.setText("P1: Waiting for HR");
+                                        WORKOUT_START.setText("P1: Waiting for HR "+seconds);
 
                                     }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 0 && !hrignore == true) {
                                            // WORKOUT_START.setText("P1: 3 Seconds gone by: total seconds: " + (seconds));
@@ -320,10 +331,19 @@ public class Maf_Final extends AppCompatActivity {
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
+                                    try{
+
+                                        Calories.setText(CalcCalories(seconds)+" Calories Burned");
+
+                                    } catch (Exception e){
+
+                                    }
                                     if (seconds == MafEndSecs1){
                                         Mafworkoutstate++;
                                     }
                                 }
+
+
                             }
 
 
@@ -379,7 +399,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                         if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 1 && hrignore == true) {
                                             bts.writeSpeedCharacteristic("0");
-                                            WORKOUT_START.setText("Waiting for HR");
+                                            WORKOUT_START.setText("Waiting for HR "+seconds);
 
                                         }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 1 && !hrignore == true) {
                                             //WORKOUT_START.setText("P2: 3 Seconds gone by: total seconds: " + (seconds));
@@ -401,6 +421,13 @@ public class Maf_Final extends AppCompatActivity {
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                    }
+                                    try{
+
+                                        Calories.setText(CalcCalories(seconds)+" Calories Burned");
+
+                                    } catch (Exception e){
+
                                     }
                                     if (seconds - MafEndSecs1 == MafEndSecs2){
                                         Mafworkoutstate++;
@@ -456,11 +483,12 @@ public class Maf_Final extends AppCompatActivity {
                                                 hrignore = true;
                                             }
 
-                                            if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 2 && hrignore == true) {
+                                           /* if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 2 && hrignore == true) {
                                                 bts.writeSpeedCharacteristic("0");
-                                                WORKOUT_START.setText("Waiting for HR");
+                                                WORKOUT_START.setText("Waiting for HR "+seconds);
 
-                                            }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 2&& !hrignore == true) {
+                                            }else*/
+                                           if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 2&& !hrignore == true) {
                                                // WORKOUT_START.setText("P3: 3 Seconds gone by: total seconds: " + (seconds));
                                                 //if(A_Hr > MAFHR) {
                                                     bts.writeSpeedCharacteristic(spdown);
@@ -469,6 +497,13 @@ public class Maf_Final extends AppCompatActivity {
                                             }
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                        }
+                                        try{
+
+                                            Calories.setText(CalcCalories(seconds)+" Calories Burned");
+
+                                        } catch (Exception e){
+
                                         }
                                         if (seconds == MafEndSecs3+ MafEndSecs2 +MafEndSecs1){
                                             //TODO:: End workout.
@@ -504,7 +539,18 @@ public class Maf_Final extends AppCompatActivity {
         });
 
     }
+    private int CalcCalories(int time){
+        String hrvalue = bts.getCapSenseValue();
 
+            //if(hrvalue.compareToIgnoreCase("...") == 0){//do nothing
+            //}
+            //else{
+            caloriesburned = (-1f)*(((float) age * 0.2017f) - ((float) weight * 0.09036f) + ((float) A_Hr * 0.6309f) - 55.0969f) * time / 251.04f;
+            calint = (int)caloriesburned;
+            //}
+
+      return calint;
+    }
     private final BroadcastReceiver mBleUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -524,7 +570,12 @@ public class Maf_Final extends AppCompatActivity {
 
                     Actual_hr.setText(hrvalue);
                     StepCountView.setText(stpvalue);
-                    //A_Hr = Integer.parseInt(hrvalue);
+                    if(hrvalue.compareToIgnoreCase("...") == 0){
+
+                    }else{
+                        A_Hr = Integer.parseInt(hrvalue);
+                    }
+
 
                 default:
                     break;

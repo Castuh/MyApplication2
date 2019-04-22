@@ -23,9 +23,10 @@ public class MafActivity extends AppCompatActivity {
     static int Maf_HR;
     //public BluetoothTestService bts1;
     int age = 0;
+    int weight = 0;
     private static final String SHARED_PREFS = "sharedprefs";
     private static final String AGE = "0";
-    private static final String WEIGHT = "0";
+    private static final String WEIGHT = "1";
     private String ages;
     private String weights;
 
@@ -38,7 +39,8 @@ public class MafActivity extends AppCompatActivity {
         Intent intent = new Intent(MafActivity.this, Maf_Final.class);
         intent.putExtra("MafHeartRate",hr);
         intent.putExtra("mah",hr);
-        intent.putExtra("Weigh",weights);
+        intent.putExtra("Weight",weight);
+        intent.putExtra("Age",age);
         //intent.putExtra("bts1", (Parcelable) bts1);
         startActivity(intent);
     }
@@ -46,6 +48,8 @@ public class MafActivity extends AppCompatActivity {
         //TIE = (TextInputEditText) findViewById(R.id.EnterAge);
         String AgeString = TIE.getText().toString();
         age = Integer.parseInt(AgeString);
+        String WeightString = TIEW.getText().toString();
+        weight = Integer.parseInt(WeightString);
         return 180 - age;
     }
 

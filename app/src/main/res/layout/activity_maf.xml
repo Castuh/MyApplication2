@@ -33,19 +33,42 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.415">
+        app:layout_constraintVertical_bias="0.499">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/EnterAge"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:hint="Enter your age"
+            android:hint=" Enter Your Age"
             android:inputType="number"
             android:numeric="integer"
             android:text="0"
             android:textAlignment="center"
             android:textAllCaps="false" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="145dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/MafAge"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.903">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/EnterWeight"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="   Enter Your Weight"
+            android:inputType="number"
+            android:text="0"
+            android:textAlignment="center" />
     </android.support.design.widget.TextInputLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -265,8 +265,10 @@ public class Maf_Final extends AppCompatActivity {
 
                                             if(seconds % 2 == 0 && seconds >= 6) {
                                                 bts.writeSpeedCharacteristic("0");
-                                               TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
+                                                WORKOUT_START.setText("P1: Keep the Pace");
+                                               //TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
+
 
                                             }
 
@@ -357,7 +359,8 @@ public class Maf_Final extends AppCompatActivity {
                                             secondsdisplay++;
                                             if(seconds % 2 == 0 && seconds >= 6) {
                                                 bts.writeSpeedCharacteristic("0");
-                                                TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
+                                                //WORKOUT_START.setText("P2: Keep the Pace");
+                                               // TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                 //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 
                                             }
@@ -445,7 +448,8 @@ public class Maf_Final extends AppCompatActivity {
                                                 secondsdisplay++;
                                                 if(seconds % 2 == 0 && seconds >= 6) {
                                                     bts.writeSpeedCharacteristic("0");
-                                                    TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
+                                                    WORKOUT_START.setText("P3: Keep the Pace");
+                                                    //TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                     //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 
                                                 }

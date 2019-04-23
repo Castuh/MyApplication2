@@ -335,12 +335,12 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                         @Override
                         public void run() {
                             myLabel.setText("notify Update");
-                            // if(mBluetoothTestService. != null) {
+                      //       if(mBluetoothTestService. != null) {
                             mBluetoothTestService.writeStepCharacteristic(true);
                             //mBluetoothTestService.writeCapSenseNotification(true);
-                            // }
+                             }
                             //mBluetoothTestService.writeStepCharacteristic(true);
-                        } // This is your code
+                      //  } // This is your code
                     };
                     WriteStepNotifThread.postDelayed(WriteStepNotifThreadRun,1000);
                     Handler WriteHRNotifThread = new Handler(Looper.getMainLooper());

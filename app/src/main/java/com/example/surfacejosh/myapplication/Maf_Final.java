@@ -241,31 +241,33 @@ public class Maf_Final extends AppCompatActivity {
 
                             // initial voltage
                            // Serial.write
-                            if(MAF_Switch.isChecked() == true && Mafworkoutstate == 0) {
+                            if(MAF_Switch.isChecked() && Mafworkoutstate == 0) {
                                 for (int t = 0; t <= MafEndSecs1; t++) {
                                     try {
                                         if (MAF_HR.getText().equals("...")) {
 
 
                                         }
-                                        if (MAF_Switch.isChecked() == true) {
+                                        bts.readSpeedCharacteristic();
+                                        TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
+                                        if (MAF_Switch.isChecked()) {
                                             //if(seconds < 15){
                                                 WORKOUT_MODE.setText("WARM-UP");
                                            // }
                                             sleep(1000);
                                             //startup speed
-                                            if(seconds <=5){
 
-                                                bts.writeSpeedCharacteristic(startup);
-                                                if(seconds == 5) {
-                                                    stateofwarmup = 1;
+                                                if(seconds <=3) {
+                                                    bts.writeSpeedCharacteristic(startup);
                                                 }
                                                 }
-                                            }
+
+
+
                                             seconds++;
                                             secondsdisplay++;
 
-                                            if(seconds % 2 == 0 && seconds >= 6) {
+                                           /* if(seconds % 2 == 0 && seconds >= 6) {
                                                 bts.writeSpeedCharacteristic("0");
                                                // WORKOUT_START.setText("P1: Keep the Pace");
                                                //TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
@@ -273,19 +275,20 @@ public class Maf_Final extends AppCompatActivity {
 
 
                                             }
+*/
 
 
 
-
-                                        if (MAF_Switch.isChecked() == false) {
+                                        if (!MAF_Switch.isChecked()) {
 
                                             try {
                                                 secondsdisplay = seconds;
                                                 WORKOUT_START.setText("Methodology Stopped  prt 1 at: " + secondsdisplay + " Seconds");
                                                 seconds = 0;
                                                 Mafworkoutstate = 0;
+                                                stateofwarmup = 0;
                                                 WORKOUT_START.setText("Stopping Treadmill");
-                                                while(MAF_Switch.isChecked() == false){
+                                                while(!MAF_Switch.isChecked()){
                                                     //do nothing
                                                     bts.writeSpeedCharacteristic(spdstop);
                                                     sleep(250);
@@ -309,11 +312,11 @@ public class Maf_Final extends AppCompatActivity {
                                         hrignore = true;
                                     }
 
-                                    if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 0 && hrignore == true) {
-                                        bts.writeSpeedCharacteristic("0");
+                                    if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 0 && hrignore ) {
+                                       // bts.writeSpeedCharacteristic("0");
                                         WORKOUT_START.setText("P1: Waiting for HR "+seconds);
 
-                                    }else if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 0 && !hrignore == true) {
+                                    }else if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 0 && !hrignore && TreadSpeedReading == 0) {
                                            // WORKOUT_START.setText("P1: 3 Seconds gone by: total seconds: " + (seconds));
 
                                                 if(A_Hr <= 205 && A_Hr >= MAFHR) {
@@ -328,7 +331,7 @@ public class Maf_Final extends AppCompatActivity {
                                                 }
 
                                             else {
-                                                bts.writeSpeedCharacteristic("0");
+                                               // bts.writeSpeedCharacteristic("0");
                                                 WORKOUT_START.setText("P1: Keep the Pace");
                                             }
                                         }
@@ -351,25 +354,25 @@ public class Maf_Final extends AppCompatActivity {
                             }
 
 
-                            if(MAF_Switch.isChecked() == true && Mafworkoutstate == 1) {
+                            if(MAF_Switch.isChecked() && Mafworkoutstate == 1) {
                                 for (int t = 0; t <= MafEndSecs2; t++) {
                                     try {
-                                        if (MAF_Switch.isChecked() == true) {
+                                        if (MAF_Switch.isChecked()) {
                                             WORKOUT_MODE.setText("MID-MAF");
                                             sleep(1000);
                                             seconds++;
                                             secondsdisplay++;
-                                            if(seconds % 2 == 0 && seconds >= 6) {
+                                            /*if(seconds % 2 == 0 && seconds >= 6) {
                                                 bts.writeSpeedCharacteristic("0");
                                                 //WORKOUT_START.setText("P2: Keep the Pace");
                                                // TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                 //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 
-                                            }
+                                            }*/
 
                                         }
 
-                                        if (MAF_Switch.isChecked() == false) {
+                                        if (!MAF_Switch.isChecked()) {
 
                                             try {
 
@@ -378,7 +381,7 @@ public class Maf_Final extends AppCompatActivity {
                                                 seconds = 0;
                                                 Mafworkoutstate = 0;
                                                 WORKOUT_START.setText("Stopping Treadmill");
-                                                while(MAF_Switch.isChecked() == false){
+                                                while(!MAF_Switch.isChecked()){
                                                     //do nothing
                                                     bts.writeSpeedCharacteristic(spdstop);
                                                     sleep(250);
@@ -401,12 +404,12 @@ public class Maf_Final extends AppCompatActivity {
                                         if(hrstatus.compareToIgnoreCase("...") == 0){
                                             hrignore = true;
                                         }
-
-                                        if (MAF_Switch.isChecked() && seconds%3 == 0 && Mafworkoutstate == 1 && hrignore) {
-                                            bts.writeSpeedCharacteristic("0");
+                                        TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
+                                        if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 1 && hrignore ) {
+                                           // bts.writeSpeedCharacteristic("0");
                                             WORKOUT_START.setText("Waiting for HR "+seconds);
 
-                                        }else if (MAF_Switch.isChecked() && seconds%3 == 0 && Mafworkoutstate == 1 && !hrignore) {
+                                        }else if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 1 && !hrignore && TreadSpeedReading == 0) {
 
                                             if(A_Hr <= 205 && A_Hr >= MAFHR) {
                                                 bts.writeSpeedCharacteristic(spdown);
@@ -420,7 +423,7 @@ public class Maf_Final extends AppCompatActivity {
                                             }
 
                                             else {
-                                                bts.writeSpeedCharacteristic("0");
+                                               // bts.writeSpeedCharacteristic("0");
                                                 WORKOUT_START.setText("P2: Keep the Pace");
                                             }
                                         }
@@ -440,25 +443,25 @@ public class Maf_Final extends AppCompatActivity {
                                 }
                             }
 
-                                if (MAF_Switch.isChecked() == true && Mafworkoutstate == 2) {
+                                if (MAF_Switch.isChecked() && Mafworkoutstate == 2) {
                                     for (int t = 0; t <= MafEndSecs3; t++) {
                                         try {
-                                            if (MAF_Switch.isChecked() == true) {
+                                            if (MAF_Switch.isChecked()) {
                                                 WORKOUT_MODE.setText("WARM DOWN");
                                                 sleep(1000);
                                                 seconds++;
                                                 secondsdisplay++;
-                                                if(seconds % 2 == 0 && seconds >= 6) {
+                                               /* if(seconds % 2 == 0 && seconds >= 6) {
                                                     bts.writeSpeedCharacteristic("0");
                                                    // WORKOUT_START.setText("P3: Keep the Pace");
                                                     //TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                                     //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
 
-                                                }
+                                                }*/
 
                                             }
 
-                                            if (MAF_Switch.isChecked() == false) {
+                                            if (!MAF_Switch.isChecked()) {
 
                                                 try {
                                                     secondsdisplay = seconds;
@@ -466,7 +469,7 @@ public class Maf_Final extends AppCompatActivity {
                                                     seconds = 0;
                                                     Mafworkoutstate = 0;
                                                     WORKOUT_START.setText("Stopping Treadmill");
-                                                    while(MAF_Switch.isChecked() == false){
+                                                    while(!MAF_Switch.isChecked()){
                                                         //do nothing
                                                         bts.writeSpeedCharacteristic(spdstop);
                                                         sleep(250);
@@ -488,13 +491,12 @@ public class Maf_Final extends AppCompatActivity {
                                             if(hrstatus.compareToIgnoreCase("...") == 0){
                                                 hrignore = true;
                                             }
-
-                                           /* if (MAF_Switch.isChecked() == true && seconds%2 == 0 && Mafworkoutstate == 2 && hrignore == true) {
+                                            TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
+                                            if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 2 && hrignore) {
                                                 bts.writeSpeedCharacteristic("0");
                                                 WORKOUT_START.setText("Waiting for HR "+seconds);
 
-                                            }else*/
-                                           if (MAF_Switch.isChecked() == true && seconds%3 == 0 && Mafworkoutstate == 2&& !hrignore == true) {
+                                            }else if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 2&& !hrignore && TreadSpeedReading == 0) {
                                                // WORKOUT_START.setText("P3: 3 Seconds gone by: total seconds: " + (seconds));
                                                 //if(A_Hr > MAFHR) {
                                                     bts.writeSpeedCharacteristic(spdown);

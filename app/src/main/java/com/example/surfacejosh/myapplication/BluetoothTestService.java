@@ -59,13 +59,13 @@ public class BluetoothTestService extends Service {
    //private String uuidoption;
     private final static String HR_SERVICE = "0000180d-0000-1000-8000-00805f9b34fb";
     private final static String ST_SERVICE = "00110011-4455-6677-8899-AABBCCDDEEFF";
-    private final static String TR_SERVICE = "00005207-0000-1000-8000-00805f9b34fb";
+    private final static String TR_SERVICE = "000052B7-0000-1000-8000-00805f9b34fb";
     public  final static String HRDATACHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
     private final static String HRDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
     private final static String STEPDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
     //private final static String STEPDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
     public  final static String STEPDATACHARACTERISTIC = "0000a507-0000-1000-8000-00805f9b34fb";
-    public final static String SpeedDataCharacteristic = "00000002-0000-1000-8000-00805f9b34fb";
+    public final static String SpeedDataCharacteristic = "00000202-0000-1000-8000-00805f9b34fb";
     //public  final static String STEPDATACHARACTERISTIC = "00002A38-0000-1000-8000-00805f9b34fb";
 
     // Variables to keep track of the LED switch state and CapSense Value

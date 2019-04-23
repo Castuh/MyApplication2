@@ -310,7 +310,7 @@ public class SeniorProject extends AppCompatActivity { //implements AdapterView.
                     myLabel.setText("discovering treadmill");
                     treadDiscoverServices(v);
                     IsTreadConnected = true;
-                    Connecttracker.setText("Disconnect Treadmill");
+                    TreadMillConnect.setText("Disconnect Treadmill");
 
                     if (!mConnectState) {
 

@@ -257,20 +257,34 @@ public class BluetoothTestService extends Service {
             return;
         }
         mBluetoothGatt.disconnect();
+
+    }
+    public void disconnectTread(){
+        if (mBluetoothAdapter == null || mBluetoothGattTread == null) {
+            Log.w(TAG, "BluetoothAdapter not initialized");
+            return;
+        }
+
         mBluetoothGattTread.disconnect();
     }
 
 
     public void close() {
-        if (mBluetoothGatt == null && mBluetoothGattTread == null) {
+        if (mBluetoothGatt == null ) {
             return;
         }
         mBluetoothGatt.close();
         mBluetoothGatt = null;
+
+    }
+    public void closeTread() {
+        if (mBluetoothGattTread == null) {
+            return;
+        }
+
         mBluetoothGattTread.close();
         mBluetoothGattTread = null;
     }
-
 
     public void readSpeedCharacteristic() {
         if (mBluetoothAdapter == null || mBluetoothGattTread == null) {
@@ -344,7 +358,7 @@ public class BluetoothTestService extends Service {
         }
     }
 
-    public void writeCapSenseNotification(boolean value) {
+    public void writeHeartRateNotification(boolean value) {
 
         try{
             // Set notifications locally in the CCCD

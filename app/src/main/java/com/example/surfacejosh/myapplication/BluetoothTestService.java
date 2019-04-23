@@ -59,7 +59,7 @@ public class BluetoothTestService extends Service {
    //private String uuidoption;
     private final static String HR_SERVICE = "0000180d-0000-1000-8000-00805f9b34fb";
     private final static String ST_SERVICE = "00110011-4455-6677-8899-AABBCCDDEEFF";
-    private final static String TR_SERVICE = "00110011-4455-6677-8899-BBCCAADDEEFF";
+    private final static String TR_SERVICE = "00005207-0000-1000-8000-00805f9b34fb";
     public  final static String HRDATACHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
     private final static String HRDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
     private final static String STEPDATACHARDESCRIPTOR = "00002902-0000-1000-8000-00805f9b34fb";
@@ -141,9 +141,10 @@ public class BluetoothTestService extends Service {
 
     public void scan() {
 
-        ///if fitnesstracker scan
+      /*  ///if fitnesstracker scan
         if (scanaction == 2){ ///if tread scan
             UUID   TreadService = UUID.fromString(TR_SERVICE);
+            String TreadName = "TreadMill Arduino";
             ScanSettings settings;
             List<ScanFilter> filters;
             mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
@@ -152,6 +153,7 @@ public class BluetoothTestService extends Service {
                     .build();
             filters = new ArrayList<>();
             ParcelUuid PUuidd = new ParcelUuid(TreadService);
+
             ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
             filters.add(filter2);
             mLEScanner.startScan(filters, settings, mScanCallbackTread);
@@ -172,26 +174,38 @@ public class BluetoothTestService extends Service {
             filters.add(filter);
             mLEScanner.startScan(filters, settings, mScanCallback);
 
-        }
-       /* ScanSettings settings;
+        }*/
+        UUID   StepService = UUID.fromString(ST_SERVICE);
+        UUID   HrService =       UUID.fromString(HR_SERVICE);
+        UUID   TreadService = UUID.fromString(TR_SERVICE);
+        ScanSettings settings;
         List<ScanFilter> filters;
+        List<ScanFilter> filters2;
         mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
         settings = new ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .build();
+        //ScanSettings settings2;
+        //mLEScanner
+        //settings2 = new ScanSettings().Builder().setScanMode(ScanSettings.CALLBACK_TYPE_ALL_MATCHES).build();
         filters = new ArrayList<>();
+        filters2 = new ArrayList<>();
         // We will scan just for the CAR's UUID
 
-        ParcelUuid PUuid = new ParcelUuid(HrService);
-        ParcelUuid PUUuid = new ParcelUuid(StepService);
-        ParcelUuid PUuidd = new ParcelUuid(TreadService);
-        ScanFilter filter = new ScanFilter.Builder().setServiceUuid(PUuid,PUUuid).build();
-        ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(PUuidd).build();
-        filters.add(filter);
-        filters.add(filter2);
+        ParcelUuid HrUUID = new ParcelUuid(HrService);
 
-        mLEScanner.startScan(filters, settings, mScanCallback);
-*/
+        ParcelUuid TreadUUID = new ParcelUuid(TreadService);
+        ScanFilter filter = new ScanFilter.Builder().setServiceUuid(HrUUID).setDeviceName("Fitness Tracker G5").build();//setServiceUuid(PUuid,PUUuid).build();
+        ScanFilter filter2 = new ScanFilter.Builder().setDeviceName("Treadmill Arduino G5").build();//setDeviceAddress("C0:D4:40:C4:1A:81").build();  .setServiceUuid(TreadUUID)
+        filters.add(filter);
+        filters2.add(filter2);
+        if(scanaction == 1){
+            mLEScanner.startScan(filters, settings, mScanCallback);
+        }
+        else if(scanaction == 2){
+            mLEScanner.startScan((filters2), settings, mScanCallbackTread);
+        }
+
 
     }
 
@@ -263,7 +277,12 @@ public class BluetoothTestService extends Service {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        mBluetoothGattTread.readCharacteristic(mTreadCharacteristic);
+        try{
+            mBluetoothGattTread.readCharacteristic(mTreadCharacteristic);
+
+        }catch(Exception e){
+
+        }
 
     }
     public void readStepCharacteristic() {
@@ -271,7 +290,12 @@ public class BluetoothTestService extends Service {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        mBluetoothGatt.readCharacteristic(mStepCharacteristic);
+        try{
+            mBluetoothGatt.readCharacteristic(mStepCharacteristic);
+
+        }catch(Exception e){
+
+        }
 
     }
     public String getStepValue(){
@@ -279,11 +303,14 @@ public class BluetoothTestService extends Service {
     }
 
     public void writeStepCharacteristic(boolean value){
-        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
+        if (mBluetoothAdapter == null || mBluetoothGatt == null ) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        mBluetoothGatt.setCharacteristicNotification(mStepCharacteristic, value);
+        try{
+            mBluetoothGatt.setCharacteristicNotification(mStepCharacteristic, value);
+
+
         byte[] byteVal = new byte[1];
         if (value) {
             byteVal[0] = 1;
@@ -294,6 +321,9 @@ public class BluetoothTestService extends Service {
 
         mStepCCCD.setValue(byteVal);
         mBluetoothGatt.writeDescriptor(mStepCCCD);
+        }catch(Exception e){
+
+        }
     }
     public void writeSpeedCharacteristic(String value) {
         if (mBluetoothAdapter == null || mBluetoothGattTread == null) {
@@ -315,22 +345,26 @@ public class BluetoothTestService extends Service {
     }
 
     public void writeCapSenseNotification(boolean value) {
-        // Set notifications locally in the CCCD
-        mBluetoothGatt.setCharacteristicNotification(mHRCharacteristic, value);
-       // mBluetoothGatt.setCharacteristicNotification(mStepCharacteristic, value);
-        byte[] byteVal = new byte[1];
-        if (value) {
-            byteVal[0] = 1;
-        } else {
-            byteVal[0] = 0;
-        }
-        // Write Notification value to the device
-        Log.i(TAG, "HR Notification " + value);
-        mHRCCCD.setValue(byteVal);
-        mBluetoothGatt.writeDescriptor(mHRCCCD);
-       // mStepCCCD.setValue(byteVal);
-       // mBluetoothGatt.writeDescriptor(mStepCCCD);
 
+        try{
+            // Set notifications locally in the CCCD
+            mBluetoothGatt.setCharacteristicNotification(mHRCharacteristic, value);
+            // mBluetoothGatt.setCharacteristicNotification(mStepCharacteristic, value);
+            byte[] byteVal = new byte[1];
+            if (value) {
+                byteVal[0] = 1;
+            } else {
+                byteVal[0] = 0;
+            }
+            // Write Notification value to the device
+            Log.i(TAG, "HR Notification " + value);
+            mHRCCCD.setValue(byteVal);
+            mBluetoothGatt.writeDescriptor(mHRCCCD);
+            // mStepCCCD.setValue(byteVal);
+            // mBluetoothGatt.writeDescriptor(mStepCCCD);
+        }catch(Exception e){
+
+        }
     }
 
 
@@ -366,12 +400,12 @@ public class BluetoothTestService extends Service {
             };
 
 
-    private final ScanCallback mScanCallback = new ScanCallback() {
+   private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
 
 
-            /*if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81") && scanaction == 1){*/
+            //if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81") && scanaction == 1){
                 mLeDevice = result.getDevice();
                 mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
                 broadcastUpdate(ACTION_BLESCAN_CALLBACK_FIT_TRACKER); // Tell the main activity that a device has been found
@@ -388,19 +422,19 @@ public class BluetoothTestService extends Service {
             broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
        }
     };
-
-    /*private final ScanCallback mScanCallback = new ScanCallback() {
+/*
+    private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
 
 
-            if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81") && scanaction == 1){
+            if(result.getDevice().getAddress().equals("E9:44:48:4F:C6:D1") && scanaction == 1){
                 mLeDevice = result.getDevice();
                 mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
                 broadcastUpdate(ACTION_BLESCAN_CALLBACK_FIT_TRACKER); // Tell the main activity that a device has been found
 
             }
-            if(result.getDevice().getAddress().equals("E9:44:48:4F:C6:D1") && scanaction == 2){
+            if(result.getDevice().getAddress().equals("C0:D4:40:C4:1A:81") || result.getDevice().getName().equals("TreadMill Arduino") && scanaction == 2){
                 mLeDeviceTread = result.getDevice();
                 mLEScanner.stopScan(mScanCallback); // Stop scanning after the first device is found
                 broadcastUpdate(ACTION_BLESCAN_CALLBACK_TREADMILL); // Tell the main activity that a device has been found
@@ -432,7 +466,8 @@ public class BluetoothTestService extends Service {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
-                if(mLeDevice.getAddress().equals("C0:D4:40:C4:1A:81")) {
+               // if(mLeDevice.getAddress().equals("C0:D4:40:C4:1A:81")) {
+
                     // Get just the service that we are looking for
                     //hr service
                     BluetoothGattService mService = gatt.getService(UUID.fromString(HR_SERVICE));
@@ -449,7 +484,7 @@ public class BluetoothTestService extends Service {
                     mStepCharacteristic = mService2.getCharacteristic(UUID.fromString(STEPDATACHARACTERISTIC));
                     //step discriptor
                     mStepCCCD = mStepCharacteristic.getDescriptor(UUID.fromString(STEPDATACHARDESCRIPTOR));
-                }
+               // }
 
             broadcastUpdate(ACTION_SERVICES_DISCOVERED_FIT_TRACKER);
         }
@@ -538,14 +573,14 @@ public class BluetoothTestService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
 
-                if(mLeDeviceTread.getAddress().equals("E9:44:48:4F:C6:D1")) {
+               // if(mLeDeviceTread.getAddress().equals("E9:44:48:4F:C6:D1")|| mLeDeviceTread.getName().equals("TreadMill Arduino")) {
                     BluetoothGattService mService3 = gatt.getService(UUID.fromString(TR_SERVICE));
                     /*TreadCharacteristic*/
 
                     mTreadCharacteristic = mService3.getCharacteristic(UUID.fromString(SpeedDataCharacteristic));
                     mspCCCD = mTreadCharacteristic.getDescriptor(UUID.fromString(HRDATACHARDESCRIPTOR));
-                    //readSpeedCharacteristic();
-                }
+                    readSpeedCharacteristic();
+               // }
 
             broadcastUpdate(ACTION_SERVICES_DISCOVERED_TREADMILL);
         }

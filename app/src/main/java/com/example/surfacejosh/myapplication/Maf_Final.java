@@ -344,7 +344,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                                 @Override
                                                 public void run() {
-                                                    WORKOUT_START.setText("P1: Keep the Pace");
+                                                    WORKOUT_START.setText("P1: Keep the Pace at " + seconds);
                                                 }
                                             });
 
@@ -452,7 +452,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                                 @Override
                                                 public void run() {
-                                                    WORKOUT_START.setText("P2: Keep the Pace");
+                                                    WORKOUT_START.setText("P2: Keep the Pace at " + seconds);
                                                 }
                                             });
 
@@ -886,8 +886,9 @@ public class Maf_Final extends AppCompatActivity {
             //if(hrvalue.compareToIgnoreCase("...") == 0){//do nothing
             //}
             //else{
-            caloriesburned = (-1f)*(((float) age * 0.2017f) - ((float) weight * 0.09036f) + ((float) A_Hr * 0.6309f) - 55.0969f) * time / 251.04f;
-            calint = (int)caloriesburned;
+            //caloriesburned = (-1f)*(((float) age * 0.2017f) - ((float) weight * 0.09036f) + ((float) A_Hr * 0.6309f) - 55.0969f) * time / 251.04f;
+        caloriesburned =  (0.0175f * 8.0f *(float)weight/2.2f)*(float)time/60.0f;
+        calint = (int)caloriesburned;
             //}
 
       return calint;

@@ -263,7 +263,7 @@ public class Maf_Final extends AppCompatActivity {
                                             }
                                         });
                                         sleep(50);
-                                        if(seconds <=1) {
+                                        if(seconds <=3) {
                                             bts.writeSpeedCharacteristic(startup);
                                         }
                                         secondtwentieth++;
@@ -289,8 +289,7 @@ public class Maf_Final extends AppCompatActivity {
                                                          WORKOUT_START.setText("Stopping Treadmill");
                                                      }
                                                  });
-                                                handlerThread.quitSafely();
-                                                handlerThread.quit();
+
                                                 while(!MAF_Switch.isChecked()){
                                                     // Stop Treadmill signal send
                                                     bts.writeSpeedCharacteristic(spdstop);
@@ -298,6 +297,8 @@ public class Maf_Final extends AppCompatActivity {
                                                     sleep(1000);
                                                     break;
                                                 }
+                                                handlerThread.quitSafely();
+                                            handlerThread.quit();
                                                 continue;
                                         }
                                         ///Set HrIgnore flag
@@ -578,6 +579,7 @@ public class Maf_Final extends AppCompatActivity {
                                     }
                                 }
                                 if(!MAF_Switch.isChecked()){
+                                    bts.writeSpeedCharacteristic(spdstop);
                                     continue;
                                 }
                             }

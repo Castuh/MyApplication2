@@ -69,13 +69,17 @@ public class Maf_Final extends AppCompatActivity {
     String MAF_HR_AND_LOG;
     String MAF_HR_STRING;
     double DUR_FROM_HR;
+    int minutesdisplay =0;
+    int hoursdisplay =0;
+    int HourDis= 0;
+    int MinuteDis= 0;
     int seconds = 0;
     int secondtwentieth = 0;
-    int secondsdisplay = 0;
+    int SecondDis = 0;
     int Mafworkoutstate = 0;
-    int MafEndSecs1 = 100; // 300 seconds   Change to 10,10,10 to test each phase of workout
-    int MafEndSecs2 = 200; //600
-    int MafEndSecs3 = 100; //300
+    int MafEndSecs1 = 50; // 300 seconds   Change to 10,10,10 to test each phase of workout
+    int MafEndSecs2 = 140; //600
+    int MafEndSecs3 = 50; //300
     //int hrdur;
     BluetoothTestService bts;
 
@@ -254,34 +258,52 @@ public class Maf_Final extends AppCompatActivity {
                             });
 
                             while(MAF_Switch.isChecked()){
-                                if(seconds>= 0 && seconds<MafEndSecs1){
-                                    try{
+                                try {
+                                    if (seconds <= 1){
                                         mainHandler.post(new Runnable() {
                                             @Override
                                             public void run() {
                                                 WORKOUT_MODE.setText("WARM-UP");
                                             }
                                         });
-                                        sleep(50);
+                                     }
+                                     ////// Increment seconds after every 50milliseconds for each mode
+                                    sleep(50);
+                                    secondtwentieth++;
+                                    if(secondtwentieth%20 ==0){
+                                        seconds++;
+                                        SecondDis++;
+                                        if(MinuteDis==60){
+                                            HourDis++;
+                                            MinuteDis=0;
+                                        }
+                                        if(SecondDis==60){
+                                            MinuteDis++;
+                                            SecondDis=0;
+                                        }
+                                        secondtwentieth = 0;
+                                    }
+
+                                }catch(Exception e){ }
+                                if(seconds>= 0 && seconds<MafEndSecs1){
+                                    try{
+
                                         if(seconds <=3) {
                                             bts.writeSpeedCharacteristic(startup);
                                         }
-                                        secondtwentieth++;
-                                        if(secondtwentieth%20 ==0){
-                                            seconds++;
-                                            secondsdisplay++;
-                                            secondtwentieth = 0;
-                                        }
+
                                         /// if switch is off Stop everything set everything to 0 and send stop signal to treadmill
                                         if (!MAF_Switch.isChecked()) {
 
-                                                secondsdisplay = seconds;
+                                            minutesdisplay =0;
+                                            hoursdisplay =0;
+                                            HourDis= 0;
+                                            MinuteDis= 0;
+                                            seconds = 0;
+                                            secondtwentieth = 0;
+                                            SecondDis = 0;
 
 
-                                                seconds = 0;
-                                                Mafworkoutstate = 0;
-                                                stateofwarmup = 0;
-                                                secondtwentieth = 0;
                                                 mainHandler.post(new Runnable() {
 
                                                      @Override
@@ -320,7 +342,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                                     @Override
                                                     public void run() {
-                                                        WORKOUT_START.setText("P1: Slowing down at "+ seconds +" Seconds");
+                                                        WORKOUT_START.setText("P1: Slowing down at "+ HourDis +":"+MinuteDis+":"+SecondDis);
                                                     }
                                                 });
 
@@ -332,7 +354,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                                     @Override
                                                     public void run() {
-                                                        WORKOUT_START.setText("P1: Speeding up at "+ seconds +" Seconds");
+                                                        WORKOUT_START.setText("P1: Speeding up at "+ HourDis +":"+MinuteDis+":"+SecondDis);
                                                     }
                                                 });
 
@@ -345,7 +367,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                                 @Override
                                                 public void run() {
-                                                    WORKOUT_START.setText("P1: Keep the Pace at " + seconds);
+                                                    WORKOUT_START.setText("P1: Keep the Pace at "+ HourDis +":"+MinuteDis+":"+SecondDis);
                                                 }
                                             });
 
@@ -359,13 +381,7 @@ public class Maf_Final extends AppCompatActivity {
                                             }
                                         });
 
-
-
-
-
-                                    }catch(Exception e){
-
-                                    }
+                                    }catch(Exception e){ }
                                 }
                                 if(seconds>= MafEndSecs1&& seconds <=(MafEndSecs1+MafEndSecs2)){
                                     try{
@@ -376,21 +392,16 @@ public class Maf_Final extends AppCompatActivity {
                                                 WORKOUT_MODE.setText("MID MAF");
                                             }
                                         });
-                                        sleep(50);
-                                        secondtwentieth++;
-                                        if(secondtwentieth%20 ==0){
-                                            seconds++;
-                                            secondsdisplay++;
-                                            secondtwentieth = 0;
-                                        }
                                         /// if switch is off Stop everything set everything to 0 and send stop signal to treadmill
                                         if (!MAF_Switch.isChecked()) {
 
-                                            secondsdisplay = seconds;
+                                            minutesdisplay =0;
+                                            hoursdisplay =0;
+                                            HourDis= 0;
+                                            MinuteDis= 0;
                                             seconds = 0;
-                                            Mafworkoutstate = 0;
-                                            stateofwarmup = 0;
                                             secondtwentieth = 0;
+                                            SecondDis = 0;
                                             mainHandler.post(new Runnable() {
 
                                                 @Override
@@ -428,7 +439,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                                     @Override
                                                     public void run() {
-                                                        WORKOUT_START.setText("P2: Slowing down at "+ seconds +" Seconds");
+                                                        WORKOUT_START.setText("P2: Slowing down at "+ HourDis +":"+MinuteDis+":"+SecondDis);
                                                     }
                                                 });
 
@@ -440,7 +451,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                                     @Override
                                                     public void run() {
-                                                        WORKOUT_START.setText("P2: Speeding up at "+ seconds +" Seconds");
+                                                        WORKOUT_START.setText("P2: Speeding up at "+ HourDis +":"+MinuteDis+":"+SecondDis);
                                                     }
                                                 });
 
@@ -453,7 +464,7 @@ public class Maf_Final extends AppCompatActivity {
 
                                                 @Override
                                                 public void run() {
-                                                    WORKOUT_START.setText("P2: Keep the Pace at " + seconds);
+                                                    WORKOUT_START.setText("P2: Keep the Pace at " + HourDis +":"+MinuteDis+":"+SecondDis);
                                                 }
                                             });
 
@@ -468,10 +479,7 @@ public class Maf_Final extends AppCompatActivity {
                                         });
 
 
-
-                                    }catch(Exception e){
-
-                                    }
+                                    }catch(Exception e){ }
                                 }
                                 if(seconds>(MafEndSecs1+MafEndSecs2)&& seconds <=(MafEndSecs1+MafEndSecs2+MafEndSecs3)){
                                     try{
@@ -483,17 +491,9 @@ public class Maf_Final extends AppCompatActivity {
                                             }
                                         });
 
-                                        sleep(50);
-                                        secondtwentieth++;
-                                        if(secondtwentieth%20==0){
-                                            seconds++;
-                                            secondsdisplay++;
-                                            secondtwentieth = 0;
-                                        }
                                         /// if switch is off Stop everything set everything to 0 and send stop signal to treadmill
                                         if (!MAF_Switch.isChecked()) {
 
-                                            secondsdisplay = seconds;
                                             mainHandler.post(new Runnable() {
 
                                                 @Override
@@ -502,10 +502,13 @@ public class Maf_Final extends AppCompatActivity {
                                                 }
                                             });
 
+                                            minutesdisplay =0;
+                                            hoursdisplay =0;
+                                            HourDis= 0;
+                                            MinuteDis= 0;
                                             seconds = 0;
-                                            Mafworkoutstate = 0;
-                                            stateofwarmup = 0;
                                             secondtwentieth = 0;
+                                            SecondDis = 0;
 
                                             handlerThread.quitSafely();
                                             handlerThread.quit();
@@ -531,28 +534,34 @@ public class Maf_Final extends AppCompatActivity {
 
                                                 @Override
                                                 public void run() {
-                                                    WORKOUT_START.setText("P3: Slowing down "+seconds+" seconds");
+                                                    WORKOUT_START.setText("P3: Slowing down "+ HourDis +":"+MinuteDis+":"+SecondDis);
                                                 }
                                             });
 
 
                                         }
                                         ///Print calories TODO:: fix accuracy of calories displayed
-                                        mainHandler.post(new Runnable() {
+                                        if(seconds != MafEndSecs3+ MafEndSecs2 +MafEndSecs1) {
+                                            mainHandler.post(new Runnable() {
 
-                                            @Override
-                                            public void run() {
-                                                Calories.setText(CalcCalories(seconds)+" Calories Burned");
-                                            }
-                                        });
-
+                                                @Override
+                                                public void run() {
+                                                    Calories.setText(CalcCalories(seconds) + " Calories Burned");
+                                                }
+                                            });
+                                        }
                                         //Stop workout End workout
                                         if (seconds == MafEndSecs3+ MafEndSecs2 +MafEndSecs1){
                                             //TODO:: End workout.
-                                                secondsdisplay = 0;
-                                                seconds = 0;
-                                                secondtwentieth = 0;
-                                                bts.writeSpeedCharacteristic(spdstop);
+                                            minutesdisplay =0;
+                                            hoursdisplay =0;
+                                            HourDis= 0;
+                                            MinuteDis= 0;
+                                            seconds = 0;
+                                            secondtwentieth = 0;
+                                            SecondDis = 0;
+
+                                            bts.writeSpeedCharacteristic(spdstop);
 
                                                 sleep(250);
                                             mainHandler.post(new Runnable() {
@@ -566,311 +575,18 @@ public class Maf_Final extends AppCompatActivity {
                                                 }
                                             });
 
-
-
                                                     sleep(1000);
                                                 }
 
-
-
-
-                                    }catch(Exception e){
+                                    }catch(Exception e){ }
 
                                     }
-                                }
                                 if(!MAF_Switch.isChecked()){
                                     bts.writeSpeedCharacteristic(spdstop);
                                     continue;
                                 }
                             }
 
-                            // initial voltage
-                           // Serial.write
-                           /* if(MAF_Switch.isChecked() && Mafworkoutstate == 0) {
-                                for (int t = 0; t <= MafEndSecs1; t++) {
-                                    try {
-
-                                        bts.readSpeedCharacteristic();
-                                        TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
-                                        if (MAF_Switch.isChecked()) {
-
-                                                WORKOUT_MODE.setText("WARM-UP");
-
-                                            sleep(1000);
-                                            //startup speed
-
-                                                if(seconds <=3) {
-                                                    bts.writeSpeedCharacteristic(startup);
-                                                }
-                                                }
-
-
-
-                                            seconds++;
-                                            secondsdisplay++;
-
-                                           *//* if(seconds % 2 == 0 && seconds >= 6) {
-                                                bts.writeSpeedCharacteristic("0");
-                                               // WORKOUT_START.setText("P1: Keep the Pace");
-                                               //TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
-                                               //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
-
-
-                                            }
-*//*
-
-
-
-                                        if (!MAF_Switch.isChecked()) {
-
-                                            try {
-                                                secondsdisplay = seconds;
-                                                WORKOUT_START.setText("Methodology Stopped  prt 1 at: " + secondsdisplay + " Seconds");
-                                                seconds = 0;
-                                                Mafworkoutstate = 0;
-                                                stateofwarmup = 0;
-                                                WORKOUT_START.setText("Stopping Treadmill");
-                                                while(!MAF_Switch.isChecked()){
-                                                    //do nothing
-                                                    bts.writeSpeedCharacteristic(spdstop);
-                                                    sleep(250);
-                                                }
-
-                                                break;
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    try {
-                                    boolean hrignore = false;
-                                    String hrstatus = Actual_hr.getText().toString();
-                                    if(hrstatus.compareToIgnoreCase("...") == 0){
-                                        hrignore = true;
-                                    }
-                                        if(MAF_Switch.isChecked() && seconds%3 == 0 && Mafworkoutstate == 1 && !hrignore && TreadSpeedReading == 0){
-                                                if(A_Hr <= 205 && A_Hr >= MAFHR) {
-                                                  bts.writeSpeedCharacteristic(spdown);
-                                                   WORKOUT_START.setText("P2: Slowing down at "+ seconds +" Seconds");
-                                                  }
-                                        } else if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 0 && !hrignore && TreadSpeedReading == 0) {
-                                                if(A_Hr >= 40 && A_Hr <= MAFHR){
-                                                    bts.writeSpeedCharacteristic(spdup);
-                                                    WORKOUT_START.setText("P1: Speeding up at "+ seconds +" Seconds");
-                                                }
-
-
-                                        }  else {
-                                            bts.writeSpeedCharacteristic("0");
-                                            WORKOUT_START.setText("P1: Keep the Pace");
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    try{
-
-                                        Calories.setText(CalcCalories(seconds)+" Calories Burned");
-
-                                    } catch (Exception e){
-
-                                    }
-                                    if (seconds == MafEndSecs1){
-                                        Mafworkoutstate++;
-                                    }
-                                }
-
-
-                            }*/
-
-/*
-                            if(MAF_Switch.isChecked() && Mafworkoutstate == 1) {
-                                for (int t = 0; t <= MafEndSecs2; t++) {
-                                    try {
-                                        if (MAF_Switch.isChecked()) {
-                                            WORKOUT_MODE.setText("MID-MAF");
-                                            sleep(1000);
-                                            seconds++;
-                                            secondsdisplay++;
-                                            *//*if(seconds % 2 == 0 && seconds >= 6) {
-                                                bts.writeSpeedCharacteristic("0");
-                                                //WORKOUT_START.setText("P2: Keep the Pace");
-                                               // TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
-                                                //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
-
-                                            }*//*
-
-                                        }
-
-                                        if (!MAF_Switch.isChecked()) {
-
-                                            try {
-
-                                                secondsdisplay = seconds;
-                                                WORKOUT_START.setText("Methodology Stopped prt 2 at: " + secondsdisplay + " Seconds");
-                                                seconds = 0;
-                                                Mafworkoutstate = 0;
-                                                WORKOUT_START.setText("Stopping Treadmill");
-                                                while(!MAF_Switch.isChecked()){
-                                                    //do nothing
-                                                    bts.writeSpeedCharacteristic(spdstop);
-                                                    sleep(250);
-                                                }
-                                                break;
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    try {
-
-                                        boolean hrignore = false;
-                                        String hrstatus = Actual_hr.getText().toString();
-                                        if(hrstatus.compareToIgnoreCase("...") == 0){
-                                            hrignore = true;
-                                        }
-                                        TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
-                                       *//* if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 1 && hrignore ) {
-                                           // bts.writeSpeedCharacteristic("0");
-                                            WORKOUT_START.setText("Waiting for HR "+seconds);*//*
-                                                if(MAF_Switch.isChecked() && seconds%3 == 0 && Mafworkoutstate == 1 && !hrignore && TreadSpeedReading == 0){
-                                                    if(A_Hr <= 205 && A_Hr >= MAFHR) {
-                                                        bts.writeSpeedCharacteristic(spdown);
-                                                        WORKOUT_START.setText("P2: Slowing down at "+ seconds +" Seconds");
-                                                    }
-                                                }
-                                      if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 1 && !hrignore && TreadSpeedReading == 0) {
-
-                                            if(A_Hr >= 40 && A_Hr <= MAFHR){
-                                                bts.writeSpeedCharacteristic(spdup);
-                                                WORKOUT_START.setText("P2: Speeding up at "+ seconds +" Seconds");
-                                            }
-
-                                            else {
-                                                bts.writeSpeedCharacteristic("0");
-                                                WORKOUT_START.setText("P2: Keep the Pace");
-                                            }
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    try{
-
-                                        Calories.setText(CalcCalories(seconds)+" Calories Burned");
-
-                                    } catch (Exception e){
-
-                                    }
-                                    if (seconds - MafEndSecs1 == MafEndSecs2){
-                                        Mafworkoutstate++;
-                                    }
-                                }
-                            }*/
-/*
-                                if (MAF_Switch.isChecked() && Mafworkoutstate == 2) {
-                                    for (int t = 0; t <= MafEndSecs3; t++) {
-                                        try {
-                                            if (MAF_Switch.isChecked()) {
-                                                WORKOUT_MODE.setText("WARM DOWN");
-                                                sleep(1000);
-                                                seconds++;
-                                                secondsdisplay++;
-                                               *//* if(seconds % 2 == 0 && seconds >= 6) {
-                                                    bts.writeSpeedCharacteristic("0");
-                                                   // WORKOUT_START.setText("P3: Keep the Pace");
-                                                    //TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
-                                                    //TODO: Testvalue from treadmill to see if 0 or 48 or whatever it sends over
-
-                                                }*//*
-
-                                            }
-
-                                            if (!MAF_Switch.isChecked()) {
-
-                                                try {
-                                                    secondsdisplay = seconds;
-                                                    WORKOUT_START.setText("Methodology stopped prt3 at : " + secondsdisplay + " Seconds");
-                                                    seconds = 0;
-                                                    Mafworkoutstate = 0;
-                                                    WORKOUT_START.setText("Stopping Treadmill");
-                                                    while(!MAF_Switch.isChecked()){
-                                                        //do nothing
-                                                        bts.writeSpeedCharacteristic(spdstop);
-                                                        sleep(250);
-                                                    }
-                                                    break;
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-
-                                            }
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        try {
-                                            boolean hrignore = false;
-                                            String hrstatus = Actual_hr.getText().toString();
-                                            String Elipses = "...";
-                                            if(hrstatus.compareToIgnoreCase("...") == 0){
-                                                hrignore = true;
-                                            }
-                                            TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
-                                           *//* if (MAF_Switch.isChecked() && seconds%1 == 0 && Mafworkoutstate == 2 && hrignore) {
-                                                bts.writeSpeedCharacteristic("0");
-                                                WORKOUT_START.setText("Waiting for HR "+seconds);
-
-                                            }else *//*
-                                           if (MAF_Switch.isChecked() && seconds%3 == 0 && Mafworkoutstate == 2&& !hrignore && TreadSpeedReading == 0) {
-
-                                                    bts.writeSpeedCharacteristic(spdown);
-                                                    WORKOUT_START.setText("P3: Slowing down "+seconds+" seconds");
-
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        try{
-
-                                            Calories.setText(CalcCalories(seconds)+" Calories Burned");
-
-                                        } catch (Exception e){
-
-                                        }
-                                        if (seconds == MafEndSecs3+ MafEndSecs2 +MafEndSecs1){
-                                            //TODO:: End workout.
-                                            try{
-                                            secondsdisplay = 0;
-                                            seconds = 0;
-                                            Mafworkoutstate = 0;
-                                            //WORKOUT_START.setText(spdstop);
-
-                                            for(int ij=0;ij<20;ij++){
-                                                bts.writeSpeedCharacteristic(spdstop);
-
-                                                    sleep(250);
-                                                WORKOUT_START.setText("stop");
-
-                                            }
-
-                                                WORKOUT_START.setText("END WORKOUT");
-                                                MAF_Switch.setChecked(false);
-                                        } catch(Exception e){
-                                                e.printStackTrace();
-                                            }
-                                break;
-                                        }
-                                    }
-
-                                }   */
-                            //handlerThread.quitSafely();
                             }
 
                     });
@@ -883,18 +599,14 @@ public class Maf_Final extends AppCompatActivity {
     }
 
     private int CalcCalories(int time){
-        String hrvalue = bts.getCapSenseValue();
 
-            //if(hrvalue.compareToIgnoreCase("...") == 0){//do nothing
-            //}
-            //else{
-            //caloriesburned = (-1f)*(((float) age * 0.2017f) - ((float) weight * 0.09036f) + ((float) A_Hr * 0.6309f) - 55.0969f) * time / 251.04f;
         caloriesburned =  (0.0175f * 8.0f *(float)weight/2.2f)*(float)time/60.0f;
         calint = (int)caloriesburned;
-            //}
 
       return calint;
     }
+
+
     private final BroadcastReceiver mBleUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -928,12 +640,4 @@ public class Maf_Final extends AppCompatActivity {
             }
         }
     };
-}
-
-class Maf_Thread implements Runnable{
-    @Override
-    public void run(){
-        //super.run();
-
-    }
 }

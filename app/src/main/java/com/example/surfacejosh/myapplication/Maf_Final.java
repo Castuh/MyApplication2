@@ -405,16 +405,15 @@ public class Maf_Final extends AppCompatActivity {
                                             //TODO:: End workout.
                                                 secondsdisplay = 0;
                                                 seconds = 0;
-                                                Mafworkoutstate = 0;
                                                     bts.writeSpeedCharacteristic(spdstop);
 
                                                     sleep(250);
                                                     WORKOUT_START.setText("stop");
+                                                    WORKOUT_START.setText("END WORKOUT");
+                                                    MAF_Switch.setChecked(false);
 
                                                 }
 
-                                                WORKOUT_START.setText("END WORKOUT");
-                                                MAF_Switch.setChecked(false);
 
 
 

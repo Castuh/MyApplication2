@@ -370,7 +370,7 @@ public class Maf_Final extends AppCompatActivity {
                                         // Get Tread Speed reading
                                         if(secondtwentieth%20==0){
                                             bts.readSpeedCharacteristic();
-                                            TreadSpeedReading =0;//= Integer.parseInt(bts.getSpeedReading());
+                                            TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                         }
                                         //// Decide if Speed down speed up or keep the pace
                                         if(seconds%3 == 0 && !hrignore && TreadSpeedReading == 0){
@@ -476,7 +476,7 @@ public class Maf_Final extends AppCompatActivity {
                                         // Get Tread Speed reading
                                         if(secondtwentieth%20==0){
                                             bts.readSpeedCharacteristic();
-                                            TreadSpeedReading =0;//= Integer.parseInt(bts.getSpeedReading());
+                                            TreadSpeedReading =Integer.parseInt(bts.getSpeedReading());
                                         }
                                         //// Decide if Speed down speed up or keep the pace
                                         if(seconds%3 == 0 && !hrignore && TreadSpeedReading == 0){
@@ -580,7 +580,7 @@ public class Maf_Final extends AppCompatActivity {
                                         // Get Tread Speed reading
                                         if(secondtwentieth%20==0){
                                         bts.readSpeedCharacteristic();
-                                        TreadSpeedReading =0;//= Integer.parseInt(bts.getSpeedReading());
+                                        TreadSpeedReading = Integer.parseInt(bts.getSpeedReading());
                                         }
                                         //// Decide if Speed down speed up or keep the pace
                                         if (seconds%3 == 0 && TreadSpeedReading == 0) {

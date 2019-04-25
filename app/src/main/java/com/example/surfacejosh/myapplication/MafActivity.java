@@ -12,11 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import org.w3c.dom.Text;
 
 public class MafActivity extends AppCompatActivity {
     private Button Submit;
+    private Button Debug;
     TextInputEditText TIE;
     TextInputEditText TIEW;
     Bundle extras;
@@ -29,6 +31,7 @@ public class MafActivity extends AppCompatActivity {
     private static final String WEIGHT = "1";
     private String ages;
     private String weights;
+    private Boolean Debugmode = false;
 
 
    // public static int getMAFHR(){
@@ -41,6 +44,7 @@ public class MafActivity extends AppCompatActivity {
         intent.putExtra("mah",hr);
         intent.putExtra("Weight",weight);
         intent.putExtra("Age",age);
+        intent.putExtra("Debug",Debugmode);
         //intent.putExtra("bts1", (Parcelable) bts1);
         startActivity(intent);
     }
@@ -58,6 +62,7 @@ public class MafActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maf);
         Submit = (Button) findViewById(R.id.SubmitMafweights);
+        Debug = (ToggleButton) findViewById(R.id.Debug_Toggle);
         TIE = (TextInputEditText) findViewById(R.id.EnterAge);
         TIEW = (TextInputEditText) findViewById(R.id.EnterWeight);
 
@@ -69,6 +74,18 @@ public class MafActivity extends AppCompatActivity {
 
             }
         });
+        Debug.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                if( Debugmode == false ){
+                    Debugmode = true;
+                } else {
+                    Debugmode = false;
+                }
+            }
+
+                                 }
+                );
 
         loadData();
         updateViews();

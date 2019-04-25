@@ -26,7 +26,9 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-//import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import static java.lang.Thread.sleep;
 
@@ -40,12 +42,14 @@ public class Maf_Final extends AppCompatActivity {
     private TextView Calories;
     private Button Speedup;
     private Button Startup;
+    private Boolean debugmode;
     //boolean displayhr = false;
     private ImageView CIRCLE;
     private Switch MAF_Switch;
     private TextView WORKOUT_START;
     private TextView WORKOUT_MODE;
-    //GraphView GRAPH;
+    GraphView GRAPH;
+    LineGraphSeries<DataPoint> series;
     int TreadSpeedReading;
     int Stepcount;
     String speedvalue;
@@ -172,20 +176,14 @@ public class Maf_Final extends AppCompatActivity {
         SpeedStop = (Button) findViewById(R.id.speedstop);
         Calories = (TextView) findViewById(R.id.CALORIESBURNED);
         Startup = (Button) findViewById(R.id.Startup);
-       // GRAPH = (GraphView) findViewById(R.id.graph);
-        /*LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        });*/
-        //GRAPH.addSeries(series);
+        GRAPH = (GraphView) findViewById(R.id.graph);
+        series = new LineGraphSeries<DataPoint>();
+      //GRAPH.getViewport().setXAxisBoundsManual(true);
         if (extras != null) {
             MAFHR = extras.getInt("MafHeartRate");
             mafhr2 = MAFHR;
             weight = extras.getInt("Weight");
-            //weight = Integer.parseInt(WeightI);
+            debugmode = extras.getBoolean("Debug");
             age = extras.getInt("Age");
 
         }
@@ -200,6 +198,18 @@ public class Maf_Final extends AppCompatActivity {
         WORKOUT_START = (TextView) findViewById(R.id.WORKOUT_START);
         WORKOUT_MODE = (TextView) findViewById(R.id.WORKOUT_MODE);
         MAF_Switch = (Switch) findViewById(R.id.MAF_Switch);
+        if(debugmode){
+            Speedup.setVisibility(View.GONE);
+            Startup.setVisibility(View.GONE);
+            SpeedDown.setVisibility(View.GONE);
+            SpeedStop.setVisibility(View.GONE);
+        }else{
+            Speedup.setVisibility(View.VISIBLE);
+            Startup.setVisibility(View.VISIBLE);
+            SpeedDown.setVisibility(View.VISIBLE);
+            SpeedStop.setVisibility(View.VISIBLE);
+
+        }
         Speedup.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(final View v) {
@@ -258,6 +268,34 @@ public class Maf_Final extends AppCompatActivity {
                             });
 
                             while(MAF_Switch.isChecked()){
+                                if(seconds == 0){
+                                    mainHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            series.resetData(new DataPoint[] {});
+                                        }
+                                    });
+                                }
+                                mainHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        /*LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                                                new DataPoint(seconds, A_Hr),
+
+                                        });*/
+
+                                        if(MAF_Switch.isChecked()) {
+                                            series.appendData(new DataPoint(seconds, A_Hr), true, 10000);
+                                            GRAPH.addSeries(series);
+                                            GRAPH.getViewport().setMinY(0.0);
+                                            GRAPH.getViewport().setMaxY(210);
+                                            //GRAPH.getViewport().setMaxX((MafEndSecs1+MafEndSecs3+MafEndSecs2));
+                                            GRAPH.getViewport().setYAxisBoundsManual(true);
+                                        } else {}
+                                    }
+                                });
+
+
                                 try {
                                     if (seconds <= 1){
                                         mainHandler.post(new Runnable() {
@@ -600,7 +638,7 @@ public class Maf_Final extends AppCompatActivity {
 
     private int CalcCalories(int time){
 
-        caloriesburned =  (0.0175f * 8.0f *(float)weight/2.2f)*(float)time/60.0f;
+        caloriesburned =  (0.0175f * 6.0f *(float)weight/2.2f)*(float)time/60.0f;  //6.0 is MET Value, 8 for running at 5mph 6 i guess for light jog or 7 xD
         calint = (int)caloriesburned;
 
       return calint;

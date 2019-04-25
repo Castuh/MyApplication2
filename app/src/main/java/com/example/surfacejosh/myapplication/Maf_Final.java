@@ -43,6 +43,8 @@ public class Maf_Final extends AppCompatActivity {
     private Button Speedup;
     private Button Startup;
     private Boolean debugmode;
+    private Boolean resetdata = false;
+    private int threadsecs = 0;
     //boolean displayhr = false;
     private ImageView CIRCLE;
     private Switch MAF_Switch;
@@ -81,9 +83,9 @@ public class Maf_Final extends AppCompatActivity {
     int secondtwentieth = 0;
     int SecondDis = 0;
     int Mafworkoutstate = 0;
-    int MafEndSecs1 = 50; // 300 seconds   Change to 10,10,10 to test each phase of workout
-    int MafEndSecs2 = 140; //600
-    int MafEndSecs3 = 50; //300
+    int MafEndSecs1 = 50; // 50 seconds   Change to 10,10,10 to test each phase of workout
+    int MafEndSecs2 = 140; //140
+    int MafEndSecs3 = 50; //50
     //int hrdur;
     BluetoothTestService bts;
 
@@ -178,7 +180,15 @@ public class Maf_Final extends AppCompatActivity {
         Startup = (Button) findViewById(R.id.Startup);
         GRAPH = (GraphView) findViewById(R.id.graph);
         series = new LineGraphSeries<DataPoint>();
-      //GRAPH.getViewport().setXAxisBoundsManual(true);
+        GRAPH.addSeries(series);
+        GRAPH.getViewport().setMinY(0.0);
+        GRAPH.getViewport().setMaxY(210.0);
+        GRAPH.getViewport().setMinX(0.0);
+        GRAPH.getViewport().setMaxXAxisSize(200);
+        GRAPH.getViewport().setMaxX(100);
+       // GRAPH.getViewport().setScrollable(true);
+        GRAPH.getViewport().setYAxisBoundsManual(true);
+        GRAPH.getViewport().setXAxisBoundsManual(true);
         if (extras != null) {
             MAFHR = extras.getInt("MafHeartRate");
             mafhr2 = MAFHR;
@@ -199,15 +209,18 @@ public class Maf_Final extends AppCompatActivity {
         WORKOUT_MODE = (TextView) findViewById(R.id.WORKOUT_MODE);
         MAF_Switch = (Switch) findViewById(R.id.MAF_Switch);
         if(debugmode){
-            Speedup.setVisibility(View.GONE);
-            Startup.setVisibility(View.GONE);
-            SpeedDown.setVisibility(View.GONE);
-            SpeedStop.setVisibility(View.GONE);
-        }else{
             Speedup.setVisibility(View.VISIBLE);
             Startup.setVisibility(View.VISIBLE);
             SpeedDown.setVisibility(View.VISIBLE);
             SpeedStop.setVisibility(View.VISIBLE);
+            GRAPH.setVisibility(View.VISIBLE);
+        }else{
+
+            Speedup.setVisibility(View.GONE);
+            Startup.setVisibility(View.GONE);
+            SpeedDown.setVisibility(View.GONE);
+            SpeedStop.setVisibility(View.GONE);
+            GRAPH.setVisibility(View.GONE);
 
         }
         Speedup.setOnClickListener(new View.OnClickListener() {
@@ -257,7 +270,6 @@ public class Maf_Final extends AppCompatActivity {
 
                     handler.post(new Runnable(){
 
-                        @SuppressLint("SetTextI18n")
                         @Override
                         public void run() {
                             mainHandler.post(new Runnable() {
@@ -267,44 +279,32 @@ public class Maf_Final extends AppCompatActivity {
                                 }
                             });
 
+
                             while(MAF_Switch.isChecked()){
-                                if(seconds == 0){
-                                    mainHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            series.resetData(new DataPoint[] {});
-                                        }
-                                    });
-                                }
-                                mainHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        /*LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                                                new DataPoint(seconds, A_Hr),
-
-                                        });*/
-
-                                        if(MAF_Switch.isChecked()) {
-                                            series.appendData(new DataPoint(seconds, A_Hr), true, 10000);
-                                            GRAPH.addSeries(series);
-                                            GRAPH.getViewport().setMinY(0.0);
-                                            GRAPH.getViewport().setMaxY(210);
-                                            //GRAPH.getViewport().setMaxX((MafEndSecs1+MafEndSecs3+MafEndSecs2));
-                                            GRAPH.getViewport().setYAxisBoundsManual(true);
-                                        } else {}
-                                    }
-                                });
-
-
                                 try {
                                     if (seconds <= 1){
                                         mainHandler.post(new Runnable() {
                                             @Override
                                             public void run() {
+
                                                 WORKOUT_MODE.setText("WARM-UP");
+
                                             }
                                         });
                                      }
+                                     if(seconds%1==0 || seconds ==0){
+                                         runOnUiThread(new Runnable() {
+                                             public void run() {
+
+                                                 if (seconds == 0) {
+                                                     resetGraph();
+                                                 }
+                                                 if (seconds == 0 || seconds % 1 == 0) {
+                                                     updateGraph(seconds, A_Hr);
+                                                 }
+                                             }});
+                                     }
+
                                      ////// Increment seconds after every 50milliseconds for each mode
                                     sleep(50);
                                     secondtwentieth++;
@@ -415,6 +415,15 @@ public class Maf_Final extends AppCompatActivity {
 
                                             @Override
                                             public void run() {
+                                               /* if (resetdata) {
+                                                    series.resetData(new DataPoint[]{});
+                                                }
+                                                if (seconds % 1 == 0) {
+
+                                                    GRAPH.addSeries(series);
+                                                    series.appendData(new DataPoint(seconds, A_Hr), false, 500);
+                                                    GRAPH.addSeries(series);
+                                                }*/
                                                 Calories.setText(CalcCalories(seconds)+" Calories Burned");
                                             }
                                         });
@@ -432,7 +441,7 @@ public class Maf_Final extends AppCompatActivity {
                                         });
                                         /// if switch is off Stop everything set everything to 0 and send stop signal to treadmill
                                         if (!MAF_Switch.isChecked()) {
-
+                                            resetdata = true;
                                             minutesdisplay =0;
                                             hoursdisplay =0;
                                             HourDis= 0;
@@ -512,6 +521,15 @@ public class Maf_Final extends AppCompatActivity {
 
                                             @Override
                                             public void run() {
+                                               /* if (resetdata) {
+                                                    series.resetData(new DataPoint[]{});
+                                                }
+                                                if (seconds % 1 == 0) {
+
+                                                    GRAPH.addSeries(series);
+                                                    series.appendData(new DataPoint(seconds, A_Hr), false, 500);
+                                                    GRAPH.addSeries(series);
+                                                }*/
                                                 Calories.setText(CalcCalories(seconds)+" Calories Burned");
                                             }
                                         });
@@ -539,7 +557,7 @@ public class Maf_Final extends AppCompatActivity {
                                                     WORKOUT_START.setText("Stopping Treadmill");
                                                 }
                                             });
-
+                                            resetdata = true;
                                             minutesdisplay =0;
                                             hoursdisplay =0;
                                             HourDis= 0;
@@ -578,19 +596,19 @@ public class Maf_Final extends AppCompatActivity {
 
 
                                         }
-                                        ///Print calories TODO:: fix accuracy of calories displayed
+                                        ///Print calories
                                         if(seconds != MafEndSecs3+ MafEndSecs2 +MafEndSecs1) {
                                             mainHandler.post(new Runnable() {
 
                                                 @Override
                                                 public void run() {
+
                                                     Calories.setText(CalcCalories(seconds) + " Calories Burned");
                                                 }
                                             });
                                         }
                                         //Stop workout End workout
                                         if (seconds == MafEndSecs3+ MafEndSecs2 +MafEndSecs1){
-                                            //TODO:: End workout.
                                             minutesdisplay =0;
                                             hoursdisplay =0;
                                             HourDis= 0;
@@ -598,7 +616,7 @@ public class Maf_Final extends AppCompatActivity {
                                             seconds = 0;
                                             secondtwentieth = 0;
                                             SecondDis = 0;
-
+                                            resetdata = true;
                                             bts.writeSpeedCharacteristic(spdstop);
 
                                                 sleep(250);
@@ -610,16 +628,20 @@ public class Maf_Final extends AppCompatActivity {
                                                     WORKOUT_START.setText("stop");
                                                     WORKOUT_START.setText("END WORKOUT");
                                                     MAF_Switch.setChecked(false);
+                                                    //series.resetData(new DataPoint[]{});
                                                 }
                                             });
 
                                                     sleep(1000);
+                                            bts.writeSpeedCharacteristic(spdstop);
                                                 }
 
                                     }catch(Exception e){ }
 
                                     }
                                 if(!MAF_Switch.isChecked()){
+                                    //resetdata = true;
+
                                     bts.writeSpeedCharacteristic(spdstop);
                                     continue;
                                 }
@@ -636,6 +658,15 @@ public class Maf_Final extends AppCompatActivity {
 
     }
 
+    private void updateGraph(int seconds, int hr){
+
+
+        series.appendData(new DataPoint(seconds, hr), false, 10000);
+
+    }
+    private void resetGraph(){
+        series.resetData(new DataPoint[]{});
+    }
     private int CalcCalories(int time){
 
         caloriesburned =  (0.0175f * 6.0f *(float)weight/2.2f)*(float)time/60.0f;  //6.0 is MET Value, 8 for running at 5mph 6 i guess for light jog or 7 xD

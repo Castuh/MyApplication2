@@ -354,7 +354,9 @@ public class BluetoothTestService extends Service {
             mBluetoothGattTread.writeCharacteristic(mTreadCharacteristic);
 
         } catch (Exception e) {
-
+            Log.d("Failed to set speed","SetSpeed Failed at end workout - 1");
+//            mTreadCharacteristic.setValue(bytes);
+//            mBluetoothGattTread.writeCharacteristic(mTreadCharacteristic);
         }
     }
 

@@ -729,7 +729,7 @@ public class Maf_Final extends AppCompatActivity {
     private void updateGraph(int seconds, int hr){
 
 
-        series.appendData(new DataPoint(seconds, hr), false, 10000);
+        series.appendData(new DataPoint(seconds, hr), true, 10000);
 
     }
     private void resetGraph(){

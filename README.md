@@ -1,5 +1,5 @@
 # SeniorProject
-Smart_Treadmill_SeniorProject
+
 This repository contains the source code developed for the Smart Treadmill Application to be used in Treadmill and Fitness tracker Demos. The Smart Treadmill project was built by a team of five Computer Engineering Students at the University of Houston - Clear Lake.
 
 ## Project Poster
